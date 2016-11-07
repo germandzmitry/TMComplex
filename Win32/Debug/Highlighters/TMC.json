@@ -1,0 +1,111 @@
+{
+   "Highlighter": {
+		"MainRules": {
+			"Attributes": {
+				"Element": "Editor"
+			},
+			"SubRules": {
+				"Range": [
+					{
+						"Type": "LineComment",
+						"Attributes": {
+							"Element": "Comment"
+						},
+						"Properties": {
+							"CloseOnEndOfLine": true
+						},
+						"TokenRange": {
+							"Open": "%"
+						}
+					},
+					{
+						"Type": "Command",
+						"Attributes": {
+							"Element": "Method"
+						},
+						"Properties": {
+							"CloseOnTerm": true
+						},
+						"TokenRange": {
+							"Open": "\\"
+						}
+					}
+				],
+				"KeyList": [
+					{
+						"Name": "Keywords",
+						"Type": "Directive",
+						"Words": [
+							"\\documentclass",
+							"\\label",
+							"\\usepackage"
+						],
+						"Attributes": {
+							"Element": "Directive"
+						}
+					},
+					{
+						"Type": "String",
+						"Words": [
+						   "document",
+						   "center",
+						   "left",
+						   "right",
+						   "justify"
+						],
+						"Attributes": {
+							"Element": "String"
+						}
+					},
+					{
+						"Type": "Symbol",
+						"Words": [
+							"(",
+							")",
+							"[",
+							"]",
+							"{",
+							"}",
+							"$"
+						],
+						"Attributes": {
+							"Element": "Symbol"
+						}
+					}
+				],
+				"Set": [
+					{
+						"Type": "Numbers",
+						"Symbols": "0123456789",
+						"Attributes": {
+							"Element": "Number"
+						}
+					},
+					{
+						"Type": "Float",
+						"Symbols": ".0123456789",
+						"Attributes": {
+							"Element": "Number"
+						}
+					}
+				]
+			}
+		}
+   },
+   "MatchingPair": {
+		"Pairs": [
+			{
+				"OpenToken": "(",
+				"CloseToken": ")"
+			},
+			{
+				"OpenToken": "[",
+				"CloseToken": "]"
+			},
+			{
+				"OpenToken": "{",
+				"CloseToken": "}"
+			}
+		]
+   }
+}

@@ -68,11 +68,11 @@ begin
   Editor.OnCaretChanged := EditorCaretChanged;
   Editor.OnLeftMarginClick := EditorLeftMaginClick;
 
-  Editor.Highlighter.Colors.LoadFromFile('Default.json');
-  Editor.Highlighter.LoadFromFile('TMC.json');
+  if FileExists(ExtractFilePath(Application.ExeName) + 'Colors\Default.json') then
+    Editor.Highlighter.Colors.LoadFromFile('Default.json');
 
-  // Editor.Highlighter.Colors.LoadFromFile('TMComplex.json');
-  // Editor.Highlighter.LoadFromFile('LaTex.json');
+  if FileExists(ExtractFilePath(Application.ExeName) + 'Highlighters\TMC.json') then
+    Editor.Highlighter.LoadFromFile('TMC.json');
 
   // Editor.KeyCommands.Clear;
   // Editor.KeyCommands.Add(ecLineBreak, [], VK_RETURN);
