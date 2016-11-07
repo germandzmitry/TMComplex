@@ -60,10 +60,18 @@
 # Delphi history and backups
 __history/
 __recovery/
+*.~*
+
+# Folder
 Image/ActionManager/
 Image/ActionManagerLog/
 Image/PageCode/
-*.~*
+Win32/Debug/Project/
+Win32/Release/
+
+# File
+Win32/Debug/history.txt
+Win32/Debug/Setting.ini
 
 # Castalia statistics file (since XE7 Castalia is distributed with Delphi)
 *.stat
@@ -72,3 +80,7 @@ Image/PageCode/
 *.ico
 *.rc
 *.jpg
+*.aux
+*.pdf
+*.synctex
+*.log

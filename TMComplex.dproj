@@ -5,7 +5,7 @@
         <FrameworkType>VCL</FrameworkType>
         <MainSource>TMComplex.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -127,6 +127,10 @@
         <DCCReference Include="uProcess.pas"/>
         <DCCReference Include="uEditorGoToLine.pas">
             <Form>fEditorGoToLine</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="uSettings.pas">
+            <Form>fSettings</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Release">

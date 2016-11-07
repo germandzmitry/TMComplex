@@ -16,7 +16,8 @@ uses
   uLog in 'uLog.pas' {fLog},
   uCustomCaptionedDockTree in 'uCustomCaptionedDockTree.pas',
   uProcess in 'uProcess.pas',
-  uEditorGoToLine in 'uEditorGoToLine.pas' {fEditorGoToLine};
+  uEditorGoToLine in 'uEditorGoToLine.pas' {fEditorGoToLine},
+  uSettings in 'uSettings.pas' {fSettings};
 
 {$R *.res}
 

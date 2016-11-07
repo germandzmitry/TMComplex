@@ -13,7 +13,7 @@ uses
   BCEditor.Encoding, BCEditor.Editor.KeyCommands, BCEditor.Consts,
   BCEditor.Types, uTexCompile, Vcl.StdStyleActnCtrls, Vcl.ActnColorMaps,
   Winapi.UxTheme, Vcl.Themes, uTexLogParser, uLog, Vcl.Tabs, Vcl.DockTabSet,
-  uCustomCaptionedDockTree, Vcl.Menus, Vcl.ActnPopup;
+  uCustomCaptionedDockTree, Vcl.Menus, Vcl.ActnPopup, uSettings;
 
 Const
   STATUS_BAR_CARET = 0;
@@ -144,6 +144,7 @@ type
     procedure StatusBarDblClick(Sender: TObject);
   private
     { Private declarations }
+    FAllSetting: TAllSetting;
     FPageCode: TCustomPageControl;
     FPageSymbols: TCustomPageControl;
     FPageLog: TCustomPageControl;
@@ -413,6 +414,7 @@ end;
 procedure TMain.FormShow(Sender: TObject);
 begin
   LoadSettings;
+  FAllSetting.Load;
 
   ProcessParam(1, ParamStr(1));
   ProcessParam(2, ParamStr(2));
@@ -538,8 +540,18 @@ begin
 end;
 
 procedure TMain.ActFileSettingExecute(Sender: TObject);
+var
+  setting: TfSettings;
 begin
-  //
+  setting := TfSettings.Create(Main);
+  try
+    setting.tvSettings.Select(setting.tvSettings.Items[0]);
+    setting.tvSettingsClick(setting.tvSettings);
+    setting.ShowModal;
+    FAllSetting.Load;
+  finally
+    setting.Free;
+  end;
 end;
 
 procedure TMain.ActEditUndoExecute(Sender: TObject);
@@ -601,6 +613,59 @@ end;
 procedure TMain.ActFileExitExecute(Sender: TObject);
 begin
   Main.Close;
+end;
+
+procedure TMain.ThreadEndGenerate(Sender: TObject);
+var
+  pdfFile, inversesearch, OpenPDF: string;
+  resParse: Boolean;
+begin
+  ActTexStop.Enabled := False;
+  ActTexPdfLaTeX.Enabled := True;
+
+  fLog.Caption := 'Parsing error...';
+  Application.ProcessMessages;
+
+  resParse := TTexLogParser.Parse(fLog.mLog.Text, fLog.MsgLines, fLog.MsgCount);
+  fLog.ShowMsg;
+
+  // Если есть ошибки, документ не открываем
+  if resParse then
+    Exit;
+
+  pdfFile := StringReplace(ExtractFileName(FActiveEditor.fileName),
+    ExtractFileExt(FActiveEditor.fileName), '', []);
+
+  pdfFile := ExtractFilePath(FActiveEditor.fileName) + pdfFile + '.pdf';
+
+  if FileExists(pdfFile) then
+  begin
+    // Просмоторщик в системе по умолчанию, либо если установлен другой
+    // но такого exe больше нету
+    if (FAllSetting.PDFViewer.Default) // просмоторщик по умолчанию
+      or ((FAllSetting.PDFViewer.Sumatra) and not FileExists(FAllSetting.PDFViewer.SumatraPath)) //
+      or ((FAllSetting.PDFViewer.Other) and not FileExists(FAllSetting.PDFViewer.OtherPath)) then
+      RunProcessDefault(pdfFile);
+
+    // Если Sumatra настраиваем работу с synctex
+    if (FAllSetting.PDFViewer.Sumatra) and (FileExists(FAllSetting.PDFViewer.SumatraPath)) then
+    begin
+      inversesearch := '\"' + Application.ExeName + '\" \"%f\" \"%l\"';
+      OpenPDF := '"' + FAllSetting.PDFViewer.SumatraPath + // путь к Sumatra
+        '" -reuse-instance "' + pdfFile + // Найти открытое приложение и открыть в нем файл
+        '" -inverse-search "' + inversesearch + '"'; // настройка команды для моего приложения
+      RunProcess(OpenPDF);
+    end;
+
+    // Если другой просмоторщик
+    if (FAllSetting.PDFViewer.Other) and (FileExists(FAllSetting.PDFViewer.OtherPath)) then
+    begin
+      OpenPDF := '"' + FAllSetting.PDFViewer.OtherPath + '" "' + pdfFile + '"';
+      RunProcess(OpenPDF);
+    end;
+
+  end;
+
 end;
 
 procedure TMain.ActTexPdfLaTeXExecute(Sender: TObject);
@@ -1004,42 +1069,6 @@ end;
 procedure TMain.TexGuiSymbolClick(Sender: TObject; const Symbol: TSymbol);
 begin
   InsertTemplate(Symbol.Command, Symbol.moveX);
-end;
-
-procedure TMain.ThreadEndGenerate(Sender: TObject);
-var
-  fileName, sumatra, inversesearch: string;
-  resParse: Boolean;
-begin
-  ActTexStop.Enabled := False;
-  ActTexPdfLaTeX.Enabled := True;
-
-  fLog.Caption := 'Parsing error...';
-  Application.ProcessMessages;
-
-  resParse := TTexLogParser.Parse(fLog.mLog.Text, fLog.MsgLines, fLog.MsgCount);
-  fLog.ShowMsg;
-
-  // Если есть ошибки, документ не открываем
-  if resParse then
-    Exit;
-
-  fileName := StringReplace(ExtractFileName(FActiveEditor.fileName),
-    ExtractFileExt(FActiveEditor.fileName), '', []);
-
-  fileName := ExtractFilePath(FActiveEditor.fileName) + fileName + '.pdf';
-
-  sumatra := ExtractFilePath(Application.ExeName) + 'SumatraPDF\SumatraPDF.exe';
-  inversesearch := '\"' + Application.ExeName + '\" \"%f\" \"%l\"';
-
-  if FileExists(fileName) and FileExists(sumatra) then
-  begin
-    // AcroPDF.LoadFile(pdffile);
-    sumatra := '"' + sumatra + '" -reuse-instance "' + fileName + '" -inverse-search "' +
-      inversesearch + '"';
-    RunProcess(sumatra);
-  end;
-
 end;
 
 procedure TMain.OpenDocument(fileName: string);
