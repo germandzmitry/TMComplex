@@ -66,12 +66,7 @@ __recovery/
 Image/ActionManager/
 Image/ActionManagerLog/
 Image/PageCode/
-Win32/Debug/Project/
-Win32/Release/
-
-# File
-Win32/Debug/history.txt
-Win32/Debug/Setting.ini
+Win32/
 
 # Castalia statistics file (since XE7 Castalia is distributed with Delphi)
 *.stat
