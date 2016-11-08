@@ -40,6 +40,7 @@ type
 
     procedure Clear;
     procedure ShowMsg;
+    function GetParsingLine(): string;
   private
     procedure ShowMsgLines;
   public
@@ -101,16 +102,20 @@ begin
   IniFile.Free;
 end;
 
+function TfLog.GetParsingLine: string;
+begin
+  Result := 'Error: ' + IntToStr(MsgCount.Error) + // ошибок
+    ' Warning: ' + IntToStr(MsgCount.Warning) + // предупреждений
+    ' BadBox: ' + IntToStr(MsgCount.BadBox);
+end;
+
 procedure TfLog.ShowMsg;
 begin
   ActLogMsgError.Caption := IntToStr(MsgCount.Error);
   ActLogMsgWarning.Caption := IntToStr(MsgCount.Warning);
   ActlogMsgBadBox.Caption := IntToStr(MsgCount.BadBox);
 
-  fLog.Caption := 'Error: ' + IntToStr(MsgCount.Error) + // ошибок
-    ' Warning: ' + IntToStr(MsgCount.Warning) + // предупреждений
-    ' BadBox: ' + IntToStr(MsgCount.BadBox);
-
+  fLog.Caption := GetParsingLine;
   ShowMsgLines;
 end;
 

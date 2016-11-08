@@ -623,7 +623,7 @@ begin
   ActTexStop.Enabled := False;
   ActTexPdfLaTeX.Enabled := True;
 
-  fLog.Caption := 'Parsing error...';
+  fLog.Caption := 'Parsing log compiling...';
   Application.ProcessMessages;
 
   resParse := TTexLogParser.Parse(fLog.mLog.Text, fLog.MsgLines, fLog.MsgCount);
@@ -631,7 +631,11 @@ begin
 
   // Если есть ошибки, документ не открываем
   if resParse then
+  begin
+    if not fLog.Showing then
+      MessageBox(Handle, PChar(fLog.GetParsingLine), PChar(Main.Caption), MB_ICONWARNING + MB_OK);
     Exit;
+  end;
 
   pdfFile := StringReplace(ExtractFileName(FActiveEditor.fileName),
     ExtractFileExt(FActiveEditor.fileName), '', []);
