@@ -12,25 +12,28 @@ object Main: TMain
   Font.Style = []
   OldCreateOrder = False
   OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object PanelEditor: TPanel
+  object pEditor: TPanel
     Left = 8
     Top = 135
     Width = 378
     Height = 198
-    Caption = 'PanelEditor'
+    BevelOuter = bvNone
+    Caption = 'pEditor'
+    Color = clMedGray
     DockSite = True
     DoubleBuffered = False
     ParentBackground = False
     ParentDoubleBuffered = False
     TabOrder = 0
     object sDockBottom: TSplitter
-      Left = 1
-      Top = 118
-      Width = 376
+      Left = 0
+      Top = 119
+      Width = 378
       Height = 3
       Cursor = crVSplit
       Align = alBottom
@@ -38,11 +41,12 @@ object Main: TMain
       ParentColor = False
       ExplicitLeft = 2
       ExplicitTop = 93
+      ExplicitWidth = 376
     end
     object pDockBottom: TPanel
-      Left = 1
-      Top = 121
-      Width = 376
+      Left = 0
+      Top = 122
+      Width = 378
       Height = 76
       Align = alBottom
       Caption = 'pDockBottom'
@@ -708,7 +712,7 @@ object Main: TMain
     Left = 544
     Top = 264
     Bitmap = {
-      494C010103006000300110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101030060004C0110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -865,7 +869,7 @@ object Main: TMain
     Left = 456
     Top = 264
     Bitmap = {
-      494C01011E006000140210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011E006000300210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000008000000001002000000000000080
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

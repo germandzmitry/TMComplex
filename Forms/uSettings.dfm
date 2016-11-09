@@ -1,8 +1,8 @@
-object fSettings: TfSettings
+object SettingsForm: TSettingsForm
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'fSettings'
+  Caption = 'SettingsForm'
   ClientHeight = 400
   ClientWidth = 602
   Color = clBtnFace
@@ -33,8 +33,6 @@ object fSettings: TfSettings
     TabOrder = 0
     object TabPDFViewer: TTabSheet
       Caption = 'TabPDFViewer'
-      ExplicitWidth = 281
-      ExplicitHeight = 162
       object btnPDFViewerOther: TSpeedButton
         Left = 359
         Top = 127
@@ -110,8 +108,6 @@ object fSettings: TfSettings
     Caption = 'pBottom'
     ParentBackground = False
     TabOrder = 1
-    ExplicitTop = 360
-    ExplicitWidth = 587
     DesignSize = (
       602
       36)
@@ -124,8 +120,6 @@ object fSettings: TfSettings
       Caption = 'BtnOK'
       TabOrder = 0
       OnClick = BtnOKClick
-      ExplicitLeft = 423
-      ExplicitTop = 118
     end
     object BtnCancel: TButton
       Left = 519
@@ -136,8 +130,6 @@ object fSettings: TfSettings
       Caption = 'BtnCancel'
       TabOrder = 1
       OnClick = BtnCancelClick
-      ExplicitLeft = 504
-      ExplicitTop = 118
     end
   end
   object tvSettings: TTreeView
@@ -158,8 +150,5 @@ object fSettings: TfSettings
     RowSelect = True
     TabOrder = 2
     OnClick = tvSettingsClick
-    ExplicitLeft = 5
-    ExplicitTop = 5
-    ExplicitHeight = 354
   end
 end

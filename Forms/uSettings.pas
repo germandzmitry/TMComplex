@@ -27,7 +27,7 @@ type
   end;
 
 type
-  TfSettings = class(TForm)
+  TSettingsForm = class(TForm)
     pcSettings: TPageControl;
     pBottom: TPanel;
     BtnOK: TButton;
@@ -60,9 +60,6 @@ type
     procedure UpdateSetting;
   public
   end;
-
-var
-  fSettings: TfSettings;
 
 implementation
 
@@ -116,7 +113,7 @@ begin
   end;
 end;
 
-procedure TfSettings.FormCreate(Sender: TObject);
+procedure TSettingsForm.FormCreate(Sender: TObject);
 var
   node: TTreeNode;
   i: integer;
@@ -134,35 +131,35 @@ begin
     pcSettings.Pages[i].TabVisible := false;
 end;
 
-procedure TfSettings.FormShow(Sender: TObject);
+procedure TSettingsForm.FormShow(Sender: TObject);
 begin
   FAllSetting.Load;
   InitialSetting;
 end;
 
-procedure TfSettings.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TSettingsForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   //
 end;
 
-procedure TfSettings.tvSettingsClick(Sender: TObject);
+procedure TSettingsForm.tvSettingsClick(Sender: TObject);
 begin
   pcSettings.ActivePage := TTabSheet(tvSettings.Selected.Data);
 end;
 
-procedure TfSettings.BtnOKClick(Sender: TObject);
+procedure TSettingsForm.BtnOKClick(Sender: TObject);
 begin
   UpdateSetting;
   FAllSetting.Save;
   close;
 end;
 
-procedure TfSettings.BtnCancelClick(Sender: TObject);
+procedure TSettingsForm.BtnCancelClick(Sender: TObject);
 begin
   close;
 end;
 
-procedure TfSettings.btnPDFViewerSumatraClick(Sender: TObject);
+procedure TSettingsForm.btnPDFViewerSumatraClick(Sender: TObject);
 var
   open: TOpenDialog;
 begin
@@ -179,7 +176,7 @@ begin
   end;
 end;
 
-procedure TfSettings.btnPDFViewerOtherClick(Sender: TObject);
+procedure TSettingsForm.btnPDFViewerOtherClick(Sender: TObject);
 var
   open: TOpenDialog;
 begin
@@ -196,7 +193,7 @@ begin
   end;
 end;
 
-procedure TfSettings.rbPDFViewerDefaultClick(Sender: TObject);
+procedure TSettingsForm.rbPDFViewerDefaultClick(Sender: TObject);
 begin
   lePDFViewerOther.Enabled := rbPDFViewerOther.Checked;
   btnPDFViewerOther.Enabled := rbPDFViewerOther.Checked;
@@ -204,7 +201,7 @@ begin
   btnPDFViewerSumatra.Enabled := rbPDFViewerSumatra.Checked;
 end;
 
-procedure TfSettings.rbPDFViewerSumatraClick(Sender: TObject);
+procedure TSettingsForm.rbPDFViewerSumatraClick(Sender: TObject);
 begin
   lePDFViewerSumatra.Enabled := rbPDFViewerSumatra.Checked;
   btnPDFViewerSumatra.Enabled := rbPDFViewerSumatra.Checked;
@@ -212,7 +209,7 @@ begin
   btnPDFViewerOther.Enabled := rbPDFViewerOther.Checked;
 end;
 
-procedure TfSettings.rbPDFViewerOtherClick(Sender: TObject);
+procedure TSettingsForm.rbPDFViewerOtherClick(Sender: TObject);
 begin
   lePDFViewerOther.Enabled := rbPDFViewerOther.Checked;
   btnPDFViewerOther.Enabled := rbPDFViewerOther.Checked;
@@ -220,7 +217,7 @@ begin
   btnPDFViewerSumatra.Enabled := rbPDFViewerSumatra.Checked;
 end;
 
-procedure TfSettings.InitialSetting;
+procedure TSettingsForm.InitialSetting;
 begin
   rbPDFViewerDefault.Checked := FAllSetting.PDFViewer.Default;
   rbPDFViewerSumatra.Checked := FAllSetting.PDFViewer.Sumatra;
@@ -229,7 +226,7 @@ begin
   lePDFViewerOther.Text := FAllSetting.PDFViewer.OtherPath;
 end;
 
-procedure TfSettings.UpdateSetting;
+procedure TSettingsForm.UpdateSetting;
 begin
   FAllSetting.PDFViewer.Default := rbPDFViewerDefault.Checked;
   FAllSetting.PDFViewer.Sumatra := rbPDFViewerSumatra.Checked;

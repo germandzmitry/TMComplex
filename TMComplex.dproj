@@ -105,32 +105,32 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="uMain.pas">
+        <DCCReference Include="Forms\uMain.pas">
             <Form>Main</Form>
         </DCCReference>
-        <DCCReference Include="uEditor.pas">
-            <Form>fEditor</Form>
+        <DCCReference Include="Forms\uEditor.pas">
+            <Form>EditorForm</Form>
         </DCCReference>
-        <DCCReference Include="uTypes.pas"/>
-        <DCCReference Include="uAbout.pas">
-            <Form>fAbout</Form>
+        <DCCReference Include="Units\uTypes.pas"/>
+        <DCCReference Include="Forms\uAbout.pas">
+            <Form>AboutForm</Form>
         </DCCReference>
-        <DCCReference Include="uCustomPageControl.pas"/>
-        <DCCReference Include="uTexGuiSymbols.pas"/>
-        <DCCReference Include="uTexCompile.pas"/>
-        <DCCReference Include="uTexLogParser.pas"/>
-        <DCCReference Include="uLog.pas">
-            <Form>fLog</Form>
+        <DCCReference Include="Customs\uCustomPageControl.pas"/>
+        <DCCReference Include="Tex\uTexGuiSymbols.pas"/>
+        <DCCReference Include="Tex\uTexCompile.pas"/>
+        <DCCReference Include="Tex\uTexLogParser.pas"/>
+        <DCCReference Include="Forms\uLog.pas">
+            <Form>LogForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="uCustomCaptionedDockTree.pas"/>
-        <DCCReference Include="uProcess.pas"/>
-        <DCCReference Include="uEditorGoToLine.pas">
-            <Form>fEditorGoToLine</Form>
+        <DCCReference Include="Customs\uCustomCaptionedDockTree.pas"/>
+        <DCCReference Include="Units\uProcess.pas"/>
+        <DCCReference Include="Forms\uEditorGoToLine.pas">
+            <Form>EditorGoToLineForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="uSettings.pas">
-            <Form>fSettings</Form>
+        <DCCReference Include="Forms\uSettings.pas">
+            <Form>SettingsForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Release">

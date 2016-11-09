@@ -1,4 +1,4 @@
-object fAbout: TfAbout
+object AboutForm: TAboutForm
   Left = 0
   Top = 0
   BorderStyle = bsDialog

@@ -11,7 +11,7 @@ uses
   uTexLogParser;
 
 type
-  TfLog = class(TForm)
+  TLogForm = class(TForm)
     lvLog: TListView;
     mLog: TMemo;
     ActListLog: TActionList;
@@ -48,8 +48,8 @@ type
     MsgCount: TTexLogErrorCount;
   end;
 
-var
-  fLog: TfLog;
+  // var
+  // LogForm: TLogForm;
 
 resourcestring
   rsLogCaption = 'Log';
@@ -58,7 +58,7 @@ implementation
 
 {$R *.dfm}
 
-procedure TfLog.FormCreate(Sender: TObject);
+procedure TLogForm.FormCreate(Sender: TObject);
 begin
   mLog.Align := alClient;
   mLog.ReadOnly := true;
@@ -68,24 +68,24 @@ begin
   Clear;
 end;
 
-procedure TfLog.FormShow(Sender: TObject);
+procedure TLogForm.FormShow(Sender: TObject);
 begin
   LoadSettings;
 
   SendMessage(lvLog.Handle, WM_UPDATEUISTATE, MakeLong(UIS_SET, UISF_HIDEFOCUS), 0);
 end;
 
-procedure TfLog.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TLogForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   SaveSettings;
   Hide; // что бы не моргала форма в левом верхнем углу по ManualFloat
-  ManualFloat(rect(0, 0, 0, 0));
+  ManualFloat(rect(0, 0, 0, 0)); // что бы вызвалось UnDock
 
   Action := caFree;
-  fLog := nil;
+  self := nil;
 end;
 
-procedure TfLog.SaveSettings;
+procedure TLogForm.SaveSettings;
 var
   IniFile: TIniFile;
 begin
@@ -102,24 +102,24 @@ begin
   IniFile.Free;
 end;
 
-function TfLog.GetParsingLine: string;
+function TLogForm.GetParsingLine: string;
 begin
   Result := 'Error: ' + IntToStr(MsgCount.Error) + // ошибок
     ' Warning: ' + IntToStr(MsgCount.Warning) + // предупреждений
     ' BadBox: ' + IntToStr(MsgCount.BadBox);
 end;
 
-procedure TfLog.ShowMsg;
+procedure TLogForm.ShowMsg;
 begin
   ActLogMsgError.Caption := IntToStr(MsgCount.Error);
   ActLogMsgWarning.Caption := IntToStr(MsgCount.Warning);
   ActlogMsgBadBox.Caption := IntToStr(MsgCount.BadBox);
 
-  fLog.Caption := GetParsingLine;
+  self.Caption := GetParsingLine;
   ShowMsgLines;
 end;
 
-procedure TfLog.ShowMsgLines;
+procedure TLogForm.ShowMsgLines;
 var
   i: integer;
   item: TListItem;
@@ -158,7 +158,7 @@ begin
   lvLog.Items.EndUpdate;
 end;
 
-procedure TfLog.LoadSettings;
+procedure TLogForm.LoadSettings;
 var
   IniFile: TIniFile;
 begin
@@ -177,12 +177,12 @@ begin
   IniFile.Free;
 end;
 
-procedure TfLog.ActLogClearExecute(Sender: TObject);
+procedure TLogForm.ActLogClearExecute(Sender: TObject);
 begin
   Clear;
 end;
 
-procedure TfLog.ActLogConsoleExecute(Sender: TObject);
+procedure TLogForm.ActLogConsoleExecute(Sender: TObject);
 begin
   if not ActLogConsole.Checked then
   begin
@@ -195,7 +195,7 @@ begin
   ActlogMsgBadBox.Enabled := ActLogMessage.Checked;
 end;
 
-procedure TfLog.ActLogMessageExecute(Sender: TObject);
+procedure TLogForm.ActLogMessageExecute(Sender: TObject);
 begin
   if not ActLogMessage.Checked then
   begin
@@ -208,19 +208,19 @@ begin
   ActlogMsgBadBox.Enabled := ActLogMessage.Checked;
 end;
 
-procedure TfLog.ActLogMsgErrorExecute(Sender: TObject);
+procedure TLogForm.ActLogMsgErrorExecute(Sender: TObject);
 begin
   ActLogMsgError.Checked := not ActLogMsgError.Checked;
   ShowMsgLines;
 end;
 
-procedure TfLog.ActLogMsgWarningExecute(Sender: TObject);
+procedure TLogForm.ActLogMsgWarningExecute(Sender: TObject);
 begin
   ActLogMsgWarning.Checked := not ActLogMsgWarning.Checked;
   ShowMsgLines;
 end;
 
-procedure TfLog.Clear;
+procedure TLogForm.Clear;
 begin
   mLog.Lines.Clear;
   lvLog.Items.Clear;
@@ -230,7 +230,7 @@ begin
   self.Caption := rsLogCaption;
 end;
 
-procedure TfLog.ActlogMsgBadBoxExecute(Sender: TObject);
+procedure TLogForm.ActlogMsgBadBoxExecute(Sender: TObject);
 begin
   ActlogMsgBadBox.Checked := not ActlogMsgBadBox.Checked;
   ShowMsgLines;

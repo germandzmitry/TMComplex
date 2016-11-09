@@ -1,7 +1,7 @@
-object fEditor: TfEditor
+object EditorForm: TEditorForm
   Left = 0
   Top = 0
-  Caption = 'fEditor'
+  Caption = 'EditorForm'
   ClientHeight = 350
   ClientWidth = 701
   Color = clBtnFace
@@ -111,13 +111,13 @@ object fEditor: TfEditor
     WordWrap.Indicator.MaskColor = clFuchsia
     WordWrap.Width = wwwPage
   end
-  object Panel1: TPanel
+  object pTopLine: TPanel
     Left = 0
     Top = 0
     Width = 701
     Height = 41
     Align = alTop
-    Caption = 'Panel1'
+    Caption = 'pTopLine'
     TabOrder = 1
   end
 end

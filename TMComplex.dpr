@@ -5,19 +5,19 @@ uses
   Windows,
   System.SysUtils,
   Winapi.Messages,
-  uMain in 'uMain.pas' {Main},
-  uEditor in 'uEditor.pas' {fEditor},
-  uTypes in 'uTypes.pas',
-  uAbout in 'uAbout.pas' {fAbout},
-  uCustomPageControl in 'uCustomPageControl.pas',
-  uTexGuiSymbols in 'uTexGuiSymbols.pas',
-  uTexCompile in 'uTexCompile.pas',
-  uTexLogParser in 'uTexLogParser.pas',
-  uLog in 'uLog.pas' {fLog},
-  uCustomCaptionedDockTree in 'uCustomCaptionedDockTree.pas',
-  uProcess in 'uProcess.pas',
-  uEditorGoToLine in 'uEditorGoToLine.pas' {fEditorGoToLine},
-  uSettings in 'uSettings.pas' {fSettings};
+  uMain in 'Forms\uMain.pas' {Main},
+  uEditor in 'Forms\uEditor.pas' {EditorForm},
+  uTypes in 'Units\uTypes.pas',
+  uAbout in 'Forms\uAbout.pas' {AboutForm},
+  uCustomPageControl in 'Customs\uCustomPageControl.pas',
+  uTexGuiSymbols in 'Tex\uTexGuiSymbols.pas',
+  uTexCompile in 'Tex\uTexCompile.pas',
+  uTexLogParser in 'Tex\uTexLogParser.pas',
+  uLog in 'Forms\uLog.pas' {LogForm},
+  uCustomCaptionedDockTree in 'Customs\uCustomCaptionedDockTree.pas',
+  uProcess in 'Units\uProcess.pas',
+  uEditorGoToLine in 'Forms\uEditorGoToLine.pas' {EditorGoToLineForm},
+  uSettings in 'Forms\uSettings.pas' {SettingsForm};
 
 {$R *.res}
 

@@ -63,16 +63,13 @@ __recovery/
 *.~*
 
 # Folder
-Image/ActionManager/
-Image/ActionManagerLog/
-Image/PageCode/
+Image/ImageList/
 Win32/
 
 # Castalia statistics file (since XE7 Castalia is distributed with Delphi)
 *.stat
 *.png
 *.bat
-*.ico
 *.rc
 *.jpg
 *.aux

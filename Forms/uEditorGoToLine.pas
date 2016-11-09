@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
 
 type
-  TfEditorGoToLine = class(TForm)
+  TEditorGoToLineForm = class(TForm)
     eLine: TEdit;
     BtnOk: TButton;
     BtnCancel: TButton;
@@ -21,7 +21,7 @@ type
   end;
 
 var
-  fEditorGoToLine: TfEditorGoToLine;
+  EditorGoToLineForm: TEditorGoToLineForm;
 
 resourcestring
   rsGoToLineCaption = 'Go to line';
@@ -30,18 +30,18 @@ implementation
 
 {$R *.dfm}
 
-procedure TfEditorGoToLine.FormCreate(Sender: TObject);
+procedure TEditorGoToLineForm.FormCreate(Sender: TObject);
 begin
   eLine.Text := '';
   Self.Caption := rsGoToLineCaption;
 end;
 
-procedure TfEditorGoToLine.BtnOkClick(Sender: TObject);
+procedure TEditorGoToLineForm.BtnOkClick(Sender: TObject);
 begin
   ModalResult := mrOk;
 end;
 
-procedure TfEditorGoToLine.BtnCancelClick(Sender: TObject);
+procedure TEditorGoToLineForm.BtnCancelClick(Sender: TObject);
 begin
   ModalResult := mrCancel;
 end;

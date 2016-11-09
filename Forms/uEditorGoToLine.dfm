@@ -1,8 +1,8 @@
-object fEditorGoToLine: TfEditorGoToLine
+object EditorGoToLineForm: TEditorGoToLineForm
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'fEditorGoToLine'
+  Caption = 'EditorGoToLineForm'
   ClientHeight = 73
   ClientWidth = 172
   Color = clBtnFace

@@ -9,7 +9,7 @@ uses
   DateUtils;
 
 type
-  TfAbout = class(TForm)
+  TAboutForm = class(TForm)
     lVersion: TLabel;
     lHistory: TLinkLabel;
     BtnOK: TButton;
@@ -31,9 +31,6 @@ type
   public
     { Public declarations }
   end;
-
-var
-  fAbout: TfAbout;
 
 resourcestring
   rsAboutVersion = 'version %d.%d.%d build %d';
@@ -74,12 +71,12 @@ begin
   end;
 end;
 
-procedure TfAbout.BtnOKClick(Sender: TObject);
+procedure TAboutForm.BtnOKClick(Sender: TObject);
 begin
   Close;
 end;
 
-procedure TfAbout.FormCreate(Sender: TObject);
+procedure TAboutForm.FormCreate(Sender: TObject);
 var
   MyDate: TDateTime;
   Release, Build: Word;
@@ -97,7 +94,7 @@ begin
 
 end;
 
-procedure TfAbout.FormShow(Sender: TObject);
+procedure TAboutForm.FormShow(Sender: TObject);
 var
   TexCompile: TThreadCompile;
 begin
@@ -116,7 +113,7 @@ begin
   end;
 end;
 
-procedure TfAbout.lHistoryClick(Sender: TObject);
+procedure TAboutForm.lHistoryClick(Sender: TObject);
 begin
   if FileExists(ExtractFilePath(Application.ExeName) + 'history.txt') then
     ShellExecute(Handle, nil, PChar('notepad.exe'),

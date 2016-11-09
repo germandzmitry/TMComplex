@@ -10,9 +10,9 @@ uses
   Vcl.ExtCtrls;
 
 type
-  TfEditor = class(TForm)
+  TEditorForm = class(TForm)
     Editor: TBCEditor;
-    Panel1: TPanel;
+    pTopLine: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure EditorChange(Sender: TObject);
@@ -33,8 +33,8 @@ type
     property State: Integer read FState write SetState;
   end;
 
-var
-  fEditor: TfEditor;
+  // var
+  // fEditor: TfEditor;
 
 resourcestring
   rsEditorQueryClose = 'Save changes to the file "%s"?';
@@ -45,10 +45,10 @@ implementation
 
 uses uMain;
 
-procedure TfEditor.FormCreate(Sender: TObject);
+procedure TEditorForm.FormCreate(Sender: TObject);
 begin
-  Panel1.Caption := '';
-  Panel1.Height := 1;
+  pTopLine.Caption := '';
+  pTopLine.Height := 1;
 
   Editor.Lines.Clear;
   Editor.Align := alClient;
@@ -83,70 +83,83 @@ begin
   FState := stNew;
 end;
 
-procedure TfEditor.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  Action := caFree;
-end;
-
-procedure TfEditor.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+procedure TEditorForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 var
   answer: Word;
 begin
-  if (FState = stEdit) or ((FState = stNew) and (Editor.Modified)) then
-  begin
+  { if (FState = stEdit) or ((FState = stNew) and (Editor.Modified)) then
+    begin
     answer := MessageBox(Handle, pchar(Format(rsEditorQueryClose, [Caption])), pchar('TM Complex'),
-      MB_YESNOCANCEL + MB_ICONINFORMATION);
+    MB_YESNOCANCEL + MB_ICONINFORMATION);
     case answer of
-      ID_YES:
-        main.ActFileSaveExecute(main.ActFileSave);
-      ID_NO:
-        ;
-      ID_CANCEL:
-        abort;
+    ID_YES:
+    if not Main.SaveDocument then
+    begin
+    CanClose := false;
+    exit;
     end;
-  end;
+    ID_NO:
+    // CanClose := false;
+    ;
+    ID_CANCEL:
+    begin
+    CanClose := false;
+    exit;
+    end;
+    end;
+    end;
+
+    self.Hide;
+    self.ManualFloat(rect(0, 0, 0, 0)); }
 end;
 
-procedure TfEditor.EditorCaretChanged(ASender: TObject; X, Y: Integer);
+procedure TEditorForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  main.StatusBar.Panels[STATUS_BAR_CARET].text := IntToStr(Editor.DisplayCaretY) + ':' +
+  // self.Hide;
+  // self.ManualFloat(rect(0, 0, 0, 0));
+  Action := caFree;
+end;
+
+procedure TEditorForm.EditorCaretChanged(ASender: TObject; X, Y: Integer);
+begin
+  Main.StatusBar.Panels[STATUS_BAR_CARET].text := IntToStr(Editor.DisplayCaretY) + ':' +
     IntToStr(Editor.DisplayCaretX);
 end;
 
-procedure TfEditor.EditorChange(Sender: TObject);
+procedure TEditorForm.EditorChange(Sender: TObject);
 begin
-  if (main.ActiveEditor = self) and (FState <> stNew) then
+  if (Main.ActiveEditor = self) and (FState <> stNew) then
     if Editor.Modified then
       FState := stEdit
     else
       FState := stSave;
 
-  if main.PageCode.ActivePage.ImageIndex <> FState then
-    main.PageCode.ActivePage.ImageIndex := FState;
+  if Main.PageEditor.ActivePage.ImageIndex <> FState then
+    Main.PageEditor.ActivePage.ImageIndex := FState;
 end;
 
-procedure TfEditor.EditorKeyPress(ASender: TObject; var AKey: Char);
+procedure TEditorForm.EditorKeyPress(ASender: TObject; var AKey: Char);
 begin
   //
 end;
 
-procedure TfEditor.EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton;
+procedure TEditorForm.EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton;
   X, Y, ALine: Integer; AMark: TBCEditorMark);
 begin
   //
 end;
 
-procedure TfEditor.SetFileName(const Value: string);
+procedure TEditorForm.SetFileName(const Value: string);
 begin
   FFileName := Value;
   Caption := StringReplace(ExtractFileName(FFileName), ExtractFileExt(FFileName), '', []);
 end;
 
-procedure TfEditor.SetState(const Value: Integer);
+procedure TEditorForm.SetState(const Value: Integer);
 begin
   FState := Value;
-  if main.PageCode.PageCount > 0 then
-    main.PageCode.ActivePage.ImageIndex := FState;
+  if Main.PageEditor.PageCount > 0 then
+    Main.PageEditor.ActivePage.ImageIndex := FState;
 end;
 
 end.
