@@ -17,7 +17,8 @@ uses
   uCustomCaptionedDockTree in 'Customs\uCustomCaptionedDockTree.pas',
   uProcess in 'Units\uProcess.pas',
   uEditorGoToLine in 'Forms\uEditorGoToLine.pas' {EditorGoToLineForm},
-  uSettings in 'Forms\uSettings.pas' {SettingsForm};
+  uSettings in 'Forms\uSettings.pas' {SettingsForm},
+  uEncoding in 'Units\uEncoding.pas';
 
 {$R *.res}
 

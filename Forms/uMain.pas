@@ -162,7 +162,7 @@ type
     procedure WMCopyData(var Msg: TWMCopyData); message WM_COPYDATA;
 
     procedure AddPageCode(const PageCaption, PageFileName: string);
-    procedure SetStatusPanelFileName();
+    procedure SetStatusBarCaption();
     function OpenDocument(AFileName: string): Boolean;
     function SaveDocument(AFileName: string): Boolean; overload;
     procedure ThreadEndGenerate(Sender: TObject);
@@ -197,7 +197,7 @@ implementation
 {$R 'Image\TexGuiSymbols\12.res'}
 {$R 'Image\TexGuiSymbols\13.res'}
 
-uses uAbout, uProcess, uEditorGoToLine;
+uses uAbout, uProcess, uEditorGoToLine, uEncoding;
 
 procedure TMain.ProcessParam(index: Integer; param: string);
 begin
@@ -454,12 +454,14 @@ end;
 
 procedure TMain.ActFileNewExecute(Sender: TObject);
 var
-  newFileName: string;
+  LNewFileName: string;
 begin
   Inc(FCurDoc);
-  newFileName := 'Doc ' + IntToStr(FCurDoc) + '.tex';
-  AddPageCode(newFileName, FFolderProject + '\' + newFileName);
-  StatusBar.Panels[STATUS_BAR_CARET].Text := '0:0';
+  LNewFileName := 'Doc ' + IntToStr(FCurDoc) + '.tex';
+  AddPageCode(LNewFileName, FFolderProject + '\' + LNewFileName);
+
+  FActiveEditor.Editor.Encoding := TEncoding.UTF8WithoutBOM;
+  SetStatusBarCaption;
 end;
 
 procedure TMain.ActFileOpenExecute(Sender: TObject);
@@ -474,10 +476,6 @@ begin
   begin
     for i := 0 to odTex.Files.Count - 1 do
       OpenDocument(odTex.Files.Strings[i]);
-
-    StatusBar.Panels[STATUS_BAR_CARET].Text := '0:0';
-    StatusBar.Panels[STATUS_BAR_ENCODING].Text := FActiveEditor.Editor.Encoding.ToString;
-
   end;
 end;
 
@@ -868,7 +866,7 @@ begin
       Break;
     end;
 
-  StatusBar.Panels[STATUS_BAR_PATH].Text := ExtractFilePath(FActiveEditor.fileName);
+  SetStatusBarCaption;
 end;
 
 procedure TMain.PageEditorChanging(Sender: TObject; var AllowChange: Boolean);
@@ -986,11 +984,11 @@ begin
   end;
 
   FPageEditor.ActivePageIndex := FPageEditor.PageCount - 1;
-  SetStatusPanelFileName;
 end;
 
-procedure TMain.SetStatusPanelFileName();
+procedure TMain.SetStatusBarCaption();
 begin
+  StatusBar.Panels[STATUS_BAR_ENCODING].Text := EncodingToText(FActiveEditor.Editor.Encoding);
   StatusBar.Panels[STATUS_BAR_PATH].Text := ExtractFilePath(FActiveEditor.fileName);
 end;
 
@@ -1080,6 +1078,8 @@ begin
   // FActiveEditor.Editor.Encoding := TEncoding.UTF8;
   FActiveEditor.Editor.EndUpdate;
   FActiveEditor.State := stSave;
+
+  SetStatusBarCaption;
 end;
 
 function TMain.SaveDocument(): Boolean;
@@ -1108,7 +1108,7 @@ begin
     FActiveEditor.fileName := LFileName;
     Main.Caption := Application.Title + ' - [' + FActiveEditor.Caption + ']';
     FActiveEditor.State := stSave;
-    SetStatusPanelFileName;
+    SetStatusBarCaption;
   end;
 end;
 
