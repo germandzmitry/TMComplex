@@ -1,4 +1,4 @@
-unit CustomMDIMenuButton;
+unit uCustomMDIMenuButton;
 
 interface
 

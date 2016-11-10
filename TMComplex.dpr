@@ -19,7 +19,7 @@ uses
   uEditorGoToLine in 'Forms\uEditorGoToLine.pas' {EditorGoToLineForm},
   uSettings in 'Forms\uSettings.pas' {SettingsForm},
   uEncoding in 'Units\uEncoding.pas',
-  CustomMDIMenuButton in 'Customs\CustomMDIMenuButton.pas';
+  uCustomMDIMenuButton in 'Customs\uCustomMDIMenuButton.pas';
 
 {$R *.res}
 
