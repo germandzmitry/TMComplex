@@ -12,15 +12,14 @@ uses
 type
   TEditorForm = class(TForm)
     Editor: TBCEditor;
-    pTopLine: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure EditorChange(Sender: TObject);
     procedure EditorCaretChanged(ASender: TObject; X, Y: Integer);
     procedure EditorKeyPress(ASender: TObject; var AKey: Char);
-    procedure EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton; X, Y, ALine: Integer;
-      AMark: TBCEditorMark);
+    procedure EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton; X, Y, ALine: Integer; AMark: TBCEditorMark);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
     FFileName: string;
@@ -47,9 +46,6 @@ uses uMain;
 
 procedure TEditorForm.FormCreate(Sender: TObject);
 begin
-  pTopLine.Caption := '';
-  pTopLine.Height := 1;
-
   Editor.Lines.Clear;
   Editor.Align := alClient;
   Editor.BorderStyle := bsNone;
@@ -61,7 +57,7 @@ begin
   Editor.Undo.Options := [];
   // Editor.SpecialChars.Visible := true;
   // Editor.SpecialChars.EndOfLine.Visible := true;
-  Editor.SpecialChars.EndOfLine.Style := eolPilcrow;
+  Editor.SpecialChars.EndOfLine.style := eolPilcrow;
 
   Editor.OnChange := EditorChange;
   Editor.OnKeyPress := EditorKeyPress;
@@ -87,55 +83,64 @@ procedure TEditorForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 var
   answer: Word;
 begin
-  { if (FState = stEdit) or ((FState = stNew) and (Editor.Modified)) then
-    begin
-    answer := MessageBox(Handle, pchar(Format(rsEditorQueryClose, [Caption])), pchar('TM Complex'),
-    MB_YESNOCANCEL + MB_ICONINFORMATION);
-    case answer of
-    ID_YES:
-    if not Main.SaveDocument then
-    begin
-    CanClose := false;
-    exit;
-    end;
-    ID_NO:
-    // CanClose := false;
-    ;
-    ID_CANCEL:
-    begin
-    CanClose := false;
-    exit;
-    end;
-    end;
-    end;
+  // if (FState = stEdit) or ((FState = stNew) and (Editor.Modified)) then
+  // begin
+  // answer := MessageBox(Handle, pchar(Format(rsEditorQueryClose, [Caption])), pchar('TM Complex'),
+  // MB_YESNOCANCEL + MB_ICONINFORMATION);
+  // case answer of
+  // ID_YES:
+  // if not Main.SaveDocument then
+  // begin
+  // CanClose := false;
+  // end;
+  // ID_NO:
+  // ;
+  // ID_CANCEL:
+  // begin
+  // CanClose := false;
+  // end;
+  // end;
+  // end;
+end;
 
-    self.Hide;
-    self.ManualFloat(rect(0, 0, 0, 0)); }
+procedure TEditorForm.FormActivate(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i := 0 to Main.TabEditor.Tabs.Count - 1 do
+    if TEditorForm(Main.TabEditor.Tabs.Objects[i]) = Self then
+    begin
+      Main.TabEditor.TabIndex := i;
+      Break;
+    end;
 end;
 
 procedure TEditorForm.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  i: Integer;
 begin
-  // self.Hide;
-  // self.ManualFloat(rect(0, 0, 0, 0));
+  for i := 0 to Main.TabEditor.Tabs.Count - 1 do
+    if TEditorForm(Main.TabEditor.Tabs.Objects[i]) = Self then
+    begin
+      Main.TabEditor.Tabs.Delete(i);
+      Break;
+    end;
+
   Action := caFree;
 end;
 
 procedure TEditorForm.EditorCaretChanged(ASender: TObject; X, Y: Integer);
 begin
-  Main.StatusBar.Panels[STATUS_BAR_CARET].text := IntToStr(Editor.DisplayCaretY) + ':' +
-    IntToStr(Editor.DisplayCaretX);
+  Main.StatusBar.Panels[STATUS_BAR_CARET].text := IntToStr(Editor.DisplayCaretY) + ':' + IntToStr(Editor.DisplayCaretX);
 end;
 
 procedure TEditorForm.EditorChange(Sender: TObject);
 begin
-  if (Main.ActiveEditor = self) and (FState <> stNew) then
+  if (Main.ActiveEditor = Self) and (FState <> stNew) then
     if Editor.Modified then
       FState := stEdit
     else
       FState := stSave;
-
-  if Main.PageEditor.ActivePage.ImageIndex <> FState then
-    Main.PageEditor.ActivePage.ImageIndex := FState;
 end;
 
 procedure TEditorForm.EditorKeyPress(ASender: TObject; var AKey: Char);
@@ -143,8 +148,8 @@ begin
   //
 end;
 
-procedure TEditorForm.EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton;
-  X, Y, ALine: Integer; AMark: TBCEditorMark);
+procedure TEditorForm.EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton; X, Y, ALine: Integer;
+  AMark: TBCEditorMark);
 begin
   //
 end;
@@ -158,8 +163,8 @@ end;
 procedure TEditorForm.SetState(const Value: Integer);
 begin
   FState := Value;
-  if Main.PageEditor.PageCount > 0 then
-    Main.PageEditor.ActivePage.ImageIndex := FState;
+  // if Main.PageEditor.PageCount > 0 then
+  // Main.PageEditor.ActivePage.ImageIndex := FState;
 end;
 
 end.

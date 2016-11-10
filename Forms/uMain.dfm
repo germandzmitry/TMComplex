@@ -2,7 +2,7 @@ object Main: TMain
   Left = 0
   Top = 0
   Caption = 'TM complex'
-  ClientHeight = 386
+  ClientHeight = 569
   ClientWidth = 700
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -10,6 +10,7 @@ object Main: TMain
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  FormStyle = fsMDIForm
   OldCreateOrder = False
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
@@ -17,11 +18,24 @@ object Main: TMain
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  object sDockBottom: TSplitter
+    Left = 0
+    Top = 461
+    Width = 700
+    Height = 3
+    Cursor = crVSplit
+    Align = alBottom
+    Color = clBtnFace
+    ParentColor = False
+    ExplicitLeft = 2
+    ExplicitTop = 93
+    ExplicitWidth = 376
+  end
   object pEditor: TPanel
     Left = 8
-    Top = 135
-    Width = 378
-    Height = 198
+    Top = 180
+    Width = 41
+    Height = 229
     BevelOuter = bvNone
     Caption = 'pEditor'
     Color = clMedGray
@@ -30,36 +44,10 @@ object Main: TMain
     ParentBackground = False
     ParentDoubleBuffered = False
     TabOrder = 0
-    object sDockBottom: TSplitter
-      Left = 0
-      Top = 119
-      Width = 378
-      Height = 3
-      Cursor = crVSplit
-      Align = alBottom
-      Color = clBtnFace
-      ParentColor = False
-      ExplicitLeft = 2
-      ExplicitTop = 93
-      ExplicitWidth = 376
-    end
-    object pDockBottom: TPanel
-      Left = 0
-      Top = 122
-      Width = 378
-      Height = 76
-      Align = alBottom
-      Caption = 'pDockBottom'
-      DockSite = True
-      ParentBackground = False
-      TabOrder = 0
-      OnDockDrop = pDockBottomDockDrop
-      OnUnDock = pDockBottomUnDock
-    end
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 367
+    Top = 550
     Width = 700
     Height = 19
     Panels = <
@@ -73,6 +61,7 @@ object Main: TMain
         Width = 200
       end>
     OnDblClick = StatusBarDblClick
+    ExplicitTop = 367
   end
   object PanelAction: TPanel
     Left = 0
@@ -160,10 +149,43 @@ object Main: TMain
       end
     end
   end
+  object TabEditor: TTabSet
+    Left = 0
+    Top = 129
+    Width = 700
+    Height = 26
+    Align = alTop
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    SoftTop = True
+    Style = tsModernTabs
+    TabHeight = 25
+    TabPosition = tpTop
+    OnChange = TabEditorChange
+    OnGetImageIndex = TabEditorGetImageIndex
+    ExplicitLeft = 1
+    ExplicitTop = 133
+  end
+  object pDockBottom: TPanel
+    Left = 0
+    Top = 464
+    Width = 700
+    Height = 86
+    Align = alBottom
+    Caption = 'pDockBottom'
+    DockSite = True
+    ParentBackground = False
+    TabOrder = 4
+    OnDockDrop = pDockBottomDockDrop
+    OnUnDock = pDockBottomUnDock
+  end
   object ActListCommand: TActionList
     Images = ilAction
-    Left = 456
-    Top = 208
+    Left = 464
+    Top = 232
     object ActTexPdfLaTeX: TAction
       Category = 'Tex'
       Caption = 'ActTexPdfLaTeX'
@@ -704,15 +726,15 @@ object Main: TMain
         Caption = 'ActListCommand'
       end>
     Images = ilAction
-    Left = 544
-    Top = 208
+    Left = 552
+    Top = 232
     StyleName = 'Platform Default'
   end
   object ilCode: TImageList
-    Left = 544
-    Top = 264
+    Left = 552
+    Top = 288
     Bitmap = {
-      494C0101030060004C0110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103006000500110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -855,21 +877,21 @@ object Main: TMain
     DefaultExt = 'tex'
     Filter = 'Tex documents|*.tex'
     Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing]
-    Left = 456
-    Top = 320
+    Left = 464
+    Top = 344
   end
   object sdTex: TSaveDialog
     DefaultExt = 'tex'
     Filter = 'Tex documents|*.tex'
     Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
-    Left = 544
-    Top = 320
+    Left = 552
+    Top = 344
   end
   object ilAction: TImageList
-    Left = 456
-    Top = 264
+    Left = 464
+    Top = 288
     Bitmap = {
-      494C01011E006000300210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01011E006000340210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000008000000001002000000000000080
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1934,8 +1956,8 @@ object Main: TMain
   end
   object PopupAction: TPopupActionBar
     Images = ilAction
-    Left = 544
-    Top = 144
+    Left = 552
+    Top = 168
     object ActEditUndo1: TMenuItem
       Action = ActEditUndo
     end

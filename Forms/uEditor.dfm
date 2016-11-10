@@ -5,14 +5,15 @@ object EditorForm: TEditorForm
   ClientHeight = 350
   ClientWidth = 701
   Color = clBtnFace
-  DragKind = dkDock
-  DragMode = dmAutomatic
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  FormStyle = fsMDIChild
   OldCreateOrder = False
+  Visible = True
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
@@ -70,6 +71,7 @@ object EditorForm: TEditorForm
     Minimap.Font.Name = 'Courier New'
     Minimap.Font.Style = []
     Minimap.Width = 140
+    OnChange = EditorChange
     PopupMenu = Main.PopupAction
     RightMargin.Position = 80
     RightMargin.Visible = True
@@ -110,14 +112,5 @@ object EditorForm: TEditorForm
       FF00}
     WordWrap.Indicator.MaskColor = clFuchsia
     WordWrap.Width = wwwPage
-  end
-  object pTopLine: TPanel
-    Left = 0
-    Top = 0
-    Width = 701
-    Height = 41
-    Align = alTop
-    Caption = 'pTopLine'
-    TabOrder = 1
   end
 end

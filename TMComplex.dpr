@@ -18,7 +18,8 @@ uses
   uProcess in 'Units\uProcess.pas',
   uEditorGoToLine in 'Forms\uEditorGoToLine.pas' {EditorGoToLineForm},
   uSettings in 'Forms\uSettings.pas' {SettingsForm},
-  uEncoding in 'Units\uEncoding.pas';
+  uEncoding in 'Units\uEncoding.pas',
+  CustomMDIMenuButton in 'Customs\CustomMDIMenuButton.pas';
 
 {$R *.res}
 

@@ -48,8 +48,8 @@ type
     MsgCount: TTexLogErrorCount;
   end;
 
-  // var
-  // LogForm: TLogForm;
+var
+  FLog: TLogForm;
 
 resourcestring
   rsLogCaption = 'Log';
@@ -82,7 +82,7 @@ begin
   ManualFloat(rect(0, 0, 0, 0)); // что бы вызвалось UnDock
 
   Action := caFree;
-  self := nil;
+  FLog := nil;
 end;
 
 procedure TLogForm.SaveSettings;

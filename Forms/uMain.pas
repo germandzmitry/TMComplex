@@ -82,20 +82,13 @@ type
     N1: TMenuItem;
     N2: TMenuItem;
     ActionToolBar1: TActionToolBar;
+    TabEditor: TTabSet;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
 
     procedure SaveSettings;
     procedure LoadSettings;
-
-    procedure PageEditorDockDrop(Sender: TObject; Source: TDragDockObject; X, Y: Integer);
-    procedure PageEditorUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl;
-      var Allow: Boolean);
-    procedure PageEditorChange(Sender: TObject);
-    procedure PageEditorChanging(Sender: TObject; var AllowChange: Boolean);
-    procedure PageEditorClosePage(Sender: TObject; TabIndex: Integer);
-    procedure PageEditorContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
 
     procedure ActFileNewExecute(Sender: TObject);
     procedure ActFileOpenExecute(Sender: TObject);
@@ -140,17 +133,18 @@ type
 
     procedure memoLogKeyPress(Sender: TObject; var Key: Char);
 
-    procedure pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl;
-      var Allow: Boolean);
+    procedure pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
     procedure pDockBottomDockDrop(Sender: TObject; Source: TDragDockObject; X, Y: Integer);
     procedure StatusBarDblClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure TabEditorChange(Sender: TObject; NewTab: Integer; var AllowChange: Boolean);
+    procedure TabEditorGetImageIndex(Sender: TObject; TabIndex: Integer; var ImageIndex: Integer);
   private
     { Private declarations }
     FAllSetting: TAllSetting;
-    FPageEditor: TCustomPageControl;
+    // FPageEditor: TCustomPageControl;
     FPageSymbols: TCustomPageControl;
-    FLog: TLogForm;
+    // FLog: TLogForm;
     FPageLog: TCustomPageControl;
     FActiveEditor: TEditorForm;
     FCurDoc: Integer;
@@ -176,7 +170,7 @@ type
     { Public declarations }
     function SaveDocument(): Boolean; overload;
     property ActiveEditor: TEditorForm read FActiveEditor;
-    property PageEditor: TCustomPageControl read FPageEditor write FPageEditor;
+    // property PageEditor: TCustomPageControl read FPageEditor write FPageEditor;
   end;
 
 var
@@ -327,7 +321,8 @@ begin
       (Components[i] as TPanel).Caption := '';
     end;
 
-  pEditor.Align := alClient;
+  pEditor.Align := alLeft;
+  pEditor.Visible := False;
 
   pDockBottom.Height := 0;
   sDockBottom.Height := 0;
@@ -340,35 +335,35 @@ begin
   ActTexPdfLaTeX.Enabled := True;
   ActTexStop.Enabled := False;
 
-  FPageEditor := TCustomPageControl.Create(self);
-  with FPageEditor do
-  begin
-    Left := pEditor.Left;
-    Top := pEditor.Top;
-    Width := pEditor.Width;
-    Height := pEditor.Height;
-    Parent := pEditor;
-    Visible := True;
-    Align := alClient;
-    Images := ilCode;
-    OwnerDraw := True;
-    TabHeight := 23;
-    ClosePageUsing := True;
-    TextFormat := [tfLeft];
-    DoubleBuffered := True;
-    ParentColor := False;
-
-    Style := tsButtons;
-
-    OnChange := PageEditorChange;
-    OnChanging := PageEditorChanging;
-    OnContextPopup := PageEditorContextPopup;
-    OnDockDrop := PageEditorDockDrop;
-    OnUnDock := PageEditorUnDock;
-    OnClosePage := PageEditorClosePage;
-  end;
-  SendMessage(FPageEditor.Handle, WM_UPDATEUISTATE, MakeLong(UIS_SET, UISF_HIDEFOCUS), 0);
-  SendMessage(FPageEditor.Handle, TCM_SETPADDING, 0, MAKELPARAM(9, FPageEditor.TabHeight + 5));
+  // FPageEditor := TCustomPageControl.Create(self);
+  // with FPageEditor do
+  // begin
+  // Left := pEditor.Left;
+  // Top := pEditor.Top;
+  // Width := pEditor.Width;
+  // Height := pEditor.Height;
+  // Parent := pEditor;
+  // Visible := True;
+  // Align := alClient;
+  // Images := ilCode;
+  // OwnerDraw := True;
+  // TabHeight := 23;
+  // ClosePageUsing := True;
+  // TextFormat := [tfLeft];
+  // DoubleBuffered := True;
+  // ParentColor := False;
+  //
+  // Style := tsButtons;
+  //
+  // OnChange := PageEditorChange;
+  // OnChanging := PageEditorChanging;
+  // OnContextPopup := PageEditorContextPopup;
+  // OnDockDrop := PageEditorDockDrop;
+  // OnUnDock := PageEditorUnDock;
+  // OnClosePage := PageEditorClosePage;
+  // end;
+  // SendMessage(FPageEditor.Handle, WM_UPDATEUISTATE, MakeLong(UIS_SET, UISF_HIDEFOCUS), 0);
+  // SendMessage(FPageEditor.Handle, TCM_SETPADDING, 0, MAKELPARAM(9, FPageEditor.TabHeight + 5));
 
   // Панель с символами TeX
   FPageSymbols := TCustomPageControl.Create(self);
@@ -420,19 +415,11 @@ begin
 end;
 
 procedure TMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-var
-  i: Integer;
+// var
+// i: Integer;
 begin
-  // Спрашиваем что делать со всеми открытыми окнами
-  while FPageEditor.PageCount <> 0 do
-    for i := 0 to screen.FormCount - 1 do
-      if (screen.Forms[i] is TEditorForm) // Если редактор
-        and (screen.Forms[i].Parent = FPageEditor.Pages[FPageEditor.PageCount - 1]) then
-      begin
-        (screen.Forms[i] as TEditorForm).Close;
-        FPageEditor.Pages[FPageEditor.PageCount - 1].Free;
-        Break;
-      end;
+  // for i := 0 to Main.MDIChildCount - 1 do
+  // Main.MDIChildren[i].Close;
 end;
 
 procedure TMain.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -447,7 +434,7 @@ begin
     FLog.Close;
 
   FTexGuiSymbols.Free;
-  FPageEditor.Free;
+  // FPageEditor.Free;
   FPageSymbols.Free;
   FPageLog.Free;
 end;
@@ -606,8 +593,7 @@ begin
     exit;
   end;
 
-  pdfFile := StringReplace(ExtractFileName(FActiveEditor.fileName),
-    ExtractFileExt(FActiveEditor.fileName), '', []);
+  pdfFile := StringReplace(ExtractFileName(FActiveEditor.fileName), ExtractFileExt(FActiveEditor.fileName), '', []);
 
   pdfFile := ExtractFilePath(FActiveEditor.fileName) + pdfFile + '.pdf';
 
@@ -760,7 +746,7 @@ end;
 
 procedure TMain.ActViewLogExecute(Sender: TObject);
 begin
-  if FLog = nil then
+  if (FLog = nil) then
   begin
     FLog := TLogForm.Create(Application);
     FLog.ManualDock(pDockBottom, nil, alClient);
@@ -801,8 +787,7 @@ begin
       r := ColorRGB;
       g := ColorRGB shr 8;
       b := ColorRGB shr 16;
-      InsertTemplate(cmTextColor + '[RGB]{' + IntToStr(r) + ',' + IntToStr(g) + ',' + IntToStr(b) +
-        '}{}', -1);
+      InsertTemplate(cmTextColor + '[RGB]{' + IntToStr(r) + ',' + IntToStr(g) + ',' + IntToStr(b) + '}{}', -1);
     end;
   finally
     cd.Free;
@@ -831,8 +816,7 @@ end;
 
 procedure TMain.ActMiKTeXTeXworksExecute(Sender: TObject);
 begin
-  if (FActiveEditor <> nil) and (FActiveEditor.State <> stNew) and
-    (FileExists(FActiveEditor.fileName)) then
+  if (FActiveEditor <> nil) and (FActiveEditor.State <> stNew) and (FileExists(FActiveEditor.fileName)) then
   begin
     ActFileSaveExecute(ActFileSave);
     RunProcess('texworks "' + FActiveEditor.fileName + '"');
@@ -853,85 +837,24 @@ begin
   end;
 end;
 
-procedure TMain.PageEditorChange(Sender: TObject);
-var
-  i: Integer;
+procedure TMain.TabEditorChange(Sender: TObject; NewTab: Integer; var AllowChange: Boolean);
 begin
-  for i := 0 to screen.FormCount - 1 do
-    if (screen.Forms[i] is TEditorForm) and (screen.Forms[i].Parent = FPageEditor.ActivePage) then
-    begin
-      FActiveEditor := screen.Forms[i] as TEditorForm;
-      FActiveEditor.SetFocus;
-      Main.Caption := Application.Title + ' - [' + FActiveEditor.Caption + ']';
-      Break;
-    end;
+  try
+    SendMessage(ClientHandle, WM_SETREDRAW, ord(False), 0);
+    FActiveEditor := TEditorForm(TabEditor.Tabs.Objects[NewTab]);
+    FActiveEditor.Show;
+  finally
+    SendMessage(ClientHandle, WM_SETREDRAW, ord(True), 0);
+    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_NOINTERNALPAINT);
+  end;
 
   SetStatusBarCaption;
 end;
 
-procedure TMain.PageEditorChanging(Sender: TObject; var AllowChange: Boolean);
+procedure TMain.TabEditorGetImageIndex(Sender: TObject; TabIndex: Integer; var ImageIndex: Integer);
 begin
-  //
-end;
-
-procedure TMain.PageEditorClosePage(Sender: TObject; TabIndex: Integer);
-var
-  i: Integer;
-  closeTab, activeTab: TTabSheet;
-begin
-  closeTab := (Sender as TCustomPageControl).Pages[TabIndex];
-
-  SendMessage(pEditor.Handle, WM_SETREDRAW, ord(False), 0);
-  activeTab := (Sender as TCustomPageControl).ActivePage;
-  for i := 0 to screen.FormCount - 1 do
-    if (screen.Forms[i] is TEditorForm) and (screen.Forms[i].Parent = closeTab) then
-    begin
-      (screen.Forms[i] as TEditorForm).Hide;
-      (screen.Forms[i] as TEditorForm).ManualFloat(rect(0, 0, 0, 0));
-      (screen.Forms[i] as TEditorForm).Close;
-      Break;
-    end;
-
-  if (Sender as TCustomPageControl).PageCount > 0 then
-  begin
-    (Sender as TCustomPageControl).ActivePage := activeTab;
-    PageEditorChange(PageEditor);
-  end;
-  SendMessage(pEditor.Handle, WM_SETREDRAW, ord(True), 0);
-  InvalidateRect(FPageEditor.Handle, nil, True);
-end;
-
-procedure TMain.PageEditorContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
-begin
-  // with Sender as TPageControl do
-  // begin
-  // end;
-end;
-
-// Когда добавляется  новая docking форма
-procedure TMain.PageEditorDockDrop(Sender: TObject; Source: TDragDockObject; X, Y: Integer);
-begin
-  pEditor.Color := clBtnFace;
-  if Source.Control is TEditorForm then
-  begin
-    FActiveEditor := Source.Control as TEditorForm;
-    Main.Caption := Application.Title + ' - [' + FActiveEditor.Caption + ']';
-  end;
-end;
-
-// Когда открепляется форма
-procedure TMain.PageEditorUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl;
-  var Allow: Boolean);
-begin
-  if PageEditor.PageCount = 1 then
-  begin
-    pEditor.Color := clMedGray;
-    Main.Caption := Application.Title;
-    StatusBar.Panels[STATUS_BAR_CARET].Text := '';
-    StatusBar.Panels[STATUS_BAR_ENCODING].Text := '';
-    StatusBar.Panels[STATUS_BAR_PATH].Text := '';
-    FActiveEditor := nil;
-  end;
+  // if TabIndex = TabEditor.TabIndex then
+  // ImageIndex := FActiveEditor.State;
 end;
 
 procedure TMain.pDockBottomDockDrop(Sender: TObject; Source: TDragDockObject; X, Y: Integer);
@@ -948,11 +871,15 @@ begin
     end;
     sDockBottom.Height := 3;
     sDockBottom.Enabled := True;
+
+    StatusBar.Top := Main.Height - StatusBar.Height;
+    pDockBottom.Top := StatusBar.Top - pDockBottom.Height;
+    sDockBottom.Top := pDockBottom.Top - sDockBottom.Height;
+
   end;
 end;
 
-procedure TMain.pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl;
-  var Allow: Boolean);
+procedure TMain.pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
 var
   IniFile: TIniFile;
 begin
@@ -972,18 +899,28 @@ begin
 end;
 
 procedure TMain.AddPageCode(const PageCaption, PageFileName: string);
+var
+  new: TEditorForm;
 begin
-  with TEditorForm.Create(Application) do
-  begin
-    Caption := PageCaption;
-    fileName := PageFileName;
-    ManualDock(FPageEditor);
-    Show;
-    if FPageEditor.PageCount = 1 then
-      SetFocus;
+  try
+    SendMessage(ClientHandle, WM_SETREDRAW, ord(False), 0);
+
+    new := TEditorForm.Create(Application);
+
+    if TabEditor.Tabs.Count = 0 then
+      new.WindowState := wsMaximized;
+  finally
+    SendMessage(ClientHandle, WM_SETREDRAW, ord(True), 0);
+    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_NOINTERNALPAINT);
   end;
 
-  FPageEditor.ActivePageIndex := FPageEditor.PageCount - 1;
+  new.Caption := PageCaption;
+  new.fileName := PageFileName;
+  TabEditor.Tabs.AddObject(ExtractFileName(new.fileName), new);
+  if TabEditor.Tabs.Count = 1 then
+    SetFocus;
+
+  TabEditor.TabIndex := TabEditor.Tabs.Count - 1;
 end;
 
 procedure TMain.SetStatusBarCaption();
@@ -1055,22 +992,15 @@ end;
 function TMain.OpenDocument(AFileName: string): Boolean;
 var
   i: Integer;
-  alreadyTab: TTabSheet;
-  rcPage: TRect;
 begin
-  for i := 0 to screen.FormCount - 1 do
-    if (screen.Forms[i] is TEditorForm) and ((screen.Forms[i] as TEditorForm).fileName = AFileName)
-    then
+  for i := 0 to TabEditor.Tabs.Count - 1 do
+    if TEditorForm(TabEditor.Tabs.Objects[i]).fileName = AFileName then
     begin
-      // Для вызова события onChange
-      alreadyTab := (screen.Forms[i] as TEditorForm).Parent as TTabSheet;
-      rcPage := alreadyTab.PageControl.TabRect(alreadyTab.TabIndex);
-      alreadyTab.PageControl.Perform(WM_LBUTTONDOWN, 0, MakeLong(rcPage.Left + 5, rcPage.Top + 5));
+      TabEditor.TabIndex := i;
       exit;
     end;
 
-  AddPageCode(StringReplace(ExtractFileName(AFileName), ExtractFileExt(AFileName), '', []),
-    AFileName);
+  AddPageCode(StringReplace(ExtractFileName(AFileName), ExtractFileExt(AFileName), '', []), AFileName);
 
   FActiveEditor.Editor.BeginUpdate;
   FActiveEditor.Editor.Lines.Clear;
