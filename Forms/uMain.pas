@@ -13,7 +13,7 @@ uses
   BCEditor.Encoding, BCEditor.Editor.KeyCommands, BCEditor.Consts,
   BCEditor.Types, uTexCompile, Vcl.StdStyleActnCtrls, Vcl.ActnColorMaps,
   Winapi.UxTheme, Vcl.Themes, uTexLogParser, uLog, Vcl.Tabs, Vcl.DockTabSet,
-  uCustomCaptionedDockTree, Vcl.Menus, Vcl.ActnPopup, uSettings;
+  uCustomCaptionedDockTree, Vcl.Menus, Vcl.ActnPopup, uSettings, Vcl.AppEvnts;
 
 Const
   STATUS_BAR_CARET = 0;
@@ -24,7 +24,6 @@ Const
 
 type
   TMain = class(TForm)
-    pEditor: TPanel;
     ActListCommand: TActionList;
     ActTexPdfLaTeX: TAction;
     ActMngCommand: TActionManager;
@@ -34,8 +33,6 @@ type
     ActFileOpen: TAction;
     ActFileSave: TAction;
     ActFileSaveAs: TAction;
-    odTex: TOpenDialog;
-    sdTex: TSaveDialog;
     ActHelpAbout: TAction;
     ilAction: TImageList;
     ActionMainMenuBar1: TActionMainMenuBar;
@@ -83,6 +80,11 @@ type
     N2: TMenuItem;
     ActionToolBar1: TActionToolBar;
     TabEditor: TTabSet;
+    ApplicationEvents: TApplicationEvents;
+    ActWindowCascade: TAction;
+    ActWindowTileHorizontal: TAction;
+    ActWindowTileVertical: TAction;
+    ActWindowMaximize: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -131,9 +133,15 @@ type
 
     procedure ActViewLogExecute(Sender: TObject);
 
+    procedure ActWindowCascadeExecute(Sender: TObject);
+    procedure ActWindowTileHorizontalExecute(Sender: TObject);
+    procedure ActWindowTileVerticalExecute(Sender: TObject);
+    procedure ActWindowMaximizeExecute(Sender: TObject);
+
     procedure memoLogKeyPress(Sender: TObject; var Key: Char);
 
-    procedure pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
+    procedure pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl;
+      var Allow: Boolean);
     procedure pDockBottomDockDrop(Sender: TObject; Source: TDragDockObject; X, Y: Integer);
     procedure StatusBarDblClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -165,7 +173,7 @@ type
     procedure InsertTemplate(const cmName: string; moveX: Integer);
     procedure InsertTemplateBlock(const cmBegin: string; const cmEnd: string);
 
-    procedure ProcessParam(index: Integer; param: string);
+    procedure ProcessParam(Index: Integer; param: string);
   public
     { Public declarations }
     function SaveDocument(): Boolean; overload;
@@ -193,7 +201,7 @@ implementation
 
 uses uAbout, uProcess, uEditorGoToLine, uEncoding;
 
-procedure TMain.ProcessParam(index: Integer; param: string);
+procedure TMain.ProcessParam(Index: Integer; param: string);
 begin
   case index of
     1:
@@ -320,9 +328,6 @@ begin
       (Components[i] as TPanel).BevelOuter := bvNone;
       (Components[i] as TPanel).Caption := '';
     end;
-
-  pEditor.Align := alLeft;
-  pEditor.Visible := False;
 
   pDockBottom.Height := 0;
   sDockBottom.Height := 0;
@@ -454,15 +459,23 @@ end;
 procedure TMain.ActFileOpenExecute(Sender: TObject);
 var
   i: Integer;
+  LOpenDialogTex: TOpenDialog;
 begin
-  odTex.InitialDir := FFolderProject;
-  odTex.Files.Clear;
-  odTex.fileName := '';
 
-  if odTex.Execute then
-  begin
-    for i := 0 to odTex.Files.Count - 1 do
-      OpenDocument(odTex.Files.Strings[i]);
+  LOpenDialogTex := TOpenDialog.Create(self);
+  try
+    LOpenDialogTex.Filter := 'Tex documents (*.tex)|*.tex';
+    LOpenDialogTex.FilterIndex := 1;
+    LOpenDialogTex.DefaultExt := 'tex';
+    LOpenDialogTex.InitialDir := FFolderProject;
+    LOpenDialogTex.Options := LOpenDialogTex.Options + [ofAllowMultiSelect];
+    if LOpenDialogTex.Execute then
+    begin
+      for i := 0 to LOpenDialogTex.Files.Count - 1 do
+        OpenDocument(LOpenDialogTex.Files.Strings[i]);
+    end;
+  finally
+    LOpenDialogTex.Free;
   end;
 end;
 
@@ -593,7 +606,8 @@ begin
     exit;
   end;
 
-  pdfFile := StringReplace(ExtractFileName(FActiveEditor.fileName), ExtractFileExt(FActiveEditor.fileName), '', []);
+  pdfFile := StringReplace(ExtractFileName(FActiveEditor.fileName),
+    ExtractFileExt(FActiveEditor.fileName), '', []);
 
   pdfFile := ExtractFilePath(FActiveEditor.fileName) + pdfFile + '.pdf';
 
@@ -760,6 +774,29 @@ begin
   end;
 end;
 
+procedure TMain.ActWindowCascadeExecute(Sender: TObject);
+begin
+  Cascade;
+end;
+
+procedure TMain.ActWindowTileHorizontalExecute(Sender: TObject);
+begin
+  TileMode := tbHorizontal;
+  Tile;
+end;
+
+procedure TMain.ActWindowTileVerticalExecute(Sender: TObject);
+begin
+  TileMode := tbVertical;
+  Tile;
+end;
+
+procedure TMain.ActWindowMaximizeExecute(Sender: TObject);
+begin
+  if FActiveEditor <> nil then
+    FActiveEditor.WindowState := wsMaximized;
+end;
+
 procedure TMain.ActTextShowSpecialCharsExecute(Sender: TObject);
 begin
   ActTextShowSpecialChars.Checked := not ActTextShowSpecialChars.Checked;
@@ -776,7 +813,7 @@ procedure TMain.ActTextColorExecute(Sender: TObject);
 var
   cd: TColorDialog;
   ColorRGB: Longint;
-  r, g, b: Byte;
+  R, g, b: Byte;
 begin
   cd := TColorDialog.Create(self);
   try
@@ -784,10 +821,11 @@ begin
     if cd.Execute then
     begin
       ColorRGB := cd.Color;
-      r := ColorRGB;
+      R := ColorRGB;
       g := ColorRGB shr 8;
       b := ColorRGB shr 16;
-      InsertTemplate(cmTextColor + '[RGB]{' + IntToStr(r) + ',' + IntToStr(g) + ',' + IntToStr(b) + '}{}', -1);
+      InsertTemplate(cmTextColor + '[RGB]{' + IntToStr(R) + ',' + IntToStr(g) + ',' + IntToStr(b) +
+        '}{}', -1);
     end;
   finally
     cd.Free;
@@ -816,7 +854,8 @@ end;
 
 procedure TMain.ActMiKTeXTeXworksExecute(Sender: TObject);
 begin
-  if (FActiveEditor <> nil) and (FActiveEditor.State <> stNew) and (FileExists(FActiveEditor.fileName)) then
+  if (FActiveEditor <> nil) and (FActiveEditor.State <> stNew) and
+    (FileExists(FActiveEditor.fileName)) then
   begin
     ActFileSaveExecute(ActFileSave);
     RunProcess('texworks "' + FActiveEditor.fileName + '"');
@@ -845,7 +884,8 @@ begin
     FActiveEditor.Show;
   finally
     SendMessage(ClientHandle, WM_SETREDRAW, ord(True), 0);
-    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_NOINTERNALPAINT);
+    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or
+      RDW_NOINTERNALPAINT);
   end;
 
   SetStatusBarCaption;
@@ -879,7 +919,8 @@ begin
   end;
 end;
 
-procedure TMain.pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
+procedure TMain.pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl;
+  var Allow: Boolean);
 var
   IniFile: TIniFile;
 begin
@@ -911,7 +952,8 @@ begin
       new.WindowState := wsMaximized;
   finally
     SendMessage(ClientHandle, WM_SETREDRAW, ord(True), 0);
-    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_NOINTERNALPAINT);
+    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or
+      RDW_NOINTERNALPAINT);
   end;
 
   new.Caption := PageCaption;
@@ -1000,7 +1042,8 @@ begin
       exit;
     end;
 
-  AddPageCode(StringReplace(ExtractFileName(AFileName), ExtractFileExt(AFileName), '', []), AFileName);
+  AddPageCode(StringReplace(ExtractFileName(AFileName), ExtractFileExt(AFileName), '', []),
+    AFileName);
 
   FActiveEditor.Editor.BeginUpdate;
   FActiveEditor.Editor.Lines.Clear;
@@ -1015,6 +1058,7 @@ end;
 function TMain.SaveDocument(): Boolean;
 var
   LFileName: string;
+  LSaveDialogTex: TSaveDialog;
 begin
   Result := False;
   if (FActiveEditor = nil) or (FActiveEditor.State = stSave) then
@@ -1022,11 +1066,20 @@ begin
 
   if (FActiveEditor.State = stNew) or not FileExists(FActiveEditor.fileName) then
   begin
-    sdTex.fileName := ExtractFileName(FActiveEditor.fileName);
-    if sdTex.Execute then
-      LFileName := sdTex.fileName
-    else
-      exit;
+    LSaveDialogTex := TSaveDialog.Create(self);
+    try
+      LSaveDialogTex.Filter := 'Tex documents (*.tex)|*.tex';
+      LSaveDialogTex.FilterIndex := 1;
+      LSaveDialogTex.DefaultExt := 'tex';
+      LSaveDialogTex.InitialDir := FFolderProject;
+      LSaveDialogTex.fileName := ExtractFileName(FActiveEditor.fileName);
+      if LSaveDialogTex.Execute then
+        LFileName := LSaveDialogTex.fileName
+      else
+        exit;
+    finally
+      LSaveDialogTex.Free;
+    end;
   end
   else
     LFileName := FActiveEditor.fileName;
