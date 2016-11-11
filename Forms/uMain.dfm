@@ -36,6 +36,7 @@ object Main: TMain
     Top = 388
     Width = 700
     Height = 19
+    DoubleBuffered = True
     Panels = <
       item
         Width = 50
@@ -46,28 +47,32 @@ object Main: TMain
       item
         Width = 200
       end>
+    ParentDoubleBuffered = False
     OnDblClick = StatusBarDblClick
-    ExplicitTop = 550
   end
-  object PanelAction: TPanel
+  object pAction: TPanel
     Left = 0
     Top = 0
     Width = 700
     Height = 129
     Align = alTop
-    Caption = 'PanelAction'
+    Caption = 'pAction'
     DoubleBuffered = False
     ParentBackground = False
     ParentDoubleBuffered = False
     TabOrder = 1
-    object ActionMainMenuBar1: TActionMainMenuBar
-      Left = 1
+    object ActionMainMenuBar: TActionMainMenuBar
+      AlignWithMargins = True
+      Left = 4
       Top = 1
-      Width = 698
+      Width = 695
       Height = 27
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 0
       UseSystemFont = False
       ActionManager = ActMngCommand
-      Caption = 'ActionMainMenuBar1'
+      Caption = 'ActionMainMenuBar'
       Color = clMenuBar
       ColorMap.DisabledFontColor = 7171437
       ColorMap.HighlightColor = clWhite
@@ -81,6 +86,8 @@ object Main: TMain
       ParentShowHint = False
       ShowHint = True
       Spacing = 0
+      ExplicitLeft = 1
+      ExplicitWidth = 698
     end
     object PanelActionLeft: TPanel
       Left = 1
@@ -92,10 +99,14 @@ object Main: TMain
       ParentBackground = False
       TabOrder = 1
       object ActionToolBar1: TActionToolBar
-        Left = 1
+        AlignWithMargins = True
+        Left = 4
         Top = 1
-        Width = 383
-        Height = 54
+        Width = 380
+        Height = 26
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
         ActionManager = ActMngCommand
         Caption = 'ActionToolBar1'
         Color = clMenuBar
@@ -112,7 +123,36 @@ object Main: TMain
         ParentShowHint = False
         ShowHint = True
         Spacing = 0
-        ExplicitHeight = 26
+        ExplicitLeft = -3
+        ExplicitTop = 6
+        ExplicitWidth = 383
+      end
+      object ActionToolBar2: TActionToolBar
+        AlignWithMargins = True
+        Left = 4
+        Top = 27
+        Width = 380
+        Height = 29
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        ActionManager = ActMngCommand
+        Caption = 'ActionToolBar2'
+        Color = clMenuBar
+        ColorMap.DisabledFontColor = 7171437
+        ColorMap.HighlightColor = clWhite
+        ColorMap.BtnSelectedFont = clBlack
+        ColorMap.UnusedColor = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        Spacing = 0
+        ExplicitLeft = 120
+        ExplicitTop = 40
+        ExplicitWidth = 150
       end
     end
     object PanelActionClient: TPanel
@@ -136,24 +176,6 @@ object Main: TMain
       end
     end
   end
-  object TabEditor: TTabSet
-    Left = 0
-    Top = 129
-    Width = 700
-    Height = 26
-    Align = alTop
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    SoftTop = True
-    Style = tsModernTabs
-    TabHeight = 25
-    TabPosition = tpTop
-    OnChange = TabEditorChange
-    OnGetImageIndex = TabEditorGetImageIndex
-  end
   object pDockBottom: TPanel
     Left = 0
     Top = 302
@@ -163,15 +185,14 @@ object Main: TMain
     Caption = 'pDockBottom'
     DockSite = True
     ParentBackground = False
-    TabOrder = 3
+    TabOrder = 2
     OnDockDrop = pDockBottomDockDrop
     OnUnDock = pDockBottomUnDock
-    ExplicitTop = 464
   end
   object ActListCommand: TActionList
     Images = ilAction
-    Left = 32
-    Top = 168
+    Left = 40
+    Top = 176
     object ActTexPdfLaTeX: TAction
       Category = 'Tex'
       Caption = 'ActTexPdfLaTeX'
@@ -217,57 +238,57 @@ object Main: TMain
       ImageIndex = 6
       OnExecute = ActHelpAboutExecute
     end
-    object ActTextBold: TAction
-      Category = 'Text'
-      Caption = 'ActTextBold'
+    object ActFontBold: TAction
+      Category = 'Text.Font'
+      Caption = 'ActFontBold'
       Hint = 'Bold'
       ImageIndex = 11
       ShortCut = 16450
-      OnExecute = ActTextBoldExecute
+      OnExecute = ActFontBoldExecute
     end
-    object ActTextItalic: TAction
-      Category = 'Text'
-      Caption = 'ActTextItalic'
+    object ActFontItalic: TAction
+      Category = 'Text.Font'
+      Caption = 'ActFontItalic'
       Hint = 'Italic'
       ImageIndex = 12
       ShortCut = 16457
-      OnExecute = ActTextItalicExecute
+      OnExecute = ActFontItalicExecute
     end
-    object ActTextUnderline: TAction
-      Category = 'Text'
-      Caption = 'ActTextUnderline'
+    object ActFontUnderline: TAction
+      Category = 'Text.Font'
+      Caption = 'ActFontUnderline'
       Hint = 'Underline'
       ImageIndex = 13
       ShortCut = 16469
-      OnExecute = ActTextUnderlineExecute
+      OnExecute = ActFontUnderlineExecute
     end
-    object ActTextLeft: TAction
-      Category = 'Text'
-      Caption = 'ActTextLeft'
+    object ActAlignLeft: TAction
+      Category = 'Text.Align'
+      Caption = 'ActAlignLeft'
       Hint = 'Align left'
       ImageIndex = 7
-      OnExecute = ActTextLeftExecute
+      OnExecute = ActAlignLeftExecute
     end
-    object ActTextCenter: TAction
-      Category = 'Text'
-      Caption = 'ActTextCenter'
+    object ActAlignCenter: TAction
+      Category = 'Text.Align'
+      Caption = 'ActAlignCenter'
       Hint = 'Align center'
       ImageIndex = 8
-      OnExecute = ActTextCenterExecute
+      OnExecute = ActAlignCenterExecute
     end
-    object ActTextRight: TAction
-      Category = 'Text'
-      Caption = 'ActTextRight'
+    object ActAlignRight: TAction
+      Category = 'Text.Align'
+      Caption = 'ActAlignRight'
       Hint = 'Align right'
       ImageIndex = 9
-      OnExecute = ActTextRightExecute
+      OnExecute = ActAlignRightExecute
     end
-    object ActTextJustify: TAction
-      Category = 'Text'
-      Caption = 'ActTextJustify'
+    object ActAlignJustify: TAction
+      Category = 'Text.Align'
+      Caption = 'ActAlignJustify'
       Hint = 'Align justify'
       ImageIndex = 10
-      OnExecute = ActTextJustifyExecute
+      OnExecute = ActAlignJustifyExecute
     end
     object ActTextSize: TAction
       Category = 'Text'
@@ -290,12 +311,12 @@ object Main: TMain
       ImageIndex = 5
       OnExecute = ActFileExitExecute
     end
-    object ActTextColor: TAction
-      Category = 'Text'
-      Caption = 'ActTextColor'
+    object ActFontColor: TAction
+      Category = 'Text.Font'
+      Caption = 'ActFontColor'
       Hint = 'Font color'
       ImageIndex = 16
-      OnExecute = ActTextColorExecute
+      OnExecute = ActFontColorExecute
     end
     object ActTexStop: TAction
       Category = 'Tex'
@@ -431,342 +452,29 @@ object Main: TMain
       ImageIndex = 33
       OnExecute = ActWindowMaximizeExecute
     end
-  end
-  object ActMngCommand: TActionManager
-    ActionBars = <
-      item
-        Items = <
-          item
-            Items = <
-              item
-                Action = ActFileNew
-                Caption = '&ActFileNew'
-                ImageIndex = 0
-                ShortCut = 16462
-              end
-              item
-                Action = ActFileOpen
-                Caption = 'A&ctFileOpen'
-                ImageIndex = 1
-                ShortCut = 16463
-              end
-              item
-                Action = ActFileSave
-                Caption = 'Ac&tFileSave'
-                ImageIndex = 2
-                ShortCut = 16467
-              end
-              item
-                Action = ActFileSaveAs
-                Caption = 'Act&FileSaveAs'
-                ImageIndex = 3
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = ActFileSetting
-                Caption = 'ActF&ileSetting'
-                ImageIndex = 4
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = ActFileExit
-                Caption = 'ActFi&leExit'
-                ImageIndex = 5
-              end>
-            Caption = '&File'
-          end
-          item
-            Items = <
-              item
-                Action = ActEditUndo
-                Caption = '&ActEditUndo'
-                ImageIndex = 21
-                ShortCut = 16474
-              end
-              item
-                Action = ActEditRedo
-                Caption = 'A&ctEditRedo'
-                ImageIndex = 22
-                ShortCut = 24666
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = ActEditCut
-                Caption = 'Ac&tEditCut'
-                ImageIndex = 23
-                ShortCut = 16472
-              end
-              item
-                Action = ActEditCopy
-                Caption = 'Act&EditCopy'
-                ImageIndex = 24
-                ShortCut = 16451
-              end
-              item
-                Action = ActEditPaste
-                Caption = 'ActE&ditPaste'
-                ImageIndex = 25
-                ShortCut = 16470
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = ActEditSelectAll
-                Caption = 'ActEd&itSelectAll'
-                ImageIndex = 26
-                ShortCut = 16449
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = ActEditGoToLine
-                Caption = 'ActEdit&GoToLine'
-              end>
-            Caption = '&Edit'
-          end
-          item
-            Items = <
-              item
-                Action = ActTextBold
-                Caption = '&ActTextBold'
-                ImageIndex = 11
-                ShortCut = 16450
-              end
-              item
-                Action = ActTextItalic
-                Caption = 'A&ctTextItalic'
-                ImageIndex = 12
-                ShortCut = 16457
-              end
-              item
-                Action = ActTextUnderline
-                Caption = 'Ac&tTextUnderline'
-                ImageIndex = 13
-                ShortCut = 16469
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = ActTextLeft
-                Caption = 'ActT&extLeft'
-                ImageIndex = 7
-              end
-              item
-                Action = ActTextCenter
-                Caption = 'ActTe&xtCenter'
-                ImageIndex = 8
-              end
-              item
-                Action = ActTextRight
-                Caption = 'ActText&Right'
-                ImageIndex = 9
-              end
-              item
-                Action = ActTextJustify
-                Caption = 'ActText&Justify'
-                ImageIndex = 10
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = ActTextSize
-                Caption = 'ActText&Size'
-                ImageIndex = 15
-              end
-              item
-                Action = ActTextColor
-                Caption = 'ActTextC&olor'
-                ImageIndex = 16
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = ActTextShowSpecialChars
-                Caption = 'ActTextS&howSpecialChars'
-                ImageIndex = 27
-              end>
-            Caption = '&Text'
-          end
-          item
-            Items = <
-              item
-                Action = ActInsertImage
-                Caption = '&ActInsertImage'
-                ImageIndex = 20
-              end>
-            Caption = '&Insert'
-          end
-          item
-            Items = <
-              item
-                Action = ActViewLog
-                Caption = '&ActViewLog'
-              end>
-            Caption = '&View'
-          end
-          item
-            Items = <
-              item
-                Action = ActTexPdfLaTeX
-                Caption = '&ActTexPdfLaTeX'
-                ImageIndex = 17
-                ShortCut = 120
-              end
-              item
-                Action = ActTexStop
-                Caption = 'A&ctTexStop'
-                ImageIndex = 19
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = ActTexSysCmd
-                Caption = 'Ac&tTexSysCmd'
-                ImageIndex = 30
-                ShowGlyph = False
-              end>
-            Caption = 'Te&x'
-          end
-          item
-            Items = <
-              item
-                Action = ActMiKTeXOption
-                Caption = '&ActMiKTeXOption'
-                ImageIndex = 28
-              end
-              item
-                Action = ActMiKTeXPackageManager
-                Caption = 'A&ctMiKTeXPackageManager'
-                ImageIndex = 28
-              end
-              item
-                Action = ActMiKTeXUpdateWizard
-                Caption = 'Ac&tMiKTeXUpdateWizard'
-                ImageIndex = 28
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = ActMiKTeXTeXworks
-                Caption = 'Act&MiKTeXTeXworks'
-                ImageIndex = 29
-              end>
-            Caption = '&MiKTeX'
-          end
-          item
-            Items = <
-              item
-                Action = ActWindowCascade
-                Caption = '&ActWindowCascade'
-                ImageIndex = 30
-              end
-              item
-                Action = ActWindowTileHorizontal
-                Caption = 'A&ctWindowTileHorizontal'
-                ImageIndex = 32
-              end
-              item
-                Action = ActWindowTileVertical
-                ImageIndex = 31
-              end
-              item
-                Action = ActWindowMaximize
-                ImageIndex = 33
-              end>
-            Caption = '&Window'
-          end
-          item
-            Items = <
-              item
-                Action = ActHelpAbout
-                Caption = '&ActMenuAbout'
-                ImageIndex = 6
-              end>
-            Caption = '&Help'
-          end>
-        ActionBar = ActionMainMenuBar1
-      end
-      item
-        Items = <
-          item
-            Action = ActFileNew
-            Caption = '&ActFileNew'
-            ImageIndex = 0
-            ShowCaption = False
-            ShortCut = 16462
-          end
-          item
-            Caption = '-'
-          end
-          item
-            Action = ActFileOpen
-            Caption = 'A&ctFileOpen'
-            ImageIndex = 1
-            ShowCaption = False
-            ShortCut = 16463
-          end
-          item
-            Action = ActFileSave
-            Caption = 'Ac&tFileSave'
-            ImageIndex = 2
-            ShowCaption = False
-            ShortCut = 16467
-          end
-          item
-            Caption = '-'
-          end
-          item
-            Action = ActFileSetting
-            Caption = 'Act&FileSetting'
-            ImageIndex = 4
-            ShowCaption = False
-          end
-          item
-            Caption = '-'
-          end
-          item
-            Action = ActTexPdfLaTeX
-            Caption = 'ActT&exPdfLaTeX'
-            ImageIndex = 17
-            ShowCaption = False
-            ShortCut = 120
-          end
-          item
-            Action = ActTexStop
-            Caption = 'ActTe&xStop'
-            ImageIndex = 19
-            ShowCaption = False
-          end>
-        ActionBar = ActionToolBar1
-      end>
-    LinkedActionLists = <
-      item
-        ActionList = ActListCommand
-        Caption = 'ActListCommand'
-      end>
-    Images = ilAction
-    Left = 120
-    Top = 168
-    StyleName = 'Platform Default'
+    object ActEditEncoding: TAction
+      Category = 'Edit'
+      Caption = 'ActEditEncoding'
+      OnExecute = ActEditEncodingExecute
+    end
+    object ActTextSubFont: TAction
+      Category = 'Text'
+      Caption = 'ActTextSubFont'
+      ImageIndex = 11
+      OnExecute = ActTextSubFontExecute
+    end
+    object ActTextSubAlign: TAction
+      Category = 'Text'
+      Caption = 'ActTextSubAlign'
+      ImageIndex = 8
+      OnExecute = ActTextSubAlignExecute
+    end
   end
   object ilCode: TImageList
-    Left = 424
-    Top = 168
+    Left = 472
+    Top = 176
     Bitmap = {
-      494C010103006000540110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101030060005C0110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -906,10 +614,10 @@ object Main: TMain
       000000000000}
   end
   object ilAction: TImageList
-    Left = 368
-    Top = 168
+    Left = 416
+    Top = 176
     Bitmap = {
-      494C010122006000440210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101220060004C0210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000009000000001002000000000000090
       000000000000000000000000000000000000727272FF727272FF727272FF7272
       72FF727272FF727272FF727272FF727272FF727272FF727272FF727272FF7272
@@ -2104,10 +1812,10 @@ object Main: TMain
       C01FFF0380018001FFFFFFFFFFFFFFFF00000000000000000000000000000000
       000000000000}
   end
-  object PopupAction: TPopupActionBar
+  object PopupActionEditor: TPopupActionBar
     Images = ilAction
-    Left = 200
-    Top = 168
+    Left = 232
+    Top = 176
     object ActEditUndo1: TMenuItem
       Action = ActEditUndo
     end
@@ -2134,7 +1842,385 @@ object Main: TMain
     end
   end
   object ApplicationEvents: TApplicationEvents
-    Left = 280
-    Top = 168
+    Left = 336
+    Top = 176
+  end
+  object ActMngCommand: TActionManager
+    ActionBars = <
+      item
+        Items = <
+          item
+            Items = <
+              item
+                Action = ActFileNew
+                Caption = '&ActFileNew'
+                ImageIndex = 0
+                ShortCut = 16462
+              end
+              item
+                Action = ActFileOpen
+                Caption = 'A&ctFileOpen'
+                ImageIndex = 1
+                ShortCut = 16463
+              end
+              item
+                Action = ActFileSave
+                Caption = 'Ac&tFileSave'
+                ImageIndex = 2
+                ShortCut = 16467
+              end
+              item
+                Action = ActFileSaveAs
+                Caption = 'Act&FileSaveAs'
+                ImageIndex = 3
+              end
+              item
+                Caption = '-'
+              end
+              item
+                Action = ActFileSetting
+                Caption = 'ActF&ileSetting'
+                ImageIndex = 4
+              end
+              item
+                Caption = '-'
+              end
+              item
+                Action = ActFileExit
+                Caption = 'ActFi&leExit'
+                ImageIndex = 5
+              end>
+            Caption = '&File'
+          end
+          item
+            Items = <
+              item
+                Action = ActEditUndo
+                Caption = '&ActEditUndo'
+                ImageIndex = 21
+                ShortCut = 16474
+              end
+              item
+                Action = ActEditRedo
+                Caption = 'A&ctEditRedo'
+                ImageIndex = 22
+                ShortCut = 24666
+              end
+              item
+                Caption = '-'
+              end
+              item
+                Action = ActEditCut
+                Caption = 'Ac&tEditCut'
+                ImageIndex = 23
+                ShortCut = 16472
+              end
+              item
+                Action = ActEditCopy
+                Caption = 'Act&EditCopy'
+                ImageIndex = 24
+                ShortCut = 16451
+              end
+              item
+                Action = ActEditPaste
+                Caption = 'ActE&ditPaste'
+                ImageIndex = 25
+                ShortCut = 16470
+              end
+              item
+                Caption = '-'
+              end
+              item
+                Action = ActEditSelectAll
+                Caption = 'ActEd&itSelectAll'
+                ImageIndex = 26
+                ShortCut = 16449
+              end
+              item
+                Caption = '-'
+              end
+              item
+                Action = ActEditGoToLine
+                Caption = 'ActEdit&GoToLine'
+              end
+              item
+                Action = ActEditEncoding
+                Caption = 'ActEditE&ncoding'
+              end>
+            Caption = '&Edit'
+          end
+          item
+            Items = <
+              item
+                Action = ActTextSize
+                Caption = '&ActTextSize'
+                ImageIndex = 15
+              end
+              item
+                Items = <
+                  item
+                    Action = ActFontBold
+                    Caption = '&ActFontBold'
+                    ImageIndex = 11
+                    ShortCut = 16450
+                  end
+                  item
+                    Action = ActFontItalic
+                    Caption = 'A&ctFontItalic'
+                    ImageIndex = 12
+                    ShortCut = 16457
+                  end
+                  item
+                    Action = ActFontUnderline
+                    Caption = 'Ac&tFontUnderline'
+                    ImageIndex = 13
+                    ShortCut = 16469
+                  end
+                  item
+                    Caption = '-'
+                  end
+                  item
+                    Action = ActFontColor
+                    Caption = 'Act&FontColor'
+                    ImageIndex = 16
+                  end>
+                Action = ActTextSubFont
+                Caption = 'Ac&tTextSubFont'
+                ImageIndex = 11
+              end
+              item
+                Items = <
+                  item
+                    Action = ActAlignLeft
+                    Caption = '&ActAlignLeft'
+                    ImageIndex = 7
+                  end
+                  item
+                    Action = ActAlignCenter
+                    Caption = 'A&ctAlignCenter'
+                    ImageIndex = 8
+                  end
+                  item
+                    Action = ActAlignRight
+                    Caption = 'Ac&tAlignRight'
+                    ImageIndex = 9
+                  end
+                  item
+                    Action = ActAlignJustify
+                    Caption = 'ActA&lignJustify'
+                    ImageIndex = 10
+                  end>
+                Action = ActTextSubAlign
+                Caption = 'ActT&extSubAlign'
+                ImageIndex = 8
+              end
+              item
+                Caption = '-'
+              end
+              item
+                Action = ActTextShowSpecialChars
+                Caption = 'A&ctTextShowSpecialChars'
+                ImageIndex = 27
+              end>
+            Caption = '&Text'
+          end
+          item
+            Items = <
+              item
+                Action = ActInsertImage
+                Caption = '&ActInsertImage'
+                ImageIndex = 20
+              end
+              item
+                Items = <
+                  item
+                    Action = ActListItemize
+                  end
+                  item
+                    Action = ActListEnumerate
+                  end
+                  item
+                    Action = ActListDescription
+                  end>
+                Action = ActInsertSubList
+                Caption = 'A&ctInsertSubList'
+              end>
+            Caption = '&Insert'
+          end
+          item
+            Items = <
+              item
+                Action = ActViewLog
+                Caption = '&ActViewLog'
+              end>
+            Caption = '&View'
+          end
+          item
+            Items = <
+              item
+                Action = ActTexPdfLaTeX
+                Caption = '&ActTexPdfLaTeX'
+                ImageIndex = 17
+                ShortCut = 120
+              end
+              item
+                Action = ActTexStop
+                Caption = 'A&ctTexStop'
+                ImageIndex = 19
+              end
+              item
+                Caption = '-'
+              end
+              item
+                Action = ActTexSysCmd
+                Caption = 'Ac&tTexSysCmd'
+                ShowGlyph = False
+              end>
+            Caption = 'Te&x'
+          end
+          item
+            Items = <
+              item
+                Action = ActMiKTeXOption
+                Caption = '&ActMiKTeXOption'
+                ImageIndex = 28
+              end
+              item
+                Action = ActMiKTeXPackageManager
+                Caption = 'A&ctMiKTeXPackageManager'
+                ImageIndex = 28
+              end
+              item
+                Action = ActMiKTeXUpdateWizard
+                Caption = 'Ac&tMiKTeXUpdateWizard'
+                ImageIndex = 28
+              end
+              item
+                Caption = '-'
+              end
+              item
+                Action = ActMiKTeXTeXworks
+                Caption = 'Act&MiKTeXTeXworks'
+                ImageIndex = 29
+              end>
+            Caption = '&MiKTeX'
+          end
+          item
+            Items = <
+              item
+                Action = ActWindowCascade
+                Caption = '&ActWindowCascade'
+                ImageIndex = 30
+              end
+              item
+                Action = ActWindowTileHorizontal
+                Caption = 'A&ctWindowTileHorizontal'
+                ImageIndex = 32
+              end
+              item
+                Action = ActWindowTileVertical
+                Caption = 'Ac&tWindowTileVertical'
+                ImageIndex = 31
+              end
+              item
+                Action = ActWindowMaximize
+                Caption = 'Act&WindowMaximize'
+                ImageIndex = 33
+              end>
+            Caption = '&Window'
+          end
+          item
+            Items = <
+              item
+                Action = ActHelpAbout
+                Caption = '&ActMenuAbout'
+                ImageIndex = 6
+              end>
+            Caption = '&Help'
+          end>
+        ActionBar = ActionMainMenuBar
+      end
+      item
+        Items = <
+          item
+            Action = ActFileNew
+            Caption = '&ActFileNew'
+            ImageIndex = 0
+            ShowCaption = False
+            ShortCut = 16462
+          end
+          item
+            Caption = '-'
+          end
+          item
+            Action = ActFileOpen
+            Caption = 'A&ctFileOpen'
+            ImageIndex = 1
+            ShowCaption = False
+            ShortCut = 16463
+          end
+          item
+            Action = ActFileSave
+            Caption = 'Ac&tFileSave'
+            ImageIndex = 2
+            ShowCaption = False
+            ShortCut = 16467
+          end
+          item
+            Caption = '-'
+          end
+          item
+            Action = ActFileSetting
+            Caption = 'Act&FileSetting'
+            ImageIndex = 4
+            ShowCaption = False
+          end
+          item
+            Caption = '-'
+          end
+          item
+            Action = ActTexPdfLaTeX
+            Caption = 'ActT&exPdfLaTeX'
+            ImageIndex = 17
+            ShowCaption = False
+            ShortCut = 120
+          end
+          item
+            Action = ActTexStop
+            Caption = 'ActTe&xStop'
+            ImageIndex = 19
+            ShowCaption = False
+          end>
+        ActionBar = ActionToolBar1
+      end>
+    LinkedActionLists = <
+      item
+        ActionList = ActListCommand
+        Caption = 'ActListCommand'
+      end>
+    Images = ilAction
+    Left = 136
+    Top = 176
+    StyleName = 'Platform Default'
+    object ActInsertSubList: TAction
+      Category = 'Insert'
+      Caption = 'ActInsertSubList'
+      OnExecute = ActInsertSubListExecute
+    end
+    object ActListItemize: TAction
+      Category = 'Insert.List'
+      Caption = 'ActListItemize'
+      OnExecute = ActListItemizeExecute
+    end
+    object ActListEnumerate: TAction
+      Category = 'Insert.List'
+      Caption = 'ActListEnumerate'
+      OnExecute = ActListEnumerateExecute
+    end
+    object ActListDescription: TAction
+      Category = 'Insert.List'
+      Caption = 'ActListDescription'
+      OnExecute = ActListDescriptionExecute
+    end
   end
 end

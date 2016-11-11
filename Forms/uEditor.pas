@@ -90,9 +90,7 @@ begin
   // case answer of
   // ID_YES:
   // if not Main.SaveDocument then
-  // begin
   // CanClose := false;
-  // end;
   // ID_NO:
   // ;
   // ID_CANCEL:

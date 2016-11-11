@@ -35,6 +35,11 @@ const
   cmAlignJustifyBegin: string = '\begin{justify}';
   cmAlignJustifyEnd: string = '\end{justify}';
 
+  // Перечень
+  cmListItemizeBegin: string = '\begin{itemize}';
+  cmListItemizeItem: string = '\item';
+  cmListItemizeEnd: string = '\end{itemize}';
+
   // Команды
   cmTextColor: string = '\textcolor';
   cmFontStyleBold: string = '\bf';

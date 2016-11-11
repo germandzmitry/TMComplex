@@ -13,7 +13,8 @@ uses
   BCEditor.Encoding, BCEditor.Editor.KeyCommands, BCEditor.Consts,
   BCEditor.Types, uTexCompile, Vcl.StdStyleActnCtrls, Vcl.ActnColorMaps,
   Winapi.UxTheme, Vcl.Themes, uTexLogParser, uLog, Vcl.Tabs, Vcl.DockTabSet,
-  uCustomCaptionedDockTree, Vcl.Menus, Vcl.ActnPopup, uSettings, Vcl.AppEvnts;
+  uCustomCaptionedDockTree, Vcl.Menus, Vcl.ActnPopup, uSettings, Vcl.AppEvnts,
+  uEditorEncoding, uCustomTabSet;
 
 Const
   STATUS_BAR_CARET = 0;
@@ -26,7 +27,6 @@ type
   TMain = class(TForm)
     ActListCommand: TActionList;
     ActTexPdfLaTeX: TAction;
-    ActMngCommand: TActionManager;
     ilCode: TImageList;
     StatusBar: TStatusBar;
     ActFileNew: TAction;
@@ -35,21 +35,21 @@ type
     ActFileSaveAs: TAction;
     ActHelpAbout: TAction;
     ilAction: TImageList;
-    ActionMainMenuBar1: TActionMainMenuBar;
-    ActTextLeft: TAction;
-    ActTextCenter: TAction;
-    ActTextRight: TAction;
-    ActTextJustify: TAction;
-    ActTextBold: TAction;
-    ActTextItalic: TAction;
-    ActTextUnderline: TAction;
+    ActionMainMenuBar: TActionMainMenuBar;
+    ActAlignLeft: TAction;
+    ActAlignCenter: TAction;
+    ActAlignRight: TAction;
+    ActAlignJustify: TAction;
+    ActFontBold: TAction;
+    ActFontItalic: TAction;
+    ActFontUnderline: TAction;
     ActTextSize: TAction;
     ActFileSetting: TAction;
     ActFileExit: TAction;
-    ActTextColor: TAction;
+    ActFontColor: TAction;
     ActTexStop: TAction;
     sDockBottom: TSplitter;
-    PanelAction: TPanel;
+    pAction: TPanel;
     PanelActionLeft: TPanel;
     PanelActionClient: TPanel;
     Bevel1: TBevel;
@@ -68,7 +68,7 @@ type
     ActTexSysCmd: TAction;
     pDockBottom: TPanel;
     ActViewLog: TAction;
-    PopupAction: TPopupActionBar;
+    PopupActionEditor: TPopupActionBar;
     ActEditGoToLine: TAction;
     ActEditUndo1: TMenuItem;
     ActEditRedo1: TMenuItem;
@@ -79,12 +79,20 @@ type
     N1: TMenuItem;
     N2: TMenuItem;
     ActionToolBar1: TActionToolBar;
-    TabEditor: TTabSet;
     ApplicationEvents: TApplicationEvents;
     ActWindowCascade: TAction;
     ActWindowTileHorizontal: TAction;
     ActWindowTileVertical: TAction;
     ActWindowMaximize: TAction;
+    ActEditEncoding: TAction;
+    ActMngCommand: TActionManager;
+    ActTextSubFont: TAction;
+    ActTextSubAlign: TAction;
+    ActionToolBar2: TActionToolBar;
+    ActInsertSubList: TAction;
+    ActListItemize: TAction;
+    ActListEnumerate: TAction;
+    ActListDescription: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -101,15 +109,15 @@ type
 
     procedure ActHelpAboutExecute(Sender: TObject);
 
-    procedure ActTextLeftExecute(Sender: TObject);
-    procedure ActTextCenterExecute(Sender: TObject);
-    procedure ActTextRightExecute(Sender: TObject);
-    procedure ActTextJustifyExecute(Sender: TObject);
-    procedure ActTextBoldExecute(Sender: TObject);
-    procedure ActTextItalicExecute(Sender: TObject);
-    procedure ActTextUnderlineExecute(Sender: TObject);
+    procedure ActAlignLeftExecute(Sender: TObject);
+    procedure ActAlignCenterExecute(Sender: TObject);
+    procedure ActAlignRightExecute(Sender: TObject);
+    procedure ActAlignJustifyExecute(Sender: TObject);
+    procedure ActFontBoldExecute(Sender: TObject);
+    procedure ActFontItalicExecute(Sender: TObject);
+    procedure ActFontUnderlineExecute(Sender: TObject);
     procedure ActTextSizeExecute(Sender: TObject);
-    procedure ActTextColorExecute(Sender: TObject);
+    procedure ActFontColorExecute(Sender: TObject);
     procedure ActTextShowSpecialCharsExecute(Sender: TObject);
 
     procedure ActTexPdfLaTeXExecute(Sender: TObject);
@@ -140,17 +148,23 @@ type
 
     procedure memoLogKeyPress(Sender: TObject; var Key: Char);
 
-    procedure pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl;
-      var Allow: Boolean);
+    procedure pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
     procedure pDockBottomDockDrop(Sender: TObject; Source: TDragDockObject; X, Y: Integer);
     procedure StatusBarDblClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure TabEditorChange(Sender: TObject; NewTab: Integer; var AllowChange: Boolean);
     procedure TabEditorGetImageIndex(Sender: TObject; TabIndex: Integer; var ImageIndex: Integer);
+    procedure ActEditEncodingExecute(Sender: TObject);
+    procedure ActTextSubFontExecute(Sender: TObject);
+    procedure ActTextSubAlignExecute(Sender: TObject);
+    procedure ActInsertSubListExecute(Sender: TObject);
+    procedure ActListItemizeExecute(Sender: TObject);
+    procedure ActListEnumerateExecute(Sender: TObject);
+    procedure ActListDescriptionExecute(Sender: TObject);
   private
     { Private declarations }
     FAllSetting: TAllSetting;
-    // FPageEditor: TCustomPageControl;
+    FTabEditor: TCustomTabSet;
     FPageSymbols: TCustomPageControl;
     // FLog: TLogForm;
     FPageLog: TCustomPageControl;
@@ -178,7 +192,7 @@ type
     { Public declarations }
     function SaveDocument(): Boolean; overload;
     property ActiveEditor: TEditorForm read FActiveEditor;
-    // property PageEditor: TCustomPageControl read FPageEditor write FPageEditor;
+    property TabEditor: TCustomTabSet read FTabEditor write FTabEditor;
   end;
 
 var
@@ -333,42 +347,28 @@ begin
   sDockBottom.Height := 0;
   sDockBottom.Enabled := False;
 
-  PanelAction.Height := 103;
+  pAction.Height := 103;
 
   Bevel1.Width := 3;
 
   ActTexPdfLaTeX.Enabled := True;
   ActTexStop.Enabled := False;
 
-  // FPageEditor := TCustomPageControl.Create(self);
-  // with FPageEditor do
-  // begin
-  // Left := pEditor.Left;
-  // Top := pEditor.Top;
-  // Width := pEditor.Width;
-  // Height := pEditor.Height;
-  // Parent := pEditor;
-  // Visible := True;
-  // Align := alClient;
-  // Images := ilCode;
-  // OwnerDraw := True;
-  // TabHeight := 23;
-  // ClosePageUsing := True;
-  // TextFormat := [tfLeft];
-  // DoubleBuffered := True;
-  // ParentColor := False;
-  //
-  // Style := tsButtons;
-  //
-  // OnChange := PageEditorChange;
-  // OnChanging := PageEditorChanging;
-  // OnContextPopup := PageEditorContextPopup;
-  // OnDockDrop := PageEditorDockDrop;
-  // OnUnDock := PageEditorUnDock;
-  // OnClosePage := PageEditorClosePage;
-  // end;
-  // SendMessage(FPageEditor.Handle, WM_UPDATEUISTATE, MakeLong(UIS_SET, UISF_HIDEFOCUS), 0);
-  // SendMessage(FPageEditor.Handle, TCM_SETPADDING, 0, MAKELPARAM(9, FPageEditor.TabHeight + 5));
+  FTabEditor := TCustomTabSet.Create(self);
+  with FTabEditor do
+  begin
+    Left := 0;
+    Top := ActionMainMenuBar.Height + pAction.Height;
+    Width := 50;
+    Height := ActionToolBar1.Height;
+    parent := Main;
+    align := alTop;
+    TabPosition := tpTop;
+    style := tsModernTabs;
+
+    OnChange := TabEditorChange;
+    OnGetImageIndex := TabEditorGetImageIndex;
+  end;
 
   // Панель с символами TeX
   FPageSymbols := TCustomPageControl.Create(self);
@@ -378,16 +378,16 @@ begin
     Top := 10;
     Width := 20;
     Height := 20;
-    Parent := PanelActionClient;
+    parent := PanelActionClient;
 
     Visible := True;
-    Align := alClient;
+    align := alClient;
     OwnerDraw := True;
     TabHeight := 23;
     TextFormat := [tfCenter];
     DoubleBuffered := True;
 
-    Style := tsButtons;
+    style := tsButtons;
   end;
   SendMessage(FPageSymbols.Handle, WM_UPDATEUISTATE, MakeLong(UIS_SET, UISF_HIDEFOCUS), 0);
   // SendMessage(FPageSymbols.Handle, TCM_SETPADDING, 0, MAKELPARAM(7, FPageSymbols.TabHeight + 3));
@@ -439,7 +439,7 @@ begin
     FLog.Close;
 
   FTexGuiSymbols.Free;
-  // FPageEditor.Free;
+  FTabEditor.Free;
   FPageSymbols.Free;
   FPageLog.Free;
 end;
@@ -487,8 +487,38 @@ begin
 end;
 
 procedure TMain.ActFileSaveAsExecute(Sender: TObject);
+
+var
+  LFileName: string;
+  LSaveDialogTex: TSaveDialog;
 begin
-  { ActTexStopExecute(ActTexStop);
+  ActTexStopExecute(ActTexStop);
+
+  if FActiveEditor = nil then
+    exit;
+
+  LSaveDialogTex := TSaveDialog.Create(self);
+  try
+    LSaveDialogTex.Filter := 'Tex documents (*.tex)|*.tex';
+    LSaveDialogTex.FilterIndex := 1;
+    LSaveDialogTex.DefaultExt := 'tex';
+    if FileExists(FActiveEditor.FileName) then
+      LSaveDialogTex.InitialDir := ExtractFilePath(FActiveEditor.FileName)
+    else
+      LSaveDialogTex.InitialDir := FFolderProject;
+    LSaveDialogTex.FileName := ExtractFileName(FActiveEditor.FileName);
+    if LSaveDialogTex.Execute then
+      LFileName := LSaveDialogTex.FileName
+    else
+      exit;
+  finally
+    LSaveDialogTex.Free;
+  end;
+
+  SaveDocument(LFileName);
+
+  { begin
+    ActTexStopExecute(ActTexStop);
 
     if FActiveEditor = nil then
     Exit;
@@ -541,22 +571,43 @@ begin
     FActiveEditor.Editor.CutToClipboard;
 end;
 
-procedure TMain.ActEditGoToLineExecute(Sender: TObject);
+procedure TMain.ActEditEncodingExecute(Sender: TObject);
 var
-  GoToLine: TEditorGoToLineForm;
+  LEncoding: TEditorEncodingForm;
 begin
   if FActiveEditor <> nil then
   begin
-    GoToLine := TEditorGoToLineForm.Create(Main);
+    LEncoding := TEditorEncodingForm.Create(Main);
     try
-      GoToLine.eLine.Text := IntToStr(FActiveEditor.Editor.DisplayCaretY);
-      if GoToLine.ShowModal = mrOk then
+      LEncoding.cbEncoding.ItemIndex := LEncoding.cbEncoding.Items.IndexOf
+        (EncodingToText(FActiveEditor.Editor.Encoding));
+      if LEncoding.ShowModal = mrOk then
       begin
-        FActiveEditor.Editor.DisplayCaretX := 1;
-        FActiveEditor.Editor.DisplayCaretY := StrToInt(GoToLine.eLine.Text);
+        SetEncoding(FActiveEditor.Editor, LEncoding.cbEncoding.ItemIndex);
+        SetStatusBarCaption;
       end;
     finally
-      GoToLine.Free;
+      LEncoding.Free;
+    end;
+  end;
+end;
+
+procedure TMain.ActEditGoToLineExecute(Sender: TObject);
+var
+  LGoToLine: TEditorGoToLineForm;
+begin
+  if FActiveEditor <> nil then
+  begin
+    LGoToLine := TEditorGoToLineForm.Create(Main);
+    try
+      LGoToLine.eLine.Text := IntToStr(FActiveEditor.Editor.DisplayCaretY);
+      if LGoToLine.ShowModal = mrOk then
+      begin
+        FActiveEditor.Editor.DisplayCaretX := 1;
+        FActiveEditor.Editor.DisplayCaretY := StrToInt(LGoToLine.eLine.Text);
+      end;
+    finally
+      LGoToLine.Free;
     end;
   end;
 end;
@@ -606,10 +657,9 @@ begin
     exit;
   end;
 
-  pdfFile := StringReplace(ExtractFileName(FActiveEditor.fileName),
-    ExtractFileExt(FActiveEditor.fileName), '', []);
+  pdfFile := StringReplace(ExtractFileName(FActiveEditor.FileName), ExtractFileExt(FActiveEditor.FileName), '', []);
 
-  pdfFile := ExtractFilePath(FActiveEditor.fileName) + pdfFile + '.pdf';
+  pdfFile := ExtractFilePath(FActiveEditor.FileName) + pdfFile + '.pdf';
 
   if FileExists(pdfFile) then
   begin
@@ -652,7 +702,7 @@ begin
 
   ActFileSaveExecute(ActFileSave);
 
-  path := ExtractFilePath(FActiveEditor.fileName);
+  path := ExtractFilePath(FActiveEditor.FileName);
 
   // Если последний символ слеш, удаляем его
   if IsPathDelimiter(path, Length(path)) then
@@ -663,7 +713,7 @@ begin
   // '--interaction=errorstopmode ' + // Тип обработки ошибок
     '--interaction=nonstopmode ' + // Тип обработки ошибок
     '--synctex=-1 ' + // Файл синхронизации (для sumatra)
-    '"' + FActiveEditor.fileName + '"'; // сам файл
+    '"' + FActiveEditor.FileName + '"'; // сам файл
 
   try
     if FLog = nil then
@@ -723,37 +773,37 @@ begin
   ActTexSysCmd.Checked := not ActTexSysCmd.Checked;
 end;
 
-procedure TMain.ActTextLeftExecute(Sender: TObject);
+procedure TMain.ActAlignLeftExecute(Sender: TObject);
 begin
   InsertTemplateBlock(cmAlignLeftBegin, cmAlignLeftEnd);
 end;
 
-procedure TMain.ActTextCenterExecute(Sender: TObject);
+procedure TMain.ActAlignCenterExecute(Sender: TObject);
 begin
   InsertTemplateBlock(cmAlignCenterBegin, cmAlignCenterEnd);
 end;
 
-procedure TMain.ActTextRightExecute(Sender: TObject);
+procedure TMain.ActAlignRightExecute(Sender: TObject);
 begin
   InsertTemplateBlock(cmAlignRightBegin, cmAlignRightEnd);
 end;
 
-procedure TMain.ActTextJustifyExecute(Sender: TObject);
+procedure TMain.ActAlignJustifyExecute(Sender: TObject);
 begin
   InsertTemplateBlock(cmAlignJustifyBegin, cmAlignJustifyEnd);
 end;
 
-procedure TMain.ActTextBoldExecute(Sender: TObject);
+procedure TMain.ActFontBoldExecute(Sender: TObject);
 begin
   InsertTemplate(cmFontStyleBold + cmTextFormatBegin + cmTextFormatEnd, -1);
 end;
 
-procedure TMain.ActTextItalicExecute(Sender: TObject);
+procedure TMain.ActFontItalicExecute(Sender: TObject);
 begin
   InsertTemplate(cmFontStyleItalic + cmTextFormatBegin + cmTextFormatEnd, -1);
 end;
 
-procedure TMain.ActTextUnderlineExecute(Sender: TObject);
+procedure TMain.ActFontUnderlineExecute(Sender: TObject);
 begin
   InsertTemplate(cmFontStyleUnderline + cmTextFormatBegin + cmTextFormatEnd, -1);
 end;
@@ -809,7 +859,7 @@ begin
   //
 end;
 
-procedure TMain.ActTextColorExecute(Sender: TObject);
+procedure TMain.ActFontColorExecute(Sender: TObject);
 var
   cd: TColorDialog;
   ColorRGB: Longint;
@@ -824,17 +874,54 @@ begin
       R := ColorRGB;
       g := ColorRGB shr 8;
       b := ColorRGB shr 16;
-      InsertTemplate(cmTextColor + '[RGB]{' + IntToStr(R) + ',' + IntToStr(g) + ',' + IntToStr(b) +
-        '}{}', -1);
+      InsertTemplate(cmTextColor + '[RGB]{' + IntToStr(R) + ',' + IntToStr(g) + ',' + IntToStr(b) + '}{}', -1);
     end;
   finally
     cd.Free;
   end;
 end;
 
+procedure TMain.ActTextSubAlignExecute(Sender: TObject);
+begin
+  //
+end;
+
+procedure TMain.ActTextSubFontExecute(Sender: TObject);
+begin
+  //
+end;
+
 procedure TMain.ActInsertImageExecute(Sender: TObject);
 begin
   //
+end;
+
+procedure TMain.ActInsertSubListExecute(Sender: TObject);
+begin
+  //
+end;
+
+procedure TMain.ActListDescriptionExecute(Sender: TObject);
+begin
+  //
+end;
+
+procedure TMain.ActListEnumerateExecute(Sender: TObject);
+begin
+  //
+end;
+
+procedure TMain.ActListItemizeExecute(Sender: TObject);
+begin
+  // InsertTemplateBlock(cmListItemizeBegin, cmListItemizeEnd);
+  if (FActiveEditor <> nil) and (FActiveEditor.Editor <> nil) then
+  begin
+    FActiveEditor.Editor.InsertText(Pwidechar(cmListItemizeBegin + //
+      #13#10 + '  ' + cmListItemizeItem + //
+      #13#10 + '  ' + cmListItemizeItem + //
+      #13#10 + cmListItemizeEnd));
+    FActiveEditor.Editor.DisplayCaretY := FActiveEditor.Editor.DisplayCaretY - 1;
+  end;
 end;
 
 procedure TMain.ActMiKTeXOptionExecute(Sender: TObject);
@@ -854,11 +941,10 @@ end;
 
 procedure TMain.ActMiKTeXTeXworksExecute(Sender: TObject);
 begin
-  if (FActiveEditor <> nil) and (FActiveEditor.State <> stNew) and
-    (FileExists(FActiveEditor.fileName)) then
+  if (FActiveEditor <> nil) and (FActiveEditor.State <> stNew) and (FileExists(FActiveEditor.FileName)) then
   begin
     ActFileSaveExecute(ActFileSave);
-    RunProcess('texworks "' + FActiveEditor.fileName + '"');
+    RunProcess('texworks "' + FActiveEditor.FileName + '"');
   end
   else
     RunProcess('texworks ');
@@ -880,12 +966,11 @@ procedure TMain.TabEditorChange(Sender: TObject; NewTab: Integer; var AllowChang
 begin
   try
     SendMessage(ClientHandle, WM_SETREDRAW, ord(False), 0);
-    FActiveEditor := TEditorForm(TabEditor.Tabs.Objects[NewTab]);
+    FActiveEditor := TEditorForm(FTabEditor.Tabs.Objects[NewTab]);
     FActiveEditor.Show;
   finally
     SendMessage(ClientHandle, WM_SETREDRAW, ord(True), 0);
-    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or
-      RDW_NOINTERNALPAINT);
+    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_NOINTERNALPAINT);
   end;
 
   SetStatusBarCaption;
@@ -919,8 +1004,7 @@ begin
   end;
 end;
 
-procedure TMain.pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl;
-  var Allow: Boolean);
+procedure TMain.pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
 var
   IniFile: TIniFile;
 begin
@@ -948,27 +1032,26 @@ begin
 
     new := TEditorForm.Create(Application);
 
-    if TabEditor.Tabs.Count = 0 then
+    if FTabEditor.Tabs.Count = 0 then
       new.WindowState := wsMaximized;
   finally
     SendMessage(ClientHandle, WM_SETREDRAW, ord(True), 0);
-    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or
-      RDW_NOINTERNALPAINT);
+    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_NOINTERNALPAINT);
   end;
 
   new.Caption := PageCaption;
-  new.fileName := PageFileName;
-  TabEditor.Tabs.AddObject(ExtractFileName(new.fileName), new);
-  if TabEditor.Tabs.Count = 1 then
+  new.FileName := PageFileName;
+  FTabEditor.Tabs.AddObject(ExtractFileName(new.FileName), new);
+  if FTabEditor.Tabs.Count = 1 then
     SetFocus;
 
-  TabEditor.TabIndex := TabEditor.Tabs.Count - 1;
+  FTabEditor.TabIndex := FTabEditor.Tabs.Count - 1;
 end;
 
 procedure TMain.SetStatusBarCaption();
 begin
   StatusBar.Panels[STATUS_BAR_ENCODING].Text := EncodingToText(FActiveEditor.Editor.Encoding);
-  StatusBar.Panels[STATUS_BAR_PATH].Text := ExtractFilePath(FActiveEditor.fileName);
+  StatusBar.Panels[STATUS_BAR_PATH].Text := ExtractFilePath(FActiveEditor.FileName);
 end;
 
 procedure TMain.StatusBarDblClick(Sender: TObject);
@@ -1002,7 +1085,7 @@ begin
     STATUS_BAR_CARET:
       ActEditGoToLineExecute(ActEditGoToLine);
     STATUS_BAR_ENCODING:
-      ;
+      ActEditEncodingExecute(ActEditEncoding);
     STATUS_BAR_PATH:
       ;
   end;
@@ -1035,15 +1118,14 @@ function TMain.OpenDocument(AFileName: string): Boolean;
 var
   i: Integer;
 begin
-  for i := 0 to TabEditor.Tabs.Count - 1 do
-    if TEditorForm(TabEditor.Tabs.Objects[i]).fileName = AFileName then
+  for i := 0 to FTabEditor.Tabs.Count - 1 do
+    if TEditorForm(FTabEditor.Tabs.Objects[i]).FileName = AFileName then
     begin
-      TabEditor.TabIndex := i;
+      FTabEditor.TabIndex := i;
       exit;
     end;
 
-  AddPageCode(StringReplace(ExtractFileName(AFileName), ExtractFileExt(AFileName), '', []),
-    AFileName);
+  AddPageCode(StringReplace(ExtractFileName(AFileName), ExtractFileExt(AFileName), '', []), AFileName);
 
   FActiveEditor.Editor.BeginUpdate;
   FActiveEditor.Editor.Lines.Clear;
@@ -1064,7 +1146,7 @@ begin
   if (FActiveEditor = nil) or (FActiveEditor.State = stSave) then
     exit;
 
-  if (FActiveEditor.State = stNew) or not FileExists(FActiveEditor.fileName) then
+  if (FActiveEditor.State = stNew) or not FileExists(FActiveEditor.FileName) then
   begin
     LSaveDialogTex := TSaveDialog.Create(self);
     try
@@ -1072,9 +1154,9 @@ begin
       LSaveDialogTex.FilterIndex := 1;
       LSaveDialogTex.DefaultExt := 'tex';
       LSaveDialogTex.InitialDir := FFolderProject;
-      LSaveDialogTex.fileName := ExtractFileName(FActiveEditor.fileName);
+      LSaveDialogTex.FileName := ExtractFileName(FActiveEditor.FileName);
       if LSaveDialogTex.Execute then
-        LFileName := LSaveDialogTex.fileName
+        LFileName := LSaveDialogTex.FileName
       else
         exit;
     finally
@@ -1082,17 +1164,9 @@ begin
     end;
   end
   else
-    LFileName := FActiveEditor.fileName;
+    LFileName := FActiveEditor.FileName;
 
   Result := SaveDocument(LFileName);
-
-  if Result then
-  begin
-    FActiveEditor.fileName := LFileName;
-    Main.Caption := Application.Title + ' - [' + FActiveEditor.Caption + ']';
-    FActiveEditor.State := stSave;
-    SetStatusBarCaption;
-  end;
 end;
 
 function TMain.SaveDocument(AFileName: string): Boolean;
@@ -1103,10 +1177,18 @@ begin
 
   LFileStream := TFileStream.Create(AFileName, fmCreate);
   try
-    FActiveEditor.Editor.Lines.SaveToStream(LFileStream, TEncoding.UTF8WithoutBOM);
+    FActiveEditor.Editor.Lines.SaveToStream(LFileStream, FActiveEditor.Editor.Encoding);
     Result := True;
   finally
     LFileStream.Free;
+  end;
+
+  if Result then
+  begin
+    FActiveEditor.FileName := AFileName;
+    FActiveEditor.State := stSave;
+    FTabEditor.Tabs[FTabEditor.TabIndex] := ExtractFileName(FActiveEditor.FileName);
+    SetStatusBarCaption;
   end;
 end;
 

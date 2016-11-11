@@ -19,7 +19,9 @@ uses
   uEditorGoToLine in 'Forms\uEditorGoToLine.pas' {EditorGoToLineForm},
   uSettings in 'Forms\uSettings.pas' {SettingsForm},
   uEncoding in 'Units\uEncoding.pas',
-  uCustomMDIMenuButton in 'Customs\uCustomMDIMenuButton.pas';
+  uCustomMDIMenuButton in 'Customs\uCustomMDIMenuButton.pas',
+  uEditorEncoding in 'Forms\uEditorEncoding.pas' {EditorEncodingForm},
+  uCustomTabSet in 'Customs\uCustomTabSet.pas';
 
 {$R *.res}
 
