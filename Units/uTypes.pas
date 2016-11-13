@@ -35,10 +35,16 @@ const
   cmAlignJustifyBegin: string = '\begin{justify}';
   cmAlignJustifyEnd: string = '\end{justify}';
 
-  // Перечень
+  // List
   cmListItemizeBegin: string = '\begin{itemize}';
   cmListItemizeItem: string = '\item';
   cmListItemizeEnd: string = '\end{itemize}';
+  cmListEnumerateBegin: string = '\begin{enumerate}';
+  cmListEnumerateItem: string = '\item';
+  cmListEnumerateEnd: string = '\end{enumerate}';
+  cmListDescriptionBegin: string = '\begin{description}';
+  cmListDescriptionItem: string = '\item[_]';
+  cmListDescriptionEnd: string = '\end{description}';
 
   // Команды
   cmTextColor: string = '\textcolor';

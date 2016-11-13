@@ -22,7 +22,8 @@ uses
   uCustomMDIMenuButton in 'Customs\uCustomMDIMenuButton.pas',
   uEditorEncoding in 'Forms\uEditorEncoding.pas' {EditorEncodingForm},
   uCustomTabSet in 'Customs\uCustomTabSet.pas',
-  uLanguage in 'Units\uLanguage.pas';
+  uLanguage in 'Units\uLanguage.pas',
+  uInsertList in 'Forms\uInsertList.pas' {InsertListForm};
 
 {$R *.res}
 

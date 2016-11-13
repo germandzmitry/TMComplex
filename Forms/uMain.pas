@@ -102,6 +102,8 @@ type
     ActMiKTeX: TAction;
     ActWindow: TAction;
     ActHelp: TAction;
+    ActInsertSubTables: TAction;
+    ActListCases: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -137,11 +139,13 @@ type
     procedure ActTextSubAlignExecute(Sender: TObject);
     procedure ActTextShowSpecialCharsExecute(Sender: TObject);
 
+    { Text-Font }
     procedure ActFontBoldExecute(Sender: TObject);
     procedure ActFontItalicExecute(Sender: TObject);
     procedure ActFontUnderlineExecute(Sender: TObject);
     procedure ActFontColorExecute(Sender: TObject);
 
+    { Text-Align }
     procedure ActAlignLeftExecute(Sender: TObject);
     procedure ActAlignCenterExecute(Sender: TObject);
     procedure ActAlignRightExecute(Sender: TObject);
@@ -151,9 +155,12 @@ type
     procedure ActInsertExecute(Sender: TObject);
     procedure ActInsertImageExecute(Sender: TObject);
     procedure ActInsertSubListExecute(Sender: TObject);
+
+    { Insert-List }
     procedure ActListItemizeExecute(Sender: TObject);
     procedure ActListEnumerateExecute(Sender: TObject);
     procedure ActListDescriptionExecute(Sender: TObject);
+    procedure ActListCasesExecute(Sender: TObject);
 
     { View }
     procedure ActViewExecute(Sender: TObject);
@@ -217,6 +224,7 @@ type
     procedure TexGuiSymbolClick(Sender: TObject; const Symbol: TSymbol);
     procedure InsertTemplate(const cmName: string; moveX: Integer);
     procedure InsertTemplateBlock(const cmBegin: string; const cmEnd: string);
+    procedure InsertTemplateList(cmBegin, cmItem, cmEnd: string);
 
     procedure ProcessParam(Index: Integer; param: string);
   public
@@ -244,7 +252,7 @@ implementation
 {$R 'Image\TexGuiSymbols\12.res'}
 {$R 'Image\TexGuiSymbols\13.res'}
 
-uses uAbout, uProcess, uEditorGoToLine, uEncoding, uLanguage;
+uses uAbout, uProcess, uEditorGoToLine, uEncoding, uLanguage, uInsertList;
 
 procedure TMain.ProcessParam(Index: Integer; param: string);
 begin
@@ -745,25 +753,52 @@ end;
 
 procedure TMain.ActListItemizeExecute(Sender: TObject);
 begin
-  // InsertTemplateBlock(cmListItemizeBegin, cmListItemizeEnd);
-  if (FActiveEditor <> nil) and (FActiveEditor.Editor <> nil) then
-  begin
-    FActiveEditor.Editor.InsertText(Pwidechar(cmListItemizeBegin + //
-      #13#10 + '  ' + cmListItemizeItem + //
-      #13#10 + '  ' + cmListItemizeItem + //
-      #13#10 + cmListItemizeEnd));
-    FActiveEditor.Editor.DisplayCaretY := FActiveEditor.Editor.DisplayCaretY - 1;
-  end;
+  InsertTemplateList(cmListItemizeBegin, cmListItemizeItem, cmListItemizeEnd);
 end;
 
 procedure TMain.ActListEnumerateExecute(Sender: TObject);
 begin
-  //
+  InsertTemplateList(cmListEnumerateBegin, cmListEnumerateItem, cmListEnumerateEnd);
 end;
 
 procedure TMain.ActListDescriptionExecute(Sender: TObject);
 begin
-  //
+  InsertTemplateList(cmListDescriptionBegin, cmListDescriptionItem, cmListDescriptionEnd);
+end;
+
+procedure TMain.ActListCasesExecute(Sender: TObject);
+var
+  i, LCutY: Integer;
+  LInsert: string;
+  LInsertList: TInsertListForm;
+begin
+  if FActiveEditor <> nil then
+  begin
+    LInsertList := TInsertListForm.Create(Main);
+    try
+      if LInsertList.ShowModal = mrOk then
+      begin
+        LCutY := FActiveEditor.Editor.DisplayCaretY;
+        for i := 1 to StrToInt(LInsertList.eItemCount.Text) do
+          if i = StrToInt(LInsertList.eItemCount.Text) then
+            LInsert := LInsert + '    _, & \hbox{_.}' + #13#10
+          else
+            LInsert := LInsert + '    _, & \hbox{_;} \\' + #13#10;
+
+        LInsert := '\left\{' + #13#10 + '  \begin{array}{ll}' + #13#10 // начало
+          + LInsert //
+          + '  \end{array}' + #13#10 + '\right.'; // конец
+
+        FActiveEditor.Editor.InsertText(LInsert);
+        FActiveEditor.Editor.DisplayCaretY := LCutY + 2;
+        FActiveEditor.Editor.DisplayCaretX := 6;
+      end;
+    finally
+      LInsertList.Free;
+    end;
+  end;
+  // InsertTemplateList('\left\{' + #13#10 + '  \begin{array}{ll}', ' , & \hbox{ ;} \\',
+  // '  \end{array}' + #13#10 + '\right.');
 end;
 
 { View }
@@ -1165,6 +1200,33 @@ begin
   begin
     FActiveEditor.Editor.InsertText(Pwidechar(cmBegin + #13#10 + #13#10 + cmEnd));
     FActiveEditor.Editor.DisplayCaretY := FActiveEditor.Editor.DisplayCaretY - 1;
+  end;
+end;
+
+procedure TMain.InsertTemplateList(cmBegin, cmItem, cmEnd: string);
+var
+  i, LCutY: Integer;
+  LInsert: string;
+  LInsertList: TInsertListForm;
+begin
+  if FActiveEditor <> nil then
+  begin
+    LInsertList := TInsertListForm.Create(Main);
+    try
+      if LInsertList.ShowModal = mrOk then
+      begin
+        LCutY := FActiveEditor.Editor.DisplayCaretY;
+        for i := 1 to StrToInt(LInsertList.eItemCount.Text) do
+          LInsert := LInsert + '  ' + cmItem + ' ' + #13#10;
+
+        LInsert := cmBegin + #13#10 + LInsert + cmEnd;
+        FActiveEditor.Editor.InsertText(LInsert);
+        FActiveEditor.Editor.DisplayCaretY := LCutY + 1;
+        FActiveEditor.Editor.DisplayCaretX := Length('  ' + cmItem) + 2;
+      end;
+    finally
+      LInsertList.Free;
+    end;
   end;
 end;
 
