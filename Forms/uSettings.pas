@@ -34,13 +34,14 @@ type
     BtnCancel: TButton;
     tvSettings: TTreeView;
     TabPDFViewer: TTabSheet;
-    lePDFViewerOther: TLabeledEdit;
     btnPDFViewerOther: TSpeedButton;
     rbPDFViewerDefault: TRadioButton;
     rbPDFViewerOther: TRadioButton;
     rbPDFViewerSumatra: TRadioButton;
-    lePDFViewerSumatra: TLabeledEdit;
     btnPDFViewerSumatra: TSpeedButton;
+    ePDFViewerSumatra: TEdit;
+    ePDFViewerOther: TEdit;
+    TabApplication: TTabSheet;
     procedure FormCreate(Sender: TObject);
     procedure tvSettingsClick(Sender: TObject);
     procedure BtnCancelClick(Sender: TObject);
@@ -65,7 +66,7 @@ implementation
 
 {$R *.dfm}
 
-uses uTypes;
+uses uTypes, uLanguage;
 
 { TSetting }
 
@@ -115,17 +116,24 @@ end;
 
 procedure TSettingsForm.FormCreate(Sender: TObject);
 var
-  node: TTreeNode;
   i: integer;
+  node: TTreeNode;
 begin
   pBottom.Caption := '';
   pcSettings.Align := alClient;
 
+  UpdateLanguage(self, lngRus);
+
   tvSettings.Items.Clear;
   tvSettings.Items.BeginUpdate;
-  node := tvSettings.Items.AddObject(nil, 'Просмоторщик PDF', Pointer(TabPDFViewer));
+  node := tvSettings.Items.AddObject(nil, TabApplication.Caption, Pointer(TabApplication));
+  node := tvSettings.Items.AddObject(nil, TabPDFViewer.Caption, Pointer(TabPDFViewer));
 
   tvSettings.Items.EndUpdate;
+
+  for i := 0 to self.ComponentCount - 1 do
+    if self.Components[i] is TEdit then
+      (self.Components[i] as TEdit).Text := '';
 
   for i := 0 to pcSettings.PageCount - 1 do
     pcSettings.Pages[i].TabVisible := false;
@@ -167,10 +175,10 @@ begin
   try
     open.Filter := 'Приложения|*.exe';
     open.DefaultExt := 'exe';
-    if FileExists(lePDFViewerSumatra.Text) then
-      open.InitialDir := ExtractFilePath(lePDFViewerSumatra.Text);
+    if FileExists(ePDFViewerSumatra.Text) then
+      open.InitialDir := ExtractFilePath(ePDFViewerSumatra.Text);
     if open.Execute then
-      lePDFViewerSumatra.Text := open.FileName;
+      ePDFViewerSumatra.Text := open.FileName;
   finally
     open.Free;
   end;
@@ -184,10 +192,10 @@ begin
   try
     open.Filter := 'Приложения|*.exe';
     open.DefaultExt := 'exe';
-    if FileExists(lePDFViewerOther.Text) then
-      open.InitialDir := ExtractFilePath(lePDFViewerOther.Text);
+    if FileExists(ePDFViewerOther.Text) then
+      open.InitialDir := ExtractFilePath(ePDFViewerOther.Text);
     if open.Execute then
-      lePDFViewerOther.Text := open.FileName;
+      ePDFViewerOther.Text := open.FileName;
   finally
     open.Free;
   end;
@@ -195,25 +203,25 @@ end;
 
 procedure TSettingsForm.rbPDFViewerDefaultClick(Sender: TObject);
 begin
-  lePDFViewerOther.Enabled := rbPDFViewerOther.Checked;
+  ePDFViewerOther.Enabled := rbPDFViewerOther.Checked;
   btnPDFViewerOther.Enabled := rbPDFViewerOther.Checked;
-  lePDFViewerSumatra.Enabled := rbPDFViewerSumatra.Checked;
+  ePDFViewerSumatra.Enabled := rbPDFViewerSumatra.Checked;
   btnPDFViewerSumatra.Enabled := rbPDFViewerSumatra.Checked;
 end;
 
 procedure TSettingsForm.rbPDFViewerSumatraClick(Sender: TObject);
 begin
-  lePDFViewerSumatra.Enabled := rbPDFViewerSumatra.Checked;
+  ePDFViewerSumatra.Enabled := rbPDFViewerSumatra.Checked;
   btnPDFViewerSumatra.Enabled := rbPDFViewerSumatra.Checked;
-  lePDFViewerOther.Enabled := rbPDFViewerOther.Checked;
+  ePDFViewerOther.Enabled := rbPDFViewerOther.Checked;
   btnPDFViewerOther.Enabled := rbPDFViewerOther.Checked;
 end;
 
 procedure TSettingsForm.rbPDFViewerOtherClick(Sender: TObject);
 begin
-  lePDFViewerOther.Enabled := rbPDFViewerOther.Checked;
+  ePDFViewerOther.Enabled := rbPDFViewerOther.Checked;
   btnPDFViewerOther.Enabled := rbPDFViewerOther.Checked;
-  lePDFViewerSumatra.Enabled := rbPDFViewerSumatra.Checked;
+  ePDFViewerSumatra.Enabled := rbPDFViewerSumatra.Checked;
   btnPDFViewerSumatra.Enabled := rbPDFViewerSumatra.Checked;
 end;
 
@@ -222,8 +230,8 @@ begin
   rbPDFViewerDefault.Checked := FAllSetting.PDFViewer.Default;
   rbPDFViewerSumatra.Checked := FAllSetting.PDFViewer.Sumatra;
   rbPDFViewerOther.Checked := FAllSetting.PDFViewer.Other;
-  lePDFViewerSumatra.Text := FAllSetting.PDFViewer.SumatraPath;
-  lePDFViewerOther.Text := FAllSetting.PDFViewer.OtherPath;
+  ePDFViewerSumatra.Text := FAllSetting.PDFViewer.SumatraPath;
+  ePDFViewerOther.Text := FAllSetting.PDFViewer.OtherPath;
 end;
 
 procedure TSettingsForm.UpdateSetting;
@@ -231,8 +239,8 @@ begin
   FAllSetting.PDFViewer.Default := rbPDFViewerDefault.Checked;
   FAllSetting.PDFViewer.Sumatra := rbPDFViewerSumatra.Checked;
   FAllSetting.PDFViewer.Other := rbPDFViewerOther.Checked;
-  FAllSetting.PDFViewer.SumatraPath := lePDFViewerSumatra.Text;
-  FAllSetting.PDFViewer.OtherPath := lePDFViewerOther.Text;
+  FAllSetting.PDFViewer.SumatraPath := ePDFViewerSumatra.Text;
+  FAllSetting.PDFViewer.OtherPath := ePDFViewerOther.Text;
 end;
 
 end.

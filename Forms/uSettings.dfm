@@ -28,74 +28,78 @@ object SettingsForm: TSettingsForm
     Margins.Top = 10
     Margins.Right = 10
     Margins.Bottom = 10
-    ActivePage = TabPDFViewer
+    ActivePage = TabApplication
     Style = tsButtons
     TabOrder = 0
     object TabPDFViewer: TTabSheet
       Caption = 'TabPDFViewer'
       object btnPDFViewerOther: TSpeedButton
         Left = 359
-        Top = 127
+        Top = 99
         Width = 23
         Height = 23
         Caption = '...'
+        ParentShowHint = False
+        ShowHint = True
         OnClick = btnPDFViewerOtherClick
       end
       object btnPDFViewerSumatra: TSpeedButton
         Left = 359
-        Top = 63
+        Top = 49
         Width = 23
         Height = 23
         Caption = '...'
+        ParentShowHint = False
+        ShowHint = True
         OnClick = btnPDFViewerSumatraClick
-      end
-      object lePDFViewerOther: TLabeledEdit
-        Left = 19
-        Top = 128
-        Width = 334
-        Height = 21
-        EditLabel.Width = 87
-        EditLabel.Height = 13
-        EditLabel.Caption = 'lePDFViewerOther'
-        TabOrder = 0
       end
       object rbPDFViewerDefault: TRadioButton
         Left = 3
         Top = 3
-        Width = 113
+        Width = 190
         Height = 17
         Caption = 'rbPDFViewerDefault'
-        TabOrder = 1
+        TabOrder = 0
         OnClick = rbPDFViewerDefaultClick
       end
       object rbPDFViewerOther: TRadioButton
         Left = 3
-        Top = 91
-        Width = 113
+        Top = 77
+        Width = 190
         Height = 17
         Caption = 'rbPDFViewerOther'
-        TabOrder = 2
+        TabOrder = 1
         OnClick = rbPDFViewerOtherClick
       end
       object rbPDFViewerSumatra: TRadioButton
         Left = 3
         Top = 27
-        Width = 126
+        Width = 190
         Height = 17
         Caption = 'rbPDFViewerSumatra'
-        TabOrder = 3
+        TabOrder = 2
         OnClick = rbPDFViewerSumatraClick
       end
-      object lePDFViewerSumatra: TLabeledEdit
+      object ePDFViewerSumatra: TEdit
         Left = 19
-        Top = 64
+        Top = 50
         Width = 334
         Height = 21
-        EditLabel.Width = 99
-        EditLabel.Height = 13
-        EditLabel.Caption = 'lePDFViewerSumatra'
-        TabOrder = 4
+        TabOrder = 3
+        Text = 'ePDFViewerSumatra'
       end
+      object ePDFViewerOther: TEdit
+        Left = 19
+        Top = 100
+        Width = 334
+        Height = 21
+        TabOrder = 4
+        Text = 'ePDFViewerOther'
+      end
+    end
+    object TabApplication: TTabSheet
+      Caption = 'TabApplication'
+      ImageIndex = 1
     end
   end
   object pBottom: TPanel

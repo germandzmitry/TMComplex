@@ -74,6 +74,8 @@
         <DCC_RemoteDebug>true</DCC_RemoteDebug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <OutputExt>Debug.exe</OutputExt>
+        <DCC_ExeOutput>Application</DCC_ExeOutput>
         <Icon_MainIcon>TMComplex_Icon.ico</Icon_MainIcon>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
@@ -92,6 +94,7 @@
         <DCC_DebugInformation>0</DCC_DebugInformation>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+        <DCC_ExeOutput>Application</DCC_ExeOutput>
         <VerInfo_AutoGenVersion>true</VerInfo_AutoGenVersion>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
@@ -140,6 +143,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Customs\uCustomTabSet.pas"/>
+        <DCCReference Include="Units\uLanguage.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

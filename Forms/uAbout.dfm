@@ -109,7 +109,7 @@ object AboutForm: TAboutForm
   end
   object lVersionDate: TLabel
     Left = 116
-    Top = 77
+    Top = 72
     Width = 60
     Height = 13
     Caption = 'lVersionDate'
@@ -117,9 +117,9 @@ object AboutForm: TAboutForm
   object lDeveloper: TLabel
     Left = 116
     Top = 109
-    Width = 49
+    Width = 51
     Height = 13
-    Caption = 'Developer'
+    Caption = 'lDeveloper'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -129,7 +129,7 @@ object AboutForm: TAboutForm
   end
   object lEmail: TLabel
     Left = 116
-    Top = 128
+    Top = 123
     Width = 28
     Height = 13
     Caption = 'email:'
@@ -163,13 +163,13 @@ object AboutForm: TAboutForm
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
-    Caption = 'OK'
+    Caption = 'BtnOK'
     TabOrder = 1
     OnClick = BtnOKClick
   end
   object eEmail: TEdit
     Left = 150
-    Top = 128
+    Top = 123
     Width = 151
     Height = 13
     TabStop = False

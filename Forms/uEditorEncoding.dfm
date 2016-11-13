@@ -4,7 +4,7 @@ object EditorEncodingForm: TEditorEncodingForm
   BorderStyle = bsDialog
   Caption = 'EditorEncodingForm'
   ClientHeight = 74
-  ClientWidth = 334
+  ClientWidth = 264
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,50 +14,48 @@ object EditorEncodingForm: TEditorEncodingForm
   OldCreateOrder = False
   Position = poMainFormCenter
   OnCreate = FormCreate
+  OnShow = FormShow
   DesignSize = (
-    334
+    264
     74)
   PixelsPerInch = 96
   TextHeight = 13
-  object lDocEncoding: TLabel
+  object lEncoding: TLabel
     Left = 8
     Top = 11
-    Width = 63
+    Width = 45
     Height = 13
-    Caption = 'lDocEncoding'
+    Caption = 'lEncoding'
   end
   object BtnOk: TButton
-    Left = 170
+    Left = 100
     Top = 41
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
-    Caption = 'Ok'
+    Caption = 'BtnOk'
     TabOrder = 0
     OnClick = BtnOkClick
-    ExplicitLeft = 481
-    ExplicitTop = 314
+    ExplicitLeft = 170
   end
   object BtnCancel: TButton
-    Left = 251
+    Left = 181
     Top = 41
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
-    Caption = 'Cancel'
+    Caption = 'BtnCancel'
     TabOrder = 1
     OnClick = BtnCancelClick
-    ExplicitLeft = 562
-    ExplicitTop = 314
+    ExplicitLeft = 251
   end
   object cbEncoding: TComboBox
-    Left = 136
+    Left = 86
     Top = 8
-    Width = 190
+    Width = 170
     Height = 21
     Style = csDropDownList
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 2
-    ExplicitWidth = 436
   end
 end

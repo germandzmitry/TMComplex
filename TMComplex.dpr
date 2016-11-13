@@ -21,7 +21,8 @@ uses
   uEncoding in 'Units\uEncoding.pas',
   uCustomMDIMenuButton in 'Customs\uCustomMDIMenuButton.pas',
   uEditorEncoding in 'Forms\uEditorEncoding.pas' {EditorEncodingForm},
-  uCustomTabSet in 'Customs\uCustomTabSet.pas';
+  uCustomTabSet in 'Customs\uCustomTabSet.pas',
+  uLanguage in 'Units\uLanguage.pas';
 
 {$R *.res}
 

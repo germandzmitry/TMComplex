@@ -17,7 +17,8 @@ type
     procedure EditorChange(Sender: TObject);
     procedure EditorCaretChanged(ASender: TObject; X, Y: Integer);
     procedure EditorKeyPress(ASender: TObject; var AKey: Char);
-    procedure EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton; X, Y, ALine: Integer; AMark: TBCEditorMark);
+    procedure EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton; X, Y, ALine: Integer;
+      AMark: TBCEditorMark);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormActivate(Sender: TObject);
   private
@@ -58,6 +59,7 @@ begin
   // Editor.SpecialChars.Visible := true;
   // Editor.SpecialChars.EndOfLine.Visible := true;
   Editor.SpecialChars.EndOfLine.style := eolPilcrow;
+  Editor.PopupMenu := Main.PopupActionEditor;
 
   Editor.OnChange := EditorChange;
   Editor.OnKeyPress := EditorKeyPress;
@@ -129,7 +131,8 @@ end;
 
 procedure TEditorForm.EditorCaretChanged(ASender: TObject; X, Y: Integer);
 begin
-  Main.StatusBar.Panels[STATUS_BAR_CARET].text := IntToStr(Editor.DisplayCaretY) + ':' + IntToStr(Editor.DisplayCaretX);
+  Main.StatusBar.Panels[STATUS_BAR_CARET].text := IntToStr(Editor.DisplayCaretY) + ':' +
+    IntToStr(Editor.DisplayCaretX);
 end;
 
 procedure TEditorForm.EditorChange(Sender: TObject);
@@ -146,8 +149,8 @@ begin
   //
 end;
 
-procedure TEditorForm.EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton; X, Y, ALine: Integer;
-  AMark: TBCEditorMark);
+procedure TEditorForm.EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton;
+  X, Y, ALine: Integer; AMark: TBCEditorMark);
 begin
   //
 end;

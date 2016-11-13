@@ -58,6 +58,8 @@ implementation
 
 {$R *.dfm}
 
+uses uLanguage;
+
 procedure TLogForm.FormCreate(Sender: TObject);
 begin
   mLog.Align := alClient;
@@ -71,6 +73,8 @@ end;
 procedure TLogForm.FormShow(Sender: TObject);
 begin
   LoadSettings;
+
+  UpdateLanguage(Self, lngRus);
 
   SendMessage(lvLog.Handle, WM_UPDATEUISTATE, MakeLong(UIS_SET, UISF_HIDEFOCUS), 0);
 end;
@@ -115,7 +119,7 @@ begin
   ActLogMsgWarning.Caption := IntToStr(MsgCount.Warning);
   ActlogMsgBadBox.Caption := IntToStr(MsgCount.BadBox);
 
-  self.Caption := GetParsingLine;
+  Self.Caption := GetParsingLine;
   ShowMsgLines;
 end;
 
@@ -227,7 +231,7 @@ begin
   MsgCount.Clear;
   MsgLines := nil;
   ShowMsg;
-  self.Caption := rsLogCaption;
+  Self.Caption := rsLogCaption;
 end;
 
 procedure TLogForm.ActlogMsgBadBoxExecute(Sender: TObject);

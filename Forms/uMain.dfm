@@ -86,8 +86,6 @@ object Main: TMain
       ParentShowHint = False
       ShowHint = True
       Spacing = 0
-      ExplicitLeft = 1
-      ExplicitWidth = 698
     end
     object PanelActionLeft: TPanel
       Left = 1
@@ -123,9 +121,6 @@ object Main: TMain
         ParentShowHint = False
         ShowHint = True
         Spacing = 0
-        ExplicitLeft = -3
-        ExplicitTop = 6
-        ExplicitWidth = 383
       end
       object ActionToolBar2: TActionToolBar
         AlignWithMargins = True
@@ -150,9 +145,6 @@ object Main: TMain
         Font.Style = []
         ParentFont = False
         Spacing = 0
-        ExplicitLeft = 120
-        ExplicitTop = 40
-        ExplicitWidth = 150
       end
     end
     object PanelActionClient: TPanel
@@ -193,18 +185,46 @@ object Main: TMain
     Images = ilAction
     Left = 40
     Top = 176
+    object ActHelp: TAction
+      Category = 'Help'
+      Caption = 'ActHelp'
+      OnExecute = ActHelpExecute
+    end
+    object ActWindow: TAction
+      Category = 'Window'
+      Caption = 'ActWindow'
+      OnExecute = ActWindowExecute
+    end
+    object ActMiKTeX: TAction
+      Category = 'MiKTeX'
+      Caption = 'ActMiKTeX'
+      OnExecute = ActMiKTeXExecute
+    end
+    object ActEdit: TAction
+      Category = 'Edit'
+      Caption = 'ActEdit'
+      OnExecute = ActEditExecute
+    end
+    object ActTex: TAction
+      Category = 'Tex'
+      Caption = 'ActTex'
+      OnExecute = ActTexExecute
+    end
     object ActTexPdfLaTeX: TAction
       Category = 'Tex'
       Caption = 'ActTexPdfLaTeX'
-      Hint = 'Run'
       ImageIndex = 17
       ShortCut = 120
       OnExecute = ActTexPdfLaTeXExecute
     end
+    object ActFile: TAction
+      Category = 'File'
+      Caption = 'ActFile'
+      OnExecute = ActFileExecute
+    end
     object ActFileNew: TAction
       Category = 'File'
       Caption = 'ActFileNew'
-      Hint = 'New'
       ImageIndex = 0
       ShortCut = 16462
       OnExecute = ActFileNewExecute
@@ -212,7 +232,6 @@ object Main: TMain
     object ActFileOpen: TAction
       Category = 'File'
       Caption = 'ActFileOpen'
-      Hint = 'Open'
       ImageIndex = 1
       ShortCut = 16463
       OnExecute = ActFileOpenExecute
@@ -220,7 +239,6 @@ object Main: TMain
     object ActFileSave: TAction
       Category = 'File'
       Caption = 'ActFileSave'
-      Hint = 'Save'
       ImageIndex = 2
       ShortCut = 16467
       OnExecute = ActFileSaveExecute
@@ -228,7 +246,6 @@ object Main: TMain
     object ActFileSaveAs: TAction
       Category = 'File'
       Caption = 'ActFileSaveAs'
-      Hint = 'Save As'
       ImageIndex = 3
       OnExecute = ActFileSaveAsExecute
     end
@@ -241,7 +258,6 @@ object Main: TMain
     object ActFontBold: TAction
       Category = 'Text.Font'
       Caption = 'ActFontBold'
-      Hint = 'Bold'
       ImageIndex = 11
       ShortCut = 16450
       OnExecute = ActFontBoldExecute
@@ -249,7 +265,6 @@ object Main: TMain
     object ActFontItalic: TAction
       Category = 'Text.Font'
       Caption = 'ActFontItalic'
-      Hint = 'Italic'
       ImageIndex = 12
       ShortCut = 16457
       OnExecute = ActFontItalicExecute
@@ -257,7 +272,6 @@ object Main: TMain
     object ActFontUnderline: TAction
       Category = 'Text.Font'
       Caption = 'ActFontUnderline'
-      Hint = 'Underline'
       ImageIndex = 13
       ShortCut = 16469
       OnExecute = ActFontUnderlineExecute
@@ -265,77 +279,76 @@ object Main: TMain
     object ActAlignLeft: TAction
       Category = 'Text.Align'
       Caption = 'ActAlignLeft'
-      Hint = 'Align left'
       ImageIndex = 7
       OnExecute = ActAlignLeftExecute
     end
     object ActAlignCenter: TAction
       Category = 'Text.Align'
       Caption = 'ActAlignCenter'
-      Hint = 'Align center'
       ImageIndex = 8
       OnExecute = ActAlignCenterExecute
     end
     object ActAlignRight: TAction
       Category = 'Text.Align'
       Caption = 'ActAlignRight'
-      Hint = 'Align right'
       ImageIndex = 9
       OnExecute = ActAlignRightExecute
     end
     object ActAlignJustify: TAction
       Category = 'Text.Align'
       Caption = 'ActAlignJustify'
-      Hint = 'Align justify'
       ImageIndex = 10
       OnExecute = ActAlignJustifyExecute
     end
-    object ActTextSize: TAction
+    object ActText: TAction
       Category = 'Text'
-      Caption = 'ActTextSize'
-      Hint = 'Font size'
+      Caption = 'ActText'
+      OnExecute = ActTextExecute
+    end
+    object ActTextSubSize: TAction
+      Category = 'Text'
+      Caption = 'ActTextSubSize'
       ImageIndex = 15
-      OnExecute = ActTextSizeExecute
+      OnExecute = ActTextSubSizeExecute
     end
     object ActFileSetting: TAction
       Category = 'File'
       Caption = 'ActFileSetting'
-      Hint = 'Setting'
       ImageIndex = 4
       OnExecute = ActFileSettingExecute
     end
     object ActFileExit: TAction
       Category = 'File'
       Caption = 'ActFileExit'
-      Hint = 'Exit'
       ImageIndex = 5
       OnExecute = ActFileExitExecute
     end
     object ActFontColor: TAction
       Category = 'Text.Font'
       Caption = 'ActFontColor'
-      Hint = 'Font color'
       ImageIndex = 16
       OnExecute = ActFontColorExecute
     end
     object ActTexStop: TAction
       Category = 'Tex'
       Caption = 'ActTexStop'
-      Hint = 'Stop'
       ImageIndex = 19
       OnExecute = ActTexStopExecute
+    end
+    object ActInsert: TAction
+      Category = 'Insert'
+      Caption = 'ActInsert'
+      OnExecute = ActInsertExecute
     end
     object ActInsertImage: TAction
       Category = 'Insert'
       Caption = 'ActInsertImage'
-      Hint = 'Insert image'
       ImageIndex = 20
       OnExecute = ActInsertImageExecute
     end
     object ActEditUndo: TAction
       Category = 'Edit'
       Caption = 'ActEditUndo'
-      Hint = 'Undo'
       ImageIndex = 21
       ShortCut = 16474
       OnExecute = ActEditUndoExecute
@@ -343,7 +356,6 @@ object Main: TMain
     object ActEditRedo: TAction
       Category = 'Edit'
       Caption = 'ActEditRedo'
-      Hint = 'Redo'
       ImageIndex = 22
       ShortCut = 24666
       OnExecute = ActEditRedoExecute
@@ -351,7 +363,6 @@ object Main: TMain
     object ActEditCut: TAction
       Category = 'Edit'
       Caption = 'ActEditCut'
-      Hint = 'Cut'
       ImageIndex = 23
       ShortCut = 16472
       OnExecute = ActEditCutExecute
@@ -359,7 +370,6 @@ object Main: TMain
     object ActEditCopy: TAction
       Category = 'Edit'
       Caption = 'ActEditCopy'
-      Hint = 'Copy'
       ImageIndex = 24
       ShortCut = 16451
       OnExecute = ActEditCopyExecute
@@ -367,7 +377,6 @@ object Main: TMain
     object ActEditPaste: TAction
       Category = 'Edit'
       Caption = 'ActEditPaste'
-      Hint = 'Paste'
       ImageIndex = 25
       ShortCut = 16470
       OnExecute = ActEditPasteExecute
@@ -375,17 +384,9 @@ object Main: TMain
     object ActEditSelectAll: TAction
       Category = 'Edit'
       Caption = 'ActEditSelectAll'
-      Hint = 'Select ALL'
       ImageIndex = 26
       ShortCut = 16449
       OnExecute = ActEditSelectAllExecute
-    end
-    object ActTextShowSpecialChars: TAction
-      Category = 'Text'
-      Caption = 'ActTextShowSpecialChars'
-      Hint = 'Show special symbol'
-      ImageIndex = 27
-      OnExecute = ActTextShowSpecialCharsExecute
     end
     object ActMiKTeXOption: TAction
       Category = 'MiKTeX'
@@ -416,6 +417,11 @@ object Main: TMain
       Caption = 'ActTexSysCmd'
       OnExecute = ActTexSysCmdExecute
     end
+    object ActView: TAction
+      Category = 'View'
+      Caption = 'ActView'
+      OnExecute = ActViewExecute
+    end
     object ActViewLog: TAction
       Category = 'View'
       Caption = 'ActViewLog'
@@ -425,7 +431,6 @@ object Main: TMain
     object ActEditGoToLine: TAction
       Category = 'Edit'
       Caption = 'ActEditGoToLine'
-      Hint = 'Go to line'
       OnExecute = ActEditGoToLineExecute
     end
     object ActWindowCascade: TAction
@@ -469,12 +474,18 @@ object Main: TMain
       ImageIndex = 8
       OnExecute = ActTextSubAlignExecute
     end
+    object ActTextShowSpecialChars: TAction
+      Category = 'Text'
+      Caption = 'ActTextShowSpecialChars'
+      ImageIndex = 27
+      OnExecute = ActTextShowSpecialCharsExecute
+    end
   end
   object ilCode: TImageList
     Left = 472
     Top = 176
     Bitmap = {
-      494C0101030060005C0110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103006000600110001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -617,7 +628,7 @@ object Main: TMain
     Left = 416
     Top = 176
     Bitmap = {
-      494C0101220060004C0210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010122006000500210001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000009000000001002000000000000090
       000000000000000000000000000000000000727272FF727272FF727272FF7272
       72FF727272FF727272FF727272FF727272FF727272FF727272FF727272FF7272
@@ -1890,7 +1901,8 @@ object Main: TMain
                 Caption = 'ActFi&leExit'
                 ImageIndex = 5
               end>
-            Caption = '&File'
+            Action = ActFile
+            Caption = '&ActFile'
           end
           item
             Items = <
@@ -1947,13 +1959,14 @@ object Main: TMain
                 Action = ActEditEncoding
                 Caption = 'ActEditE&ncoding'
               end>
-            Caption = '&Edit'
+            Action = ActEdit
+            Caption = 'A&ctEdit'
           end
           item
             Items = <
               item
-                Action = ActTextSize
-                Caption = '&ActTextSize'
+                Action = ActTextSubSize
+                Caption = '&ActTextSubSize'
                 ImageIndex = 15
               end
               item
@@ -2022,7 +2035,8 @@ object Main: TMain
                 Caption = 'A&ctTextShowSpecialChars'
                 ImageIndex = 27
               end>
-            Caption = '&Text'
+            Action = ActText
+            Caption = 'Ac&tText'
           end
           item
             Items = <
@@ -2035,17 +2049,21 @@ object Main: TMain
                 Items = <
                   item
                     Action = ActListItemize
+                    Caption = '&ActListItemize'
                   end
                   item
                     Action = ActListEnumerate
+                    Caption = 'A&ctListEnumerate'
                   end
                   item
                     Action = ActListDescription
+                    Caption = 'Ac&tListDescription'
                   end>
                 Action = ActInsertSubList
                 Caption = 'A&ctInsertSubList'
               end>
-            Caption = '&Insert'
+            Action = ActInsert
+            Caption = 'Act&Insert'
           end
           item
             Items = <
@@ -2053,7 +2071,8 @@ object Main: TMain
                 Action = ActViewLog
                 Caption = '&ActViewLog'
               end>
-            Caption = '&View'
+            Action = ActView
+            Caption = 'Act&View'
           end
           item
             Items = <
@@ -2076,23 +2095,24 @@ object Main: TMain
                 Caption = 'Ac&tTexSysCmd'
                 ShowGlyph = False
               end>
-            Caption = 'Te&x'
+            Action = ActTex
+            Caption = 'ActT&ex'
           end
           item
             Items = <
               item
                 Action = ActMiKTeXOption
-                Caption = '&ActMiKTeXOption'
+                Caption = 'A&ctMiKTeXOption'
                 ImageIndex = 28
               end
               item
                 Action = ActMiKTeXPackageManager
-                Caption = 'A&ctMiKTeXPackageManager'
+                Caption = 'Ac&tMiKTeXPackageManager'
                 ImageIndex = 28
               end
               item
                 Action = ActMiKTeXUpdateWizard
-                Caption = 'Ac&tMiKTeXUpdateWizard'
+                Caption = 'Act&MiKTeXUpdateWizard'
                 ImageIndex = 28
               end
               item
@@ -2100,10 +2120,11 @@ object Main: TMain
               end
               item
                 Action = ActMiKTeXTeXworks
-                Caption = 'Act&MiKTeXTeXworks'
+                Caption = '&ActMiKTeXTeXworks'
                 ImageIndex = 29
               end>
-            Caption = '&MiKTeX'
+            Action = ActMiKTeX
+            Caption = 'Act&MiKTeX'
           end
           item
             Items = <
@@ -2127,7 +2148,8 @@ object Main: TMain
                 Caption = 'Act&WindowMaximize'
                 ImageIndex = 33
               end>
-            Caption = '&Window'
+            Action = ActWindow
+            Caption = 'Act&Window'
           end
           item
             Items = <
@@ -2136,7 +2158,8 @@ object Main: TMain
                 Caption = '&ActMenuAbout'
                 ImageIndex = 6
               end>
-            Caption = '&Help'
+            Action = ActHelp
+            Caption = 'Act&Help'
           end>
         ActionBar = ActionMainMenuBar
       end

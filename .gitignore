@@ -63,8 +63,16 @@ __recovery/
 *.~*
 
 # Folder
+Application/Project/
 Image/ImageList/
 Win32/
+
+# LaTeX
+*.aux
+*.pdf
+*.tex
+*.synctex
+*.log
 
 # Castalia statistics file (since XE7 Castalia is distributed with Delphi)
 *.stat
@@ -72,7 +80,5 @@ Win32/
 *.bat
 *.rc
 *.jpg
-*.aux
-*.pdf
-*.synctex
-*.log
+Application/need_create.txt
+Application/history.txt

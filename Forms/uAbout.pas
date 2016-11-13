@@ -33,16 +33,16 @@ type
   end;
 
 resourcestring
-  rsAboutVersion = 'version %d.%d.%d build %d';
-  rsAboutDateResile = 'date release %s';
+  rsAboutVersion = '';
 
 implementation
 
 {$R *.dfm}
 
-uses uTexCompile;
+uses uTexCompile, uLanguage;
 
-function FileVersion(const FileName: TFileName; out Release: Word; out Build: Word): String;
+function FileVersion(AMask: string; const FileName: TFileName; out Release: Word;
+  out Build: Word): String;
 var
   VerInfoSize: Cardinal;
   VerValueSize: Cardinal;
@@ -60,7 +60,7 @@ begin
         begin
           Release := HiWord(dwFileVersionLS);
           Build := LoWord(dwFileVersionLS);
-          Result := Format(rsAboutVersion, // Mask
+          Result := Format(AMask, // Mask
             [HiWord(dwFileVersionMS), // Major
             LoWord(dwFileVersionMS), // Minor
             HiWord(dwFileVersionLS), // Release
@@ -71,24 +71,8 @@ begin
   end;
 end;
 
-procedure TAboutForm.BtnOKClick(Sender: TObject);
-begin
-  Close;
-end;
-
 procedure TAboutForm.FormCreate(Sender: TObject);
-var
-  MyDate: TDateTime;
-  Release, Build: Word;
 begin
-  {
-    Release = number of days since Jan 1 2000
-    Build = number of seconds since midnight (00:00:00), divided by 2
-  }
-  lVersion.Caption := FileVersion(Application.ExeName, Release, Build);
-  lVersionDate.Caption := Format(rsAboutDateResile,
-    [DateToStr(IncDay(EncodeDate(2000, 01, 01), Release))]);
-
   lName.Font.Color := RGB(90, 140, 130);
   // lDeveloper.Font.Color := RGB(90, 140, 130);
 
@@ -96,8 +80,22 @@ end;
 
 procedure TAboutForm.FormShow(Sender: TObject);
 var
+  LRelease, LBuild: Word;
+  LCap: string;
   TexCompile: TThreadCompile;
 begin
+  UpdateLanguage(Self, lngRus);
+
+  {
+    Release = number of days since Jan 1 2000
+    Build = number of seconds since midnight (00:00:00), divided by 2
+  }
+  LCap := lVersion.Caption;
+  lVersion.Caption := FileVersion(LCap, Application.ExeName, LRelease, LBuild);
+
+  lVersionDate.Caption := Format(lVersionDate.Caption,
+    [DateToStr(IncDay(EncodeDate(2000, 01, 01), LRelease))]);
+
   mMiKTeX.Lines.Clear;
   mMiKTeX.ReadOnly := true;
   mMiKTeX.BorderStyle := bsNone;
@@ -118,6 +116,11 @@ begin
   if FileExists(ExtractFilePath(Application.ExeName) + 'history.txt') then
     ShellExecute(Handle, nil, PChar('notepad.exe'),
       PChar(ExtractFilePath(Application.ExeName) + 'history.txt'), nil, SW_SHOWNORMAL);
+end;
+
+procedure TAboutForm.BtnOKClick(Sender: TObject);
+begin
+  Close;
 end;
 
 end.

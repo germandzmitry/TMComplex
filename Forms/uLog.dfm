@@ -97,7 +97,6 @@ object LogForm: TLogForm
       Caption = 'ActLogConsole'
       Checked = True
       GroupIndex = 1
-      Hint = 'Show console'
       ImageIndex = 0
       OnExecute = ActLogConsoleExecute
     end
@@ -105,35 +104,30 @@ object LogForm: TLogForm
       Category = 'Log'
       Caption = 'ActLogMessage'
       GroupIndex = 1
-      Hint = 'Show message'
       ImageIndex = 1
       OnExecute = ActLogMessageExecute
     end
     object ActLogClear: TAction
       Category = 'Log'
       Caption = 'ActLogClear'
-      Hint = 'Clear log'
       ImageIndex = 2
       OnExecute = ActLogClearExecute
     end
     object ActLogMsgError: TAction
       Category = 'Log'
       Caption = 'ActLogMsgError'
-      Hint = 'Display Error'
       ImageIndex = 3
       OnExecute = ActLogMsgErrorExecute
     end
     object ActLogMsgWarning: TAction
       Category = 'Log'
       Caption = 'ActLogMsgWarning'
-      Hint = 'Display Warning'
       ImageIndex = 4
       OnExecute = ActLogMsgWarningExecute
     end
     object ActlogMsgBadBox: TAction
       Category = 'Log'
       Caption = 'ActlogMsgBadBox'
-      Hint = 'Display Bad box'
       ImageIndex = 5
       OnExecute = ActlogMsgBadBoxExecute
     end
@@ -142,7 +136,7 @@ object LogForm: TLogForm
     Left = 160
     Top = 264
     Bitmap = {
-      494C010106000800500010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010106000800540010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
