@@ -243,6 +243,7 @@ implementation
 {$R 'Image\TexGuiSymbols\1. Math.res'}
 {$R 'Image\TexGuiSymbols\2. Greek.res'}
 {$R 'Image\TexGuiSymbols\3. Symbols.res'}
+{$R 'Image\TexGuiSymbols\4. International.res'}
 {$R 'Image\TexGuiSymbols\5. Typeface.res'}
 {$R 'Image\TexGuiSymbols\6. Functions.res'}
 {$R 'Image\TexGuiSymbols\7.res'}
@@ -419,7 +420,7 @@ begin
   FTexGuiSymbols.DrawMath(CreateTab(FPageSymbols, 'Math'));
   FTexGuiSymbols.DrawGreek(CreateTab(FPageSymbols, 'Greek'));
   FTexGuiSymbols.DrawSymbols(CreateTab(FPageSymbols, 'Symbols'));
-  // CreateTab(FPageSymbols, 'International');
+  FTexGuiSymbols.DrawInternational(CreateTab(FPageSymbols, 'International'));
   FTexGuiSymbols.DrawTypefase(CreateTab(FPageSymbols, 'Typeface'));
   FTexGuiSymbols.DrawFunctions(CreateTab(FPageSymbols, 'Functions'));
   FTexGuiSymbols.Draw7(CreateTab(FPageSymbols, '{ || } ...'));

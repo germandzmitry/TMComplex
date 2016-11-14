@@ -49,6 +49,7 @@ type
     procedure DrawMath(aOwner: TComponent);
     procedure DrawGreek(aOwner: TComponent);
     procedure DrawSymbols(aOwner: TComponent);
+    procedure DrawInternational(aOwner: TComponent);
     procedure DrawTypefase(aOwner: TComponent);
     procedure DrawFunctions(aOwner: TComponent);
     procedure Draw7(aOwner: TComponent);
@@ -91,6 +92,12 @@ type
     procedure DrawSymbols3(aOwner: TComponent; out left: integer);
     procedure DrawSymbols4(aOwner: TComponent; out left: integer);
     procedure DrawSymbols5(aOwner: TComponent; out left: integer);
+
+    procedure DrawInternational1(aOwner: TComponent; out left: integer);
+    procedure DrawInternational2(aOwner: TComponent; out left: integer);
+    procedure DrawInternational3(aOwner: TComponent; out left: integer);
+    procedure DrawInternational4(aOwner: TComponent; out left: integer);
+    procedure DrawInternational5(aOwner: TComponent; out left: integer);
 
     procedure DrawTypeface1(aOwner: TComponent; out left: integer);
 
@@ -358,6 +365,22 @@ begin
   DrawSymbols4(aOwner, pLeft);
   DrawBevel(aOwner, pLeft);
   DrawSymbols5(aOwner, pLeft);
+end;
+
+procedure TTexGuiSymbols.DrawInternational(aOwner: TComponent);
+var
+  pLeft: integer;
+begin
+  pLeft := 2;
+  DrawInternational1(aOwner, pLeft);
+  DrawBevel(aOwner, pLeft);
+  DrawInternational2(aOwner, pLeft);
+  DrawBevel(aOwner, pLeft);
+  DrawInternational3(aOwner, pLeft);
+  DrawBevel(aOwner, pLeft);
+  DrawInternational4(aOwner, pLeft);
+  // DrawBevel(aOwner, pLeft);
+  // DrawInternational5(aOwner, pLeft);
 end;
 
 procedure TTexGuiSymbols.DrawTypefase(aOwner: TComponent);
@@ -691,33 +714,124 @@ begin
   left := sLeft;
 end;
 
+procedure TTexGuiSymbols.DrawInternational1(aOwner: TComponent; out left: integer);
+var
+  sLeft: integer;
+begin
+  sLeft := left;
+  Draw(aOwner, 'btn_int1_00', 'r4101', '\`{o}', sLeft, FLT, '\`{}', -1);
+  Draw(aOwner, 'btn_int1_01', 'r4102', '\''{o}', sLeft, FLT, '\''{}', -1);
+  Draw(aOwner, 'btn_int1_02', 'r4103', '\^{o}', sLeft, FLT, '\^{}', -1);
+  Draw(aOwner, 'btn_int1_03', 'r4104', '\"{o}', sLeft, FLT, '\"{}', -1);
+  Draw(aOwner, 'btn_int1_04', 'r4105', '\~{o}', sLeft, FLT, '\~{}', -1);
+  Draw(aOwner, 'btn_int1_05', 'r4106', '\={o}', sLeft, FLT, '\={}', -1);
+  Draw(aOwner, 'btn_int1_06', 'r4107', '\.{o}', sLeft, FLT, '\.{}', -1);
+
+  sLeft := left;
+  Draw(aOwner, 'btn_int1_10', 'r4111', '\u{o}', sLeft, SLT, '\u{}', -1);
+  Draw(aOwner, 'btn_int1_11', 'r4112', '\v{o}', sLeft, SLT, '\v{}', -1);
+  Draw(aOwner, 'btn_int1_12', 'r4113', '\H{o}', sLeft, SLT, '\H{}', -1);
+  Draw(aOwner, 'btn_int1_13', 'r4114', '\t{oo}', sLeft, SLT, '\t{}', -1);
+  Draw(aOwner, 'btn_int1_14', 'r4115', '\c{o}', sLeft, SLT, '\c{}', -1);
+  Draw(aOwner, 'btn_int1_15', 'r4116', '\d{o}', sLeft, SLT, '\d{}', -1);
+  Draw(aOwner, 'btn_int1_16', 'r4117', '\b{o}', sLeft, SLT, '\b{}', -1);
+
+  left := sLeft;
+end;
+
+procedure TTexGuiSymbols.DrawInternational2(aOwner: TComponent; out left: integer);
+var
+  sLeft: integer;
+begin
+  sLeft := left;
+  Draw(aOwner, 'btn_int2_00', 'r4201', '\c{c}', sLeft, FLT, '\c{}', -1);
+  Draw(aOwner, 'btn_int2_01', 'r4202', '?`', sLeft, FLT, '?`', 0);
+
+  sLeft := left;
+  Draw(aOwner, 'btn_int2_10', 'r4211', '\c{C}', sLeft, SLT, '\c{}', -1);
+  Draw(aOwner, 'btn_int2_11', 'r4212', '!`', sLeft, SLT, '!`', 0);
+
+  left := sLeft;
+end;
+
+procedure TTexGuiSymbols.DrawInternational3(aOwner: TComponent; out left: integer);
+var
+  sLeft: integer;
+begin
+  sLeft := left;
+  Draw(aOwner, 'btn_sm3_00', 'r4301', '{\oe}', sLeft, FLT, '{\oe}', 0);
+  Draw(aOwner, 'btn_sm3_01', 'r4302', '{\ae}', sLeft, FLT, '{\ae}', 0);
+  Draw(aOwner, 'btn_sm3_02', 'r4303', '{\aa}', sLeft, FLT, '{\aa}', 0);
+  Draw(aOwner, 'btn_sm3_03', 'r4304', '{\o}', sLeft, FLT, '{\o}', 0);
+  Draw(aOwner, 'btn_sm3_04', 'r4305', '{\l}', sLeft, FLT, '{\l}', 0);
+  Draw(aOwner, 'btn_sm3_05', 'r4306', '{\i}', sLeft, FLT, '{\i}', 0);
+
+  sLeft := left;
+  Draw(aOwner, 'btn_sm3_10', 'r4311', '{\OE}', sLeft, SLT, '{\OE}', 0);
+  Draw(aOwner, 'btn_sm3_11', 'r4312', '{\AE}', sLeft, SLT, '{\AE}', 0);
+  Draw(aOwner, 'btn_sm3_12', 'r4313', '{\AA}', sLeft, SLT, '{\AA}', 0);
+  Draw(aOwner, 'btn_sm3_13', 'r4314', '{\O}', sLeft, SLT, '{\O}', 0);
+  Draw(aOwner, 'btn_sm3_14', 'r4315', '{\L}', sLeft, SLT, '{\L}', 0);
+  Draw(aOwner, 'btn_sm3_15', 'r4316', '{\euro}', sLeft, SLT, '{\euro}', 0);
+
+  left := sLeft;
+end;
+
+procedure TTexGuiSymbols.DrawInternational4(aOwner: TComponent; out left: integer);
+var
+  sLeft: integer;
+begin
+  sLeft := left;
+  Draw(aOwner, 'btn_sm4_00', 'r4401', '\"{a}', sLeft, FLT, '\"{a}', 0);
+  Draw(aOwner, 'btn_sm4_01', 'r4402', '\"{e}', sLeft, FLT, '\"{e}', 0);
+  Draw(aOwner, 'btn_sm4_02', 'r4403', '\"{\i}', sLeft, FLT, '\"{\i}', 0);
+  Draw(aOwner, 'btn_sm4_03', 'r4404', '\"{o}', sLeft, FLT, '\"{o}', 0);
+  Draw(aOwner, 'btn_sm4_04', 'r4405', '\"{u}', sLeft, FLT, '\"{u}', 0);
+  Draw(aOwner, 'btn_sm4_05', 'r4406', '\"{y}', sLeft, FLT, '\"{y}', 0);
+  Draw(aOwner, 'btn_sm4_06', 'r4407', '{\ss}', sLeft, FLT, '{\ss}', 0);
+
+  sLeft := left;
+  Draw(aOwner, 'btn_sm4_10', 'r4411', '\"{A}', sLeft, SLT, '\"{A}', 0);
+  Draw(aOwner, 'btn_sm4_11', 'r4412', '\"{E}', sLeft, SLT, '\"{E}', 0);
+  Draw(aOwner, 'btn_sm4_12', 'r4413', '\"{I}', sLeft, SLT, '\"{I}', 0);
+  Draw(aOwner, 'btn_sm4_13', 'r4414', '\"{O}', sLeft, SLT, '\"{O}', 0);
+  Draw(aOwner, 'btn_sm4_14', 'r4415', '\"{U}', sLeft, SLT, '\"{U}', 0);
+  Draw(aOwner, 'btn_sm4_15', 'r4416', '\"{Y}', sLeft, SLT, '\"{Y}', 0);
+  // Draw(aOwner, 'btn_sm4_06', 'r4404', '{\ss}', sLeft, FLT, '{\ss}', 0);
+
+  left := sLeft;
+end;
+
+procedure TTexGuiSymbols.DrawInternational5(aOwner: TComponent; out left: integer);
+var
+  sLeft: integer;
+begin
+  sLeft := left;
+  // Draw(aOwner, 'btn_sm5_00', 'ldots', 'ldots', sLeft, FLT, '\ldots', 0);
+
+  sLeft := left;
+  // Draw(aOwner, 'btn_sm5_10', 'vdots', 'vdots', sLeft, SLT, '\vdots', 0);
+
+  left := sLeft;
+end;
+
 procedure TTexGuiSymbols.DrawTypeface1(aOwner: TComponent; out left: integer);
 var
   sLeft: integer;
 begin
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\emph{}', -1, sLeft, FLT, 90, BtnHeight, 'emph',
-    'btn_tp1_00', '\emph{...}', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\textrm{}', -1, sLeft, FLT, 90, BtnHeight, 'textrm',
-    'btn_tp1_01', '\textrm{...}', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\textbf{}', -1, sLeft, FLT, 90, BtnHeight, 'textbf',
-    'btn_tp1_02', '\textbf{...}', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\textsf{}', -1, sLeft, FLT, 90, BtnHeight, 'textsf',
-    'btn_tp1_03', '\textsf{...}', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\texttt{}', -1, sLeft, FLT, 100, BtnHeight, 'texttt',
-    'btn_tp1_04', '\texttt{...}', SymbolClick));
+  Draw(aOwner, 'btn_tp1_00', 'emph', '\emph{...}', sLeft, FLT, 90, BtnHeight, '\emph{}', -1);
+  Draw(aOwner, 'btn_tp1_01', 'textrm', '\textrm{...}', sLeft, FLT, 90, BtnHeight, '\textrm{}', -1);
+  Draw(aOwner, 'btn_tp1_02', 'textbf', '\textbf{...}', sLeft, FLT, 90, BtnHeight, '\textbf{}', -1);
+  Draw(aOwner, 'btn_tp1_03', 'textsf', '\textsf{...}', sLeft, FLT, 90, BtnHeight, '\textsf{}', -1);
+  Draw(aOwner, 'btn_tp1_04', 'texttt', '\texttt{...}', sLeft, FLT, 90, BtnHeight, '\texttt{}', -1);
 
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\textmd{}', -1, sLeft, SLT, 90, BtnHeight, 'textmd',
-    'btn_tp1_10', '\textmd{...}', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\textit{}', -1, sLeft, SLT, 90, BtnHeight, 'textit',
-    'btn_tp1_11', '\textit{...}', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\textsc{}', -1, sLeft, SLT, 90, BtnHeight, 'textsc',
-    'btn_tp1_12', '\textsc{...}', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\textsl{}', -1, sLeft, SLT, 90, BtnHeight, 'textsl',
-    'btn_tp1_13', '\textsl{...}', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\verb""', -1, sLeft, SLT, 100, BtnHeight, 'verb',
-    'btn_tp1_14', '\verb"..."', SymbolClick));
+  Draw(aOwner, 'btn_tp1_10', 'textmd', '\textmd{...}', sLeft, SLT, 90, BtnHeight, '\textmd{}', -1);
+  Draw(aOwner, 'btn_tp1_11', 'textit', '\textit{...}', sLeft, SLT, 90, BtnHeight, '\textit{}', -1);
+  Draw(aOwner, 'btn_tp1_12', 'textsc', '\textsc{...}', sLeft, SLT, 90, BtnHeight, '\textsc{}', -1);
+  Draw(aOwner, 'btn_tp1_13', 'textsl', '\textsl{...}', sLeft, SLT, 90, BtnHeight, '\textsl{}', -1);
+  Draw(aOwner, 'btn_tp1_14', 'verb', '\verb{...}', sLeft, SLT, 90, BtnHeight, '\verb{}', -1);
 
   left := sLeft;
 end;
