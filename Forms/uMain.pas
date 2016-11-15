@@ -250,6 +250,7 @@ implementation
 {$R 'Image\TexGuiSymbols\8.res'}
 {$R 'Image\TexGuiSymbols\9.res'}
 {$R 'Image\TexGuiSymbols\10.res'}
+{$R 'Image\TexGuiSymbols\11.res'}
 {$R 'Image\TexGuiSymbols\12.res'}
 {$R 'Image\TexGuiSymbols\13.res'}
 
@@ -427,7 +428,7 @@ begin
   FTexGuiSymbols.Draw8(CreateTab(FPageSymbols, '+ / - ...'));
   FTexGuiSymbols.Draw9(CreateTab(FPageSymbols, '---> ...'));
   FTexGuiSymbols.Draw10(CreateTab(FPageSymbols, '< > = ...'));
-  CreateTab(FPageSymbols, 'AMS ...');
+  FTexGuiSymbols.Draw11(CreateTab(FPageSymbols, 'AMS ...'));
   FTexGuiSymbols.Draw12(CreateTab(FPageSymbols, 'AMS <>='));
   FTexGuiSymbols.Draw13(CreateTab(FPageSymbols, 'AMS NOT < > ='));
 
