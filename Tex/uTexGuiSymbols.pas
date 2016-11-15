@@ -22,10 +22,9 @@ type
   public
     constructor Create(aOwner: TComponent); overload;
     constructor Create(aOwner: TComponent; aCommand: string; aMoveX: integer; out aLeft: integer;
-      aTop, aWidth, aHeight: integer; aResName, aName, aHint: string;
-      Notify: TNotifyEvent); overload;
-    constructor Create(aOwner: TComponent; aCommand: string; aMoveX: integer; out aLeft: integer;
-      aTop: integer; aResName, aName, aHint: string; Notify: TNotifyEvent); overload;
+      aTop, aWidth, aHeight: integer; aResName, aName, aHint: string; Notify: TNotifyEvent); overload;
+    constructor Create(aOwner: TComponent; aCommand: string; aMoveX: integer; out aLeft: integer; aTop: integer;
+      aResName, aName, aHint: string; Notify: TNotifyEvent); overload;
     destructor Destroy(); Override;
 
     property Command: string read FCommand;
@@ -66,8 +65,8 @@ type
 
     FOnSymbolClick: TSymbolClickEvent;
 
-    procedure Draw(aOwner: TComponent; aName, aResName, aHint: string; out aLeft: integer;
-      aTop: integer; aCommand: string; aMoveX: integer); overload;
+    procedure Draw(aOwner: TComponent; aName, aResName, aHint: string; out aLeft: integer; aTop: integer;
+      aCommand: string; aMoveX: integer); overload;
     procedure Draw(aOwner: TComponent; aName, aResName, aHint: string; out aLeft: integer;
       aTop, aWidth, aHeight: integer; aCommand: string; aMoveX: integer); overload;
 
@@ -161,16 +160,14 @@ begin
   FSpBtn.ShowHint := true;
 end;
 
-constructor TSymbol.Create(aOwner: TComponent; aCommand: string; aMoveX: integer;
-  out aLeft: integer; aTop: integer; aResName, aName, aHint: string; Notify: TNotifyEvent);
+constructor TSymbol.Create(aOwner: TComponent; aCommand: string; aMoveX: integer; out aLeft: integer; aTop: integer;
+  aResName, aName, aHint: string; Notify: TNotifyEvent);
 begin
-  Create(aOwner, aCommand, aMoveX, aLeft, aTop, BtnWidth, BtnHeight, aResName, aName,
-    aHint, Notify);
+  Create(aOwner, aCommand, aMoveX, aLeft, aTop, BtnWidth, BtnHeight, aResName, aName, aHint, Notify);
 end;
 
-constructor TSymbol.Create(aOwner: TComponent; aCommand: string; aMoveX: integer;
-  out aLeft: integer; aTop, aWidth, aHeight: integer; aResName, aName, aHint: string;
-  Notify: TNotifyEvent);
+constructor TSymbol.Create(aOwner: TComponent; aCommand: string; aMoveX: integer; out aLeft: integer;
+  aTop, aWidth, aHeight: integer; aResName, aName, aHint: string; Notify: TNotifyEvent);
 var
   Png: TPngImage;
 begin
@@ -257,18 +254,17 @@ begin
 
 end;
 
-procedure TTexGuiSymbols.Draw(aOwner: TComponent; aName, aResName, aHint: string;
-  out aLeft: integer; aTop: integer; aCommand: string; aMoveX: integer);
+procedure TTexGuiSymbols.Draw(aOwner: TComponent; aName, aResName, aHint: string; out aLeft: integer; aTop: integer;
+  aCommand: string; aMoveX: integer);
 begin
-  FBtnImage.Add(TSymbol.Create(aOwner, aCommand, aMoveX, aLeft, aTop, aResName, aName, aHint,
-    SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, aCommand, aMoveX, aLeft, aTop, aResName, aName, aHint, SymbolClick));
 end;
 
-procedure TTexGuiSymbols.Draw(aOwner: TComponent; aName, aResName, aHint: string;
-  out aLeft: integer; aTop, aWidth, aHeight: integer; aCommand: string; aMoveX: integer);
+procedure TTexGuiSymbols.Draw(aOwner: TComponent; aName, aResName, aHint: string; out aLeft: integer;
+  aTop, aWidth, aHeight: integer; aCommand: string; aMoveX: integer);
 begin
-  FBtnImage.Add(TSymbol.Create(aOwner, aCommand, aMoveX, aLeft, aTop, aWidth, aHeight, aResName,
-    aName, aHint, SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, aCommand, aMoveX, aLeft, aTop, aWidth, aHeight, aResName, aName, aHint,
+    SymbolClick));
 end;
 
 procedure TTexGuiSymbols.DrawBevel(aOwner: TComponent; out aLeft: integer);
@@ -491,32 +487,20 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\Gamma', 0, sLeft, FLT, 'gamma', 'btn_greek1_00', 'Gamma',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\Delta', 0, sLeft, FLT, 'delta', 'btn_greek1_01', 'Delta',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\Theta', 0, sLeft, FLT, 'theta', 'btn_greek1_02', 'Theta',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\Lambda', 0, sLeft, FLT, 'lambda', 'btn_greek1_03',
-    'Lambda', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\Xi', 0, sLeft, FLT, 'xi', 'btn_greek1_04', 'Xi',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\Pi', 0, sLeft, FLT, 'pi', 'btn_greek1_05', 'Pi',
-    SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\Gamma', 0, sLeft, FLT, 'gamma', 'btn_greek1_00', 'Gamma', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\Delta', 0, sLeft, FLT, 'delta', 'btn_greek1_01', 'Delta', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\Theta', 0, sLeft, FLT, 'theta', 'btn_greek1_02', 'Theta', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\Lambda', 0, sLeft, FLT, 'lambda', 'btn_greek1_03', 'Lambda', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\Xi', 0, sLeft, FLT, 'xi', 'btn_greek1_04', 'Xi', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\Pi', 0, sLeft, FLT, 'pi', 'btn_greek1_05', 'Pi', SymbolClick));
 
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\Sigma', 0, sLeft, SLT, 'sigma', 'btn_greek1_10', 'Sigma',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\Upsilon', 0, sLeft, SLT, 'upsilon', 'btn_greek1_11',
-    'Upsilon', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\Phi', 0, sLeft, SLT, 'phi', 'btn_greek1_12', 'Phi',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\Psi', 0, sLeft, SLT, 'psi', 'btn_greek1_13', 'Psi',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\Omega', 0, sLeft, SLT, 'omega', 'btn_greek1_14', 'Omega',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\$', 0, sLeft, SLT, 'dol', 'btn_greek1_15', '$',
-    SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\Sigma', 0, sLeft, SLT, 'sigma', 'btn_greek1_10', 'Sigma', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\Upsilon', 0, sLeft, SLT, 'upsilon', 'btn_greek1_11', 'Upsilon', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\Phi', 0, sLeft, SLT, 'phi', 'btn_greek1_12', 'Phi', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\Psi', 0, sLeft, SLT, 'psi', 'btn_greek1_13', 'Psi', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\Omega', 0, sLeft, SLT, 'omega', 'btn_greek1_14', 'Omega', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\$', 0, sLeft, SLT, 'dol', 'btn_greek1_15', '$', SymbolClick));
 
   left := sLeft;
 end;
@@ -526,68 +510,41 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\alpha', 0, sLeft, FLT, 'alphas', 'btn_greek2_00', 'alpha',
+  FBtnImage.Add(TSymbol.Create(aOwner, '\alpha', 0, sLeft, FLT, 'alphas', 'btn_greek2_00', 'alpha', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\beta', 0, sLeft, FLT, 'betas', 'btn_greek2_01', 'beta', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\gamma', 0, sLeft, FLT, 'gammas', 'btn_greek2_02', 'gamma', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\delta', 0, sLeft, FLT, 'deltas', 'btn_greek2_03', 'delta', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\epsilon', 0, sLeft, FLT, 'epsilons', 'btn_greek2_04', 'epsilon', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\varepsilon', 0, sLeft, FLT, 'varepsilons', 'btn_greek2_05', 'varepsilon',
     SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\beta', 0, sLeft, FLT, 'betas', 'btn_greek2_01', 'beta',
+  FBtnImage.Add(TSymbol.Create(aOwner, '\zeta', 0, sLeft, FLT, 'zetas', 'btn_greek2_06', 'zeta', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\eta', 0, sLeft, FLT, 'etas', 'btn_greek2_07', 'eta', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\theta', 0, sLeft, FLT, 'thetas', 'btn_greek2_08', 'theta', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\vartheta', 0, sLeft, FLT, 'varthetas', 'btn_greek2_09', 'vartheta',
     SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\gamma', 0, sLeft, FLT, 'gammas', 'btn_greek2_02', 'gamma',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\delta', 0, sLeft, FLT, 'deltas', 'btn_greek2_03', 'delta',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\epsilon', 0, sLeft, FLT, 'epsilons', 'btn_greek2_04',
-    'epsilon', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\varepsilon', 0, sLeft, FLT, 'varepsilons', 'btn_greek2_05',
-    'varepsilon', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\zeta', 0, sLeft, FLT, 'zetas', 'btn_greek2_06', 'zeta',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\eta', 0, sLeft, FLT, 'etas', 'btn_greek2_07', 'eta',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\theta', 0, sLeft, FLT, 'thetas', 'btn_greek2_08', 'theta',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\vartheta', 0, sLeft, FLT, 'varthetas', 'btn_greek2_09',
-    'vartheta', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\iota', 0, sLeft, FLT, 'iotas', 'btn_greek2_010', 'iota',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\kappa', 0, sLeft, FLT, 'kappas', 'btn_greek2_011', 'kappa',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\lambda', 0, sLeft, FLT, 'lambdas', 'btn_greek2_012',
-    'lambda', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\mu', 0, sLeft, FLT, 'mus', 'btn_greek2_013', 'mu',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\nu', 0, sLeft, FLT, 'nus', 'btn_greek2_014', 'nu',
-    SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\iota', 0, sLeft, FLT, 'iotas', 'btn_greek2_010', 'iota', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\kappa', 0, sLeft, FLT, 'kappas', 'btn_greek2_011', 'kappa', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\lambda', 0, sLeft, FLT, 'lambdas', 'btn_greek2_012', 'lambda', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\mu', 0, sLeft, FLT, 'mus', 'btn_greek2_013', 'mu', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\nu', 0, sLeft, FLT, 'nus', 'btn_greek2_014', 'nu', SymbolClick));
 
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\xi', 0, sLeft, SLT, 'xis', 'btn_greek2_10', 'xi',
+  FBtnImage.Add(TSymbol.Create(aOwner, '\xi', 0, sLeft, SLT, 'xis', 'btn_greek2_10', 'xi', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, 'o', 0, sLeft, SLT, 'os', 'btn_greek2_11', '0', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\pi', 0, sLeft, SLT, 'pis', 'btn_greek2_12', 'pi', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\varpi', 0, sLeft, SLT, 'varpis', 'btn_greek2_13', 'varpi', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\rho', 0, sLeft, SLT, 'rhos', 'btn_greek2_14', 'rho', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\varrho', 0, sLeft, SLT, 'varrhos', 'btn_greek2_15', 'varrho', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\sigma', 0, sLeft, SLT, 'sigmas', 'btn_greek2_16', 'sigma', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\varsigma', 0, sLeft, SLT, 'varsigmas', 'btn_greek2_17', 'varsigma',
     SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, 'o', 0, sLeft, SLT, 'os', 'btn_greek2_11', '0',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\pi', 0, sLeft, SLT, 'pis', 'btn_greek2_12', 'pi',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\varpi', 0, sLeft, SLT, 'varpis', 'btn_greek2_13', 'varpi',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\rho', 0, sLeft, SLT, 'rhos', 'btn_greek2_14', 'rho',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\varrho', 0, sLeft, SLT, 'varrhos', 'btn_greek2_15',
-    'varrho', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\sigma', 0, sLeft, SLT, 'sigmas', 'btn_greek2_16', 'sigma',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\varsigma', 0, sLeft, SLT, 'varsigmas', 'btn_greek2_17',
-    'varsigma', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\tau', 0, sLeft, SLT, 'taus', 'btn_greek2_18', 'tau',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\upsilon', 0, sLeft, SLT, 'upsilons', 'btn_greek2_19',
-    'upsilon', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\phi', 0, sLeft, SLT, 'phis', 'btn_greek2_110', 'phi',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\varphi', 0, sLeft, SLT, 'varphis', 'btn_greek2_111',
-    'varphi', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\chi', 0, sLeft, SLT, 'chis', 'btn_greek2_112', 'chi',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\psi', 0, sLeft, SLT, 'psis', 'btn_greek2_113', 'psi',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\omega', 0, sLeft, SLT, 'omegas', 'btn_greek2_114', 'omega',
-    SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\tau', 0, sLeft, SLT, 'taus', 'btn_greek2_18', 'tau', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\upsilon', 0, sLeft, SLT, 'upsilons', 'btn_greek2_19', 'upsilon', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\phi', 0, sLeft, SLT, 'phis', 'btn_greek2_110', 'phi', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\varphi', 0, sLeft, SLT, 'varphis', 'btn_greek2_111', 'varphi', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\chi', 0, sLeft, SLT, 'chis', 'btn_greek2_112', 'chi', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\psi', 0, sLeft, SLT, 'psis', 'btn_greek2_113', 'psi', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\omega', 0, sLeft, SLT, 'omegas', 'btn_greek2_114', 'omega', SymbolClick));
 
   left := sLeft;
 end;
@@ -841,20 +798,19 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\arccos', 0, sLeft, FLT, 65, BtnHeight, 'arccos',
-    'btn_fn1_00', 'arccos', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\arcsin', 0, sLeft, FLT, 65, BtnHeight, 'arcsin',
-    'btn_fn1_01', 'arcsin', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\arctan', 0, sLeft, FLT, 65, BtnHeight, 'arctan',
-    'btn_fn1_02', 'arctan', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\arccos', 0, sLeft, FLT, 65, BtnHeight, 'arccos', 'btn_fn1_00', 'arccos',
+    SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\arcsin', 0, sLeft, FLT, 65, BtnHeight, 'arcsin', 'btn_fn1_01', 'arcsin',
+    SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\arctan', 0, sLeft, FLT, 65, BtnHeight, 'arctan', 'btn_fn1_02', 'arctan',
+    SymbolClick));
 
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\lim', 0, sLeft, SLT, 65, BtnHeight, 'lim', 'btn_fn1_10',
-    'lim', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\liminf', 0, sLeft, SLT, 65, BtnHeight, 'liminf',
-    'btn_fn1_11', 'liminf', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\limsup', 0, sLeft, SLT, 65, BtnHeight, 'limsup',
-    'btn_fn1_12', 'limsup', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\lim', 0, sLeft, SLT, 65, BtnHeight, 'lim', 'btn_fn1_10', 'lim', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\liminf', 0, sLeft, SLT, 65, BtnHeight, 'liminf', 'btn_fn1_11', 'liminf',
+    SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\limsup', 0, sLeft, SLT, 65, BtnHeight, 'limsup', 'btn_fn1_12', 'limsup',
+    SymbolClick));
 
   left := sLeft;
 end;
@@ -864,56 +820,36 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\arg', 0, sLeft, FLT, 45, BtnHeight, 'arg', 'btn_fn2_00',
-    'arg', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\cos', 0, sLeft, FLT, 45, BtnHeight, 'cos', 'btn_fn2_01',
-    'cos', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\cosh', 0, sLeft, FLT, 45, BtnHeight, 'cosh', 'btn_fn2_02',
-    'cosh', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\cot', 0, sLeft, FLT, 45, BtnHeight, 'cot', 'btn_fn2_03',
-    'cot', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\coth', 0, sLeft, FLT, 45, BtnHeight, 'coth', 'btn_fn2_04',
-    'coth', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\csc', 0, sLeft, FLT, 45, BtnHeight, 'csc', 'btn_fn2_05',
-    'csc', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\det', 0, sLeft, FLT, 45, BtnHeight, 'det', 'btn_fn2_06',
-    'det', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\dim', 0, sLeft, FLT, 45, BtnHeight, 'dim', 'btn_fn2_07',
-    'dim', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\exp', 0, sLeft, FLT, 45, BtnHeight, 'exp', 'btn_fn2_08',
-    'exp', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\gcd', 0, sLeft, FLT, 45, BtnHeight, 'gcd', 'btn_fn2_09',
-    'gcd', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\hom', 0, sLeft, FLT, 45, BtnHeight, 'hom', 'btn_fn2_010',
-    'hom', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\inf', 0, sLeft, FLT, 45, BtnHeight, 'inf', 'btn_fn2_011',
-    'inf', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\arg', 0, sLeft, FLT, 45, BtnHeight, 'arg', 'btn_fn2_00', 'arg', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\cos', 0, sLeft, FLT, 45, BtnHeight, 'cos', 'btn_fn2_01', 'cos', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\cosh', 0, sLeft, FLT, 45, BtnHeight, 'cosh', 'btn_fn2_02', 'cosh',
+    SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\cot', 0, sLeft, FLT, 45, BtnHeight, 'cot', 'btn_fn2_03', 'cot', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\coth', 0, sLeft, FLT, 45, BtnHeight, 'coth', 'btn_fn2_04', 'coth',
+    SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\csc', 0, sLeft, FLT, 45, BtnHeight, 'csc', 'btn_fn2_05', 'csc', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\det', 0, sLeft, FLT, 45, BtnHeight, 'det', 'btn_fn2_06', 'det', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\dim', 0, sLeft, FLT, 45, BtnHeight, 'dim', 'btn_fn2_07', 'dim', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\exp', 0, sLeft, FLT, 45, BtnHeight, 'exp', 'btn_fn2_08', 'exp', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\gcd', 0, sLeft, FLT, 45, BtnHeight, 'gcd', 'btn_fn2_09', 'gcd', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\hom', 0, sLeft, FLT, 45, BtnHeight, 'hom', 'btn_fn2_010', 'hom', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\inf', 0, sLeft, FLT, 45, BtnHeight, 'inf', 'btn_fn2_011', 'inf', SymbolClick));
 
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\ker', 0, sLeft, SLT, 45, BtnHeight, 'ker', 'btn_fn2_10',
-    'ker', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\lg', 0, sLeft, SLT, 45, BtnHeight, 'lg', 'btn_fn2_11',
-    'lg', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\ln', 0, sLeft, SLT, 45, BtnHeight, 'ln', 'btn_fn2_12',
-    'ln', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\log', 0, sLeft, SLT, 45, BtnHeight, 'log', 'btn_fn2_13',
-    'log', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\max', 0, sLeft, SLT, 45, BtnHeight, 'max', 'btn_fn2_14',
-    'max', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\min', 0, sLeft, SLT, 45, BtnHeight, 'min', 'btn_fn2_15',
-    'min', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\sec', 0, sLeft, SLT, 45, BtnHeight, 'sec', 'btn_fn2_16',
-    'sec', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\sin', 0, sLeft, SLT, 45, BtnHeight, 'sin', 'btn_fn2_17',
-    'sin', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\sinh', 0, sLeft, SLT, 45, BtnHeight, 'sinh', 'btn_fn2_18',
-    'sinh', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\sup', 0, sLeft, SLT, 45, BtnHeight, 'sup', 'btn_fn2_19',
-    'sup', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\tan', 0, sLeft, SLT, 45, BtnHeight, 'tan', 'btn_fn2_110',
-    'tan', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\tanh', 0, sLeft, SLT, 45, BtnHeight, 'tanh', 'btn_fn2_111',
-    'tanh', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\ker', 0, sLeft, SLT, 45, BtnHeight, 'ker', 'btn_fn2_10', 'ker', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\lg', 0, sLeft, SLT, 45, BtnHeight, 'lg', 'btn_fn2_11', 'lg', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\ln', 0, sLeft, SLT, 45, BtnHeight, 'ln', 'btn_fn2_12', 'ln', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\log', 0, sLeft, SLT, 45, BtnHeight, 'log', 'btn_fn2_13', 'log', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\max', 0, sLeft, SLT, 45, BtnHeight, 'max', 'btn_fn2_14', 'max', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\min', 0, sLeft, SLT, 45, BtnHeight, 'min', 'btn_fn2_15', 'min', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\sec', 0, sLeft, SLT, 45, BtnHeight, 'sec', 'btn_fn2_16', 'sec', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\sin', 0, sLeft, SLT, 45, BtnHeight, 'sin', 'btn_fn2_17', 'sin', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\sinh', 0, sLeft, SLT, 45, BtnHeight, 'sinh', 'btn_fn2_18', 'sinh',
+    SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\sup', 0, sLeft, SLT, 45, BtnHeight, 'sup', 'btn_fn2_19', 'sup', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\tan', 0, sLeft, SLT, 45, BtnHeight, 'tan', 'btn_fn2_110', 'tan', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\tanh', 0, sLeft, SLT, 45, BtnHeight, 'tanh', 'btn_fn2_111', 'tanh',
+    SymbolClick));
 
   left := sLeft;
 end;
@@ -972,10 +908,8 @@ begin
   Draw(aOwner, 'btn_7_3_02', 'upuparrows', 'upuparrows', sLeft, FLT, '\upuparrows', 0);
 
   sLeft := left;
-  Draw(aOwner, 'btn_7_3_10', 'downharpoonleft', 'downharpoonleft', sLeft, SLT,
-    '\downharpoonleft', 0);
-  Draw(aOwner, 'btn_7_3_11', 'downharpoonright', 'downharpoonright', sLeft, SLT,
-    '\downharpoonright', 0);
+  Draw(aOwner, 'btn_7_3_10', 'downharpoonleft', 'downharpoonleft', sLeft, SLT, '\downharpoonleft', 0);
+  Draw(aOwner, 'btn_7_3_11', 'downharpoonright', 'downharpoonright', sLeft, SLT, '\downharpoonright', 0);
   Draw(aOwner, 'btn_7_3_12', 'downdownarrows', 'downdownarrows', sLeft, SLT, '\downdownarrows', 0);
 
   left := sLeft;
@@ -1027,8 +961,7 @@ begin
   Draw(aOwner, 'btn_8_1_17', 'wr', 'wr', sLeft, SLT, '\wr', 0);
   Draw(aOwner, 'btn_8_1_18', 'diamond', 'diamond', sLeft, SLT, '\diamond', 0);
   Draw(aOwner, 'btn_8_1_19', 'bigtriangleup', 'bigtriangleup', sLeft, SLT, '\bigtriangleup', 0);
-  Draw(aOwner, 'btn_8_1_110', 'bigtriangledown', 'bigtriangledown', sLeft, SLT,
-    '\bigtriangledown', 0);
+  Draw(aOwner, 'btn_8_1_110', 'bigtriangledown', 'bigtriangledown', sLeft, SLT, '\bigtriangledown', 0);
   Draw(aOwner, 'btn_8_1_111', 'triangleleft', 'triangleleft', sLeft, SLT, '\triangleleft', 0);
   Draw(aOwner, 'btn_8_1_112', 'triangleright', 'triangleright', sLeft, SLT, '\triangleright', 0);
   Draw(aOwner, 'btn_8_1_113', 'amalg', 'amalg', sLeft, SLT, '\amalg', 0);
@@ -1058,22 +991,17 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  Draw(aOwner, 'btn_8_3_00', 'longleftarrow', 'longleftarrow', sLeft, FLT, 35, BtnHeight,
-    '\longleftarrow', 0);
-  Draw(aOwner, 'btn_8_3_01', 'longrightarrow', 'longrightarrow', sLeft, FLT, 35, BtnHeight,
-    '\longrightarrow', 0);
+  Draw(aOwner, 'btn_8_3_00', 'longleftarrow', 'longleftarrow', sLeft, FLT, 35, BtnHeight, '\longleftarrow', 0);
+  Draw(aOwner, 'btn_8_3_01', 'longrightarrow', 'longrightarrow', sLeft, FLT, 35, BtnHeight, '\longrightarrow', 0);
   Draw(aOwner, 'btn_8_3_02', 'longleftrightarrow', 'longleftrightarrow', sLeft, FLT, 35, BtnHeight,
     '\longleftrightarrow', 0);
-  Draw(aOwner, 'btn_8_3_03', 'longmapsto', 'longmapsto', sLeft, FLT, 35, BtnHeight,
-    '\longmapsto', 0);
+  Draw(aOwner, 'btn_8_3_03', 'longmapsto', 'longmapsto', sLeft, FLT, 35, BtnHeight, '\longmapsto', 0);
 
   sLeft := left;
-  Draw(aOwner, 'btn_8_3_10', 'longleftarrow_2', 'Longleftarrow', sLeft, SLT, 35, BtnHeight,
-    '\Longleftarrow', 0);
-  Draw(aOwner, 'btn_8_3_11', 'longrightarrow_2', 'Longrightarrow', sLeft, SLT, 35, BtnHeight,
-    '\Longrightarrow', 0);
-  Draw(aOwner, 'btn_8_3_12', 'longleftrightarrow_2', 'Longleftrightarrow', sLeft, SLT, 35,
-    BtnHeight, '\Longleftrightarrow', 0);
+  Draw(aOwner, 'btn_8_3_10', 'longleftarrow_2', 'Longleftarrow', sLeft, SLT, 35, BtnHeight, '\Longleftarrow', 0);
+  Draw(aOwner, 'btn_8_3_11', 'longrightarrow_2', 'Longrightarrow', sLeft, SLT, 35, BtnHeight, '\Longrightarrow', 0);
+  Draw(aOwner, 'btn_8_3_12', 'longleftrightarrow_2', 'Longleftrightarrow', sLeft, SLT, 35, BtnHeight,
+    '\Longleftrightarrow', 0);
 
   left := sLeft;
 end;
@@ -1102,14 +1030,12 @@ begin
   sLeft := left;
   Draw(aOwner, 'btn_9_2_00', 'nleftarrow', 'nleftarrow', sLeft, FLT, '\nleftarrow', 0);
   Draw(aOwner, 'btn_9_2_01', 'nrightarrow', 'nrightarrow', sLeft, FLT, '\nrightarrow', 0);
-  Draw(aOwner, 'btn_9_2_02', 'nleftrightarrow', 'nleftrightarrow', sLeft, FLT,
-    '\nleftrightarrow', 0);
+  Draw(aOwner, 'btn_9_2_02', 'nleftrightarrow', 'nleftrightarrow', sLeft, FLT, '\nleftrightarrow', 0);
 
   sLeft := left;
   Draw(aOwner, 'btn_9_2_10', 'nbleftarrow', 'nLeftarrow', sLeft, SLT, '\nLeftarrow', 0);
   Draw(aOwner, 'btn_9_2_11', 'nbrightarrow', 'nRightarrow', sLeft, SLT, '\nRightarrow', 0);
-  Draw(aOwner, 'btn_9_2_12', 'nbleftrightarrow', 'nLeftrightarrow', sLeft, SLT,
-    '\nLeftrightarrow', 0);
+  Draw(aOwner, 'btn_9_2_12', 'nbleftrightarrow', 'nLeftrightarrow', sLeft, SLT, '\nLeftrightarrow', 0);
 
   left := sLeft;
 end;
@@ -1120,42 +1046,30 @@ var
 begin
   sLeft := left;
   Draw(aOwner, 'btn_9_3_00', 'leftarrowtail', 'leftarrowtail', sLeft, FLT, '\leftarrowtail', 0);
-  Draw(aOwner, 'btn_9_3_01', 'twoheadleftarrow', 'twoheadleftarrow', sLeft, FLT,
-    '\twoheadleftarrow', 0);
+  Draw(aOwner, 'btn_9_3_01', 'twoheadleftarrow', 'twoheadleftarrow', sLeft, FLT, '\twoheadleftarrow', 0);
   Draw(aOwner, 'btn_9_3_02', 'hookleftarrow', 'hookleftarrow', sLeft, FLT, '\hookleftarrow', 0);
   Draw(aOwner, 'btn_9_3_03', 'leftharpoonup', 'leftharpoonup', sLeft, FLT, '\leftharpoonup', 0);
-  Draw(aOwner, 'btn_9_3_04', 'leftharpoondown', 'leftharpoondown', sLeft, FLT,
-    '\leftharpoondown', 0);
-  Draw(aOwner, 'btn_9_3_05', 'leftrightharpoons', 'leftrightharpoons', sLeft, FLT,
-    '\leftrightharpoons', 0);
+  Draw(aOwner, 'btn_9_3_04', 'leftharpoondown', 'leftharpoondown', sLeft, FLT, '\leftharpoondown', 0);
+  Draw(aOwner, 'btn_9_3_05', 'leftrightharpoons', 'leftrightharpoons', sLeft, FLT, '\leftrightharpoons', 0);
   Draw(aOwner, 'btn_9_3_06', 'leftleftarrows', 'leftleftarrows', sLeft, FLT, '\leftleftarrows', 0);
-  Draw(aOwner, 'btn_9_3_07', 'leftrightarrows', 'leftrightarrows', sLeft, FLT,
-    '\leftrightarrows', 0);
+  Draw(aOwner, 'btn_9_3_07', 'leftrightarrows', 'leftrightarrows', sLeft, FLT, '\leftrightarrows', 0);
   Draw(aOwner, 'btn_9_3_08', 'blleftarrow', 'Lleftarrow', sLeft, FLT, '\Lleftarrow', 0);
   Draw(aOwner, 'btn_9_3_09', 'curvearrowleft', 'curvearrowleft', sLeft, FLT, '\curvearrowleft', 0);
-  Draw(aOwner, 'btn_9_3_010', 'circlearrowleft', 'circlearrowleft', sLeft, FLT,
-    '\circlearrowleft', 0);
+  Draw(aOwner, 'btn_9_3_010', 'circlearrowleft', 'circlearrowleft', sLeft, FLT, '\circlearrowleft', 0);
   Draw(aOwner, 'btn_9_3_011', 'blsh', 'Lsh', sLeft, FLT, '\Lsh', 0);
 
   sLeft := left;
   Draw(aOwner, 'btn_9_3_10', 'rightarrowtail', 'rightarrowtail', sLeft, SLT, '\rightarrowtail', 0);
-  Draw(aOwner, 'btn_9_3_11', 'twoheadrightarrow', 'twoheadrightarrow', sLeft, SLT,
-    '\twoheadrightarrow', 0);
+  Draw(aOwner, 'btn_9_3_11', 'twoheadrightarrow', 'twoheadrightarrow', sLeft, SLT, '\twoheadrightarrow', 0);
   Draw(aOwner, 'btn_9_3_12', 'hookrightarrow', 'hookrightarrow', sLeft, SLT, '\hookrightarrow', 0);
   Draw(aOwner, 'btn_9_3_13', 'rightharpoonup', 'rightharpoonup', sLeft, SLT, '\rightharpoonup', 0);
-  Draw(aOwner, 'btn_9_3_14', 'rightharpoondown', 'rightharpoondown', sLeft, SLT,
-    '\rightharpoondown', 0);
-  Draw(aOwner, 'btn_9_3_15', 'rightleftharpoons', 'rightleftharpoons', sLeft, SLT,
-    '\rightleftharpoons', 0);
-  Draw(aOwner, 'btn_9_3_16', 'rightrightarrows', 'rightrightarrows', sLeft, SLT,
-    '\rightrightarrows', 0);
-  Draw(aOwner, 'btn_9_3_17', 'rightrightarrows', 'rightrightarrows', sLeft, SLT,
-    '\rightrightarrows', 0);
+  Draw(aOwner, 'btn_9_3_14', 'rightharpoondown', 'rightharpoondown', sLeft, SLT, '\rightharpoondown', 0);
+  Draw(aOwner, 'btn_9_3_15', 'rightleftharpoons', 'rightleftharpoons', sLeft, SLT, '\rightleftharpoons', 0);
+  Draw(aOwner, 'btn_9_3_16', 'rightrightarrows', 'rightrightarrows', sLeft, SLT, '\rightrightarrows', 0);
+  Draw(aOwner, 'btn_9_3_17', 'rightrightarrows', 'rightrightarrows', sLeft, SLT, '\rightrightarrows', 0);
   Draw(aOwner, 'btn_9_3_18', 'brrightarrow', 'Rrightarrow', sLeft, SLT, '\Rrightarrow', 0);
-  Draw(aOwner, 'btn_9_3_19', 'curvearrowright', 'curvearrowright', sLeft, SLT,
-    '\curvearrowright', 0);
-  Draw(aOwner, 'btn_9_3_110', 'circlearrowright', 'circlearrowright', sLeft, SLT,
-    '\circlearrowright', 0);
+  Draw(aOwner, 'btn_9_3_19', 'curvearrowright', 'curvearrowright', sLeft, SLT, '\curvearrowright', 0);
+  Draw(aOwner, 'btn_9_3_110', 'circlearrowright', 'circlearrowright', sLeft, SLT, '\circlearrowright', 0);
   Draw(aOwner, 'btn_9_3_111', 'brsh', 'Rsh', sLeft, SLT, '\Rsh', 0);
 
   left := sLeft;
@@ -1166,17 +1080,14 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  Draw(aOwner, 'btn_9_4_00', 'dashleftarrow', 'dashleftarrow', sLeft, FLT, 35, BtnHeight,
-    '\dashleftarrow', 0);
-  Draw(aOwner, 'btn_9_4_01', 'leftrightsquigarrow', 'leftrightsquigarrow', sLeft, FLT, 35,
-    BtnHeight, '\leftrightsquigarrow', 0);
+  Draw(aOwner, 'btn_9_4_00', 'dashleftarrow', 'dashleftarrow', sLeft, FLT, 35, BtnHeight, '\dashleftarrow', 0);
+  Draw(aOwner, 'btn_9_4_01', 'leftrightsquigarrow', 'leftrightsquigarrow', sLeft, FLT, 35, BtnHeight,
+    '\leftrightsquigarrow', 0);
   Draw(aOwner, 'btn_9_4_02', 'mapsto', 'mapsto', sLeft, FLT, 35, BtnHeight, '\mapsto', 0);
 
   sLeft := left;
-  Draw(aOwner, 'btn_9_4_10', 'dashrightarrow', 'dashrightarrow', sLeft, SLT, 35, BtnHeight,
-    '\dashrightarrow', 0);
-  Draw(aOwner, 'btn_9_4_11', 'rightsquigarrow', 'rightsquigarrow', sLeft, SLT, 35, BtnHeight,
-    '\rightsquigarrow', 0);
+  Draw(aOwner, 'btn_9_4_10', 'dashrightarrow', 'dashrightarrow', sLeft, SLT, 35, BtnHeight, '\dashrightarrow', 0);
+  Draw(aOwner, 'btn_9_4_11', 'rightsquigarrow', 'rightsquigarrow', sLeft, SLT, 35, BtnHeight, '\rightsquigarrow', 0);
   Draw(aOwner, 'btn_9_4_12', 'multimap', 'multimap', sLeft, SLT, 35, BtnHeight, '\multimap', 0);
 
   left := sLeft;
@@ -1271,10 +1182,8 @@ begin
   Draw(aOwner, 'btn_12_1_08', 'precapprox', 'precapprox', sLeft, FLT, '\precapprox', 0);
   Draw(aOwner, 'btn_12_1_09', 'lessdot', 'lessdot', sLeft, FLT, '\lessdot', 0);
   Draw(aOwner, 'btn_12_1_010', 'sqsubset', 'sqsubset', sLeft, FLT, '\sqsubset', 0);
-  Draw(aOwner, 'btn_12_1_011', 'vartriangleleft', 'vartriangleleft', sLeft, FLT,
-    '\vartriangleleft', 0);
-  Draw(aOwner, 'btn_12_1_012', 'trianglelefteq', 'trianglelefteq', sLeft, FLT,
-    '\trianglelefteq', 0);
+  Draw(aOwner, 'btn_12_1_011', 'vartriangleleft', 'vartriangleleft', sLeft, FLT, '\vartriangleleft', 0);
+  Draw(aOwner, 'btn_12_1_012', 'trianglelefteq', 'trianglelefteq', sLeft, FLT, '\trianglelefteq', 0);
   Draw(aOwner, 'btn_12_1_013', 'bsubset', 'Subset', sLeft, FLT, '\Subset', 0);
   Draw(aOwner, 'btn_12_1_014', 'subseteq', 'subseteq', sLeft, FLT, '\subseteq', 0);
   Draw(aOwner, 'btn_12_1_015', 'subseteqq', 'subseteqq', sLeft, FLT, '\subseteqq', 0);
@@ -1291,10 +1200,8 @@ begin
   Draw(aOwner, 'btn_12_1_18', 'succapprox', 'succapprox', sLeft, SLT, '\succapprox', 0);
   Draw(aOwner, 'btn_12_1_19', 'gtrdot', 'gtrdot', sLeft, SLT, '\gtrdot', 0);
   Draw(aOwner, 'btn_12_1_110', 'sqsupset', 'sqsupset', sLeft, SLT, '\sqsupset', 0);
-  Draw(aOwner, 'btn_12_1_111', 'vartriangleright', 'vartriangleright', sLeft, SLT,
-    '\vartriangleright', 0);
-  Draw(aOwner, 'btn_12_1_112', 'trianglerighteq', 'trianglerighteq', sLeft, SLT,
-    '\trianglerighteq', 0);
+  Draw(aOwner, 'btn_12_1_111', 'vartriangleright', 'vartriangleright', sLeft, SLT, '\vartriangleright', 0);
+  Draw(aOwner, 'btn_12_1_112', 'trianglerighteq', 'trianglerighteq', sLeft, SLT, '\trianglerighteq', 0);
   Draw(aOwner, 'btn_12_1_113', 'bsupset', 'Supset', sLeft, SLT, '\Supset', 0);
   Draw(aOwner, 'btn_12_1_114', 'supseteq', 'supseteq', sLeft, SLT, '\supseteq', 0);
   Draw(aOwner, 'btn_12_1_115', 'supseteqq', 'supseteqq', sLeft, SLT, '\supseteqq', 0);
@@ -1371,8 +1278,7 @@ begin
   Draw(aOwner, 'btn_13_1_07', 'lnsim', 'lnsim', sLeft, FLT, '\lnsim', 0);
   Draw(aOwner, 'btn_13_1_08', 'lnapprox', 'lnapprox', sLeft, FLT, '\lnapprox', 0);
   Draw(aOwner, 'btn_13_1_09', 'ntriangleleft', 'ntriangleleft', sLeft, FLT, '\ntriangleleft', 0);
-  Draw(aOwner, 'btn_13_1_010', 'ntrianglelefteq', 'ntrianglelefteq', sLeft, FLT,
-    '\ntrianglelefteq', 0);
+  Draw(aOwner, 'btn_13_1_010', 'ntrianglelefteq', 'ntrianglelefteq', sLeft, FLT, '\ntrianglelefteq', 0);
   Draw(aOwner, 'btn_13_1_011', 'nprec', 'nprec', sLeft, FLT, '\nprec', 0);
   Draw(aOwner, 'btn_13_1_012', 'npreceq', 'npreceq', sLeft, FLT, '\npreceq', 0);
   Draw(aOwner, 'btn_13_1_013', 'precneqq', 'precneqq', sLeft, FLT, '\precneqq', 0);
@@ -1396,8 +1302,7 @@ begin
   Draw(aOwner, 'btn_13_1_17', 'gnsim', 'gnsim', sLeft, SLT, '\gnsim', 0);
   Draw(aOwner, 'btn_13_1_18', 'gnapprox', 'gnapprox', sLeft, SLT, '\gnapprox', 0);
   Draw(aOwner, 'btn_13_1_19', 'ntriangleright', 'ntriangleright', sLeft, SLT, '\ntriangleright', 0);
-  Draw(aOwner, 'btn_13_1_110', 'ntrianglerighteq', 'ntrianglerighteq', sLeft, SLT,
-    '\ntrianglerighteq', 0);
+  Draw(aOwner, 'btn_13_1_110', 'ntrianglerighteq', 'ntrianglerighteq', sLeft, SLT, '\ntrianglerighteq', 0);
   Draw(aOwner, 'btn_13_1_111', 'nsucc', 'nsucc', sLeft, SLT, '\nsucc', 0);
   Draw(aOwner, 'btn_13_1_112', 'nsucceq', 'nsucceq', sLeft, SLT, '\nsucceq', 0);
   Draw(aOwner, 'btn_13_1_113', 'succneqq', 'succneqq', sLeft, SLT, '\succneqq', 0);
@@ -1439,36 +1344,22 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\sum', 0, sLeft, FLT, 'sum', 'btn_math1_00', 'sum',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\prod', 0, sLeft, FLT, 'prod', 'btn_math1_01', 'prod',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\coprod', 0, sLeft, FLT, 'coprod', 'btn_math1_02', 'coprod',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\int', 0, sLeft, FLT, 'int', 'btn_math1_03', 'int',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\oint', 0, sLeft, FLT, 'oint', 'btn_math1_04', 'oint',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\bigcap', 0, sLeft, FLT, 'bigcap', 'btn_math1_05', 'bigcap',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\bigcup', 0, sLeft, FLT, 'bigcup', 'btn_math1_06', 'bigcup',
-    SymbolClick));
+  Draw(aOwner, 'btn_math1_00', 'sum', 'sum', sLeft, FLT, '\sum', 0);
+  Draw(aOwner, 'btn_math1_01', 'prod', 'prod', sLeft, FLT, '\prod', 0);
+  Draw(aOwner, 'btn_math1_02', 'coprod', 'coprod', sLeft, FLT, '\coprod', 0);
+  Draw(aOwner, 'btn_math1_03', 'int', 'int', sLeft, FLT, '\int', 0);
+  Draw(aOwner, 'btn_math1_04', 'oint', 'oint', sLeft, FLT, '\oint', 0);
+  Draw(aOwner, 'btn_math1_05', 'bigcap', 'bigcap', sLeft, FLT, '\bigcap', 0);
+  Draw(aOwner, 'btn_math1_06', 'bigcup', 'bigcup', sLeft, FLT, '\bigcup', 0);
 
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\bigsqcup', 0, sLeft, SLT, 'bigsqcup', 'btn_math1_10',
-    'bigsqcup', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\bigvee', 0, sLeft, SLT, 'bigvee', 'btn_math1_11', 'bigvee',
-    SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\bigwedge', 0, sLeft, SLT, 'bigwedge', 'btn_math1_12',
-    'bigwedge', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\bigodot', 0, sLeft, SLT, 'bigodot', 'btn_math1_13',
-    'bigodot', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\bigotimes', 0, sLeft, SLT, 'bigotimes', 'btn_math1_14',
-    'bigotimes', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\bigoplus', 0, sLeft, SLT, 'bigoplus', 'btn_math1_15',
-    'bigoplus', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\biguplus', 0, sLeft, SLT, 'biguplus', 'btn_math1_16',
-    'biguplus', SymbolClick));
+  Draw(aOwner, 'btn_math1_10', 'bigsqcup', 'bigsqcup', sLeft, SLT, '\bigsqcup', 0);
+  Draw(aOwner, 'btn_math1_11', 'bigvee', 'bigvee', sLeft, SLT, '\bigvee', 0);
+  Draw(aOwner, 'btn_math1_12', 'bigwedge', 'bigwedge', sLeft, SLT, '\bigwedge', 0);
+  Draw(aOwner, 'btn_math1_13', 'bigodot', 'bigodot', sLeft, SLT, '\bigodot', 0);
+  Draw(aOwner, 'btn_math1_14', 'bigotimes', 'bigotimes', sLeft, SLT, '\bigotimes', 0);
+  Draw(aOwner, 'btn_math1_15', 'bigoplus', 'bigoplus', sLeft, SLT, '\bigoplus', 0);
+  Draw(aOwner, 'btn_math1_16', 'biguplus', 'biguplus', sLeft, SLT, '\biguplus', 0);
 
   left := sLeft;
 end;
@@ -1478,18 +1369,13 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\mathbb{}', -1, sLeft, FLT, 'mathbb', 'btn_math2_00',
-    'mathbb', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\mathbf{}', -1, sLeft, FLT, 'mathbf', 'btn_math2_01',
-    'mathbf', SymbolClick));
+  Draw(aOwner, 'btn_math2_00', 'mathbb', 'mathbb', sLeft, FLT, '\mathbb{}', -1);
+  Draw(aOwner, 'btn_math2_01', 'mathbf', 'mathbf', sLeft, FLT, '\mathbf{}', -1);
 
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\mathcal{}', -1, sLeft, SLT, 'mathcal', 'btn_math2_10',
-    'mathcal', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\mathrm{}', -1, sLeft, SLT, 24, BtnHeight, 'mathrm',
-    'btn_math2_11', 'mathrm', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\mathfrak{}', -1, sLeft, SLT, 24, BtnHeight, 'mathfrak',
-    'btn_math2_12', 'mathfrak', SymbolClick));
+  Draw(aOwner, 'btn_math2_10', 'mathcal', 'mathcal', sLeft, SLT, '\mathcal{}', -1);
+  Draw(aOwner, 'btn_math2_11', 'mathrm', 'mathrm', sLeft, SLT, '\mathrm{}', -1);
+  Draw(aOwner, 'btn_math2_12', 'mathfrak', 'mathfrak', sLeft, SLT, '\mathfrak{}', -1);
 
   left := sLeft;
 end;
@@ -1499,12 +1385,10 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '^{}', -1, sLeft, FLT, 24, BtnHeight, 'math300',
-    'btn_math3_00', 'x^{k}', SymbolClick));
+  Draw(aOwner, 'btn_math3_00', 'math300', 'x^{k}', sLeft, FLT, '^{}', -1);
 
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '_{}', -1, sLeft, SLT, 24, BtnHeight, 'math310',
-    'btn_math3_10', 'x_{k}', SymbolClick));
+  Draw(aOwner, 'btn_math3_10', 'math310', 'x_{k}', sLeft, SLT, '_{}', -1);
 
   left := sLeft;
 end;
@@ -1514,28 +1398,21 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\hat{}', -1, sLeft, FLT, 24, BtnHeight, 'hat',
-    'btn_math4_00', 'hat', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\check{}', -1, sLeft, FLT, 24, BtnHeight, 'check',
-    'btn_math4_01', 'check', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\breve{}', -1, sLeft, FLT, 24, BtnHeight, 'breve',
-    'btn_math4_02', 'breve', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\acute{}', -1, sLeft, FLT, 24, BtnHeight, 'acute',
-    'btn_math4_03', 'acute', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\grave{}', -1, sLeft, FLT, 24, BtnHeight, 'grave',
-    'btn_math4_04', 'grave', SymbolClick));
+  Draw(aOwner, 'btn_math4_00', 'hat', 'hat', sLeft, FLT, '\hat{}', -1);
+  Draw(aOwner, 'btn_math4_01', 'check', 'check', sLeft, FLT, '\check{}', -1);
+  Draw(aOwner, 'btn_math4_02', 'breve', 'breve', sLeft, FLT, '\breve{}', -1);
+  Draw(aOwner, 'btn_math4_03', 'acute', 'acute', sLeft, FLT, '\acute{}', -1);
+  Draw(aOwner, 'btn_math4_04', 'grave', 'grave', sLeft, FLT, '\grave{}', -1);
 
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\tilde{}', -1, sLeft, SLT, 24, BtnHeight, 'tilde',
-    'btn_math4_10', 'tilde', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\bar{}', -1, sLeft, SLT, 24, BtnHeight, 'bar',
-    'btn_math4_11', 'bar', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\vec{}', -1, sLeft, SLT, 24, BtnHeight, 'vec',
-    'btn_math4_12', 'vec', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\dot{}', -1, sLeft, SLT, 24, BtnHeight, 'dot',
-    'btn_math4_13', 'dot', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\ddot{}', -1, sLeft, SLT, 24, BtnHeight, 'ddot',
-    'btn_math4_14', 'ddot', SymbolClick));
+  Draw(aOwner, 'btn_math4_10', 'tilde', 'tilde', sLeft, SLT, '\tilde{}', -1);
+  Draw(aOwner, 'btn_math4_11', 'bar', 'bar', sLeft, SLT, '\bar{}', -1);
+  FBtnImage.Add(TSymbol.Create(aOwner, '\vec{}', -1, sLeft, SLT, 24, BtnHeight, 'vec', 'btn_math4_12', 'vec',
+    SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\dot{}', -1, sLeft, SLT, 24, BtnHeight, 'dot', 'btn_math4_13', 'dot',
+    SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\ddot{}', -1, sLeft, SLT, 24, BtnHeight, 'ddot', 'btn_math4_14', 'ddot',
+    SymbolClick));
 
   left := sLeft;
 end;
@@ -1545,12 +1422,12 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\sqrt{}', -1, sLeft, FLT, 44, BtnHeight, 'sqrt',
-    'btn_math5_00', 'sqrt', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\sqrt{}', -1, sLeft, FLT, 44, BtnHeight, 'sqrt', 'btn_math5_00', 'sqrt',
+    SymbolClick));
 
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\sqrt[n]{}', -1, sLeft, SLT, 44, BtnHeight, 'sqrtn',
-    'btn_math5_10', 'sqrt[n]', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\sqrt[n]{}', -1, sLeft, SLT, 44, BtnHeight, 'sqrtn', 'btn_math5_10', 'sqrt[n]',
+    SymbolClick));
 
   left := sLeft;
 end;
@@ -1560,12 +1437,12 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\overline{}', -1, sLeft, FLT, 30, BtnHeight, 'overline',
-    'btn_math6_00', 'overline', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\overline{}', -1, sLeft, FLT, 30, BtnHeight, 'overline', 'btn_math6_00',
+    'overline', SymbolClick));
 
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\underline{}', -1, sLeft, SLT, 30, BtnHeight, 'underline',
-    'btn_math6_10', 'underline', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\underline{}', -1, sLeft, SLT, 30, BtnHeight, 'underline', 'btn_math6_10',
+    'underline', SymbolClick));
 
   left := sLeft;
 end;
@@ -1575,17 +1452,17 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\overleftarrow{}', -1, sLeft, FLT, 30, BtnHeight,
-    'overleftarrow', 'btn_math7_00', 'overleftarrow', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\overleftarrow{}', -1, sLeft, FLT, 30, BtnHeight, 'overleftarrow',
+    'btn_math7_00', 'overleftarrow', SymbolClick));
 
-  FBtnImage.Add(TSymbol.Create(aOwner, '\overrightarrow{}', -1, sLeft, FLT, 30, BtnHeight,
-    'overrightarrow', 'btn_math7_01', 'overrightarrow', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\overrightarrow{}', -1, sLeft, FLT, 30, BtnHeight, 'overrightarrow',
+    'btn_math7_01', 'overrightarrow', SymbolClick));
 
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\widetilde{}', -1, sLeft, SLT, 30, BtnHeight, 'widetilde',
-    'btn_math7_10', 'widetilde', SymbolClick));
-  FBtnImage.Add(TSymbol.Create(aOwner, '\widehat{}', -1, sLeft, SLT, 30, BtnHeight, 'widehat',
-    'btn_math7_11', 'widehat', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\widetilde{}', -1, sLeft, SLT, 30, BtnHeight, 'widetilde', 'btn_math7_10',
+    'widetilde', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\widehat{}', -1, sLeft, SLT, 30, BtnHeight, 'widehat', 'btn_math7_11',
+    'widehat', SymbolClick));
 
   left := sLeft;
 end;
@@ -1595,12 +1472,12 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\overbrace{}', -1, sLeft, FLT, 30, BtnHeight, 'overbrace',
-    'btn_math8_00', 'overbrace', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\overbrace{}', -1, sLeft, FLT, 30, BtnHeight, 'overbrace', 'btn_math8_00',
+    'overbrace', SymbolClick));
 
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\underbrace{}', -1, sLeft, SLT, 30, BtnHeight, 'underbrace',
-    'btn_math8_10', 'underbrace', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\underbrace{}', -1, sLeft, SLT, 30, BtnHeight, 'underbrace', 'btn_math8_10',
+    'underbrace', SymbolClick));
 
   left := sLeft;
 end;
@@ -1610,12 +1487,12 @@ var
   sLeft: integer;
 begin
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\binom{}{}', -3, sLeft, FLT, 30, BtnHeight, 'binom',
-    'btn_math9_00', '\binom{m}{k}', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\binom{}{}', -3, sLeft, FLT, 30, BtnHeight, 'binom', 'btn_math9_00',
+    '\binom{m}{k}', SymbolClick));
 
   sLeft := left;
-  FBtnImage.Add(TSymbol.Create(aOwner, '\frac{}{}', -3, sLeft, SLT, 30, BtnHeight, 'frac',
-    'btn_math9_10', '\frac{abc}{xyz}', SymbolClick));
+  FBtnImage.Add(TSymbol.Create(aOwner, '\frac{}{}', -3, sLeft, SLT, 30, BtnHeight, 'frac', 'btn_math9_10',
+    '\frac{abc}{xyz}', SymbolClick));
 
   left := sLeft;
 end;
