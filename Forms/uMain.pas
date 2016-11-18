@@ -27,14 +27,12 @@ type
   TMain = class(TForm)
     ActListCommand: TActionList;
     ActTexPdfLaTeX: TAction;
-    ilCode: TImageList;
     StatusBar: TStatusBar;
     ActFileNew: TAction;
     ActFileOpen: TAction;
     ActFileSave: TAction;
     ActFileSaveAs: TAction;
     ActHelpAbout: TAction;
-    ilAction: TImageList;
     ActionMainMenuBar: TActionMainMenuBar;
     ActAlignLeft: TAction;
     ActAlignCenter: TAction;
@@ -70,12 +68,12 @@ type
     ActViewLog: TAction;
     PopupActionEditor: TPopupActionBar;
     ActEditGoToLine: TAction;
-    ActEditUndo1: TMenuItem;
-    ActEditRedo1: TMenuItem;
-    ActEditCut1: TMenuItem;
-    ActEditCopy1: TMenuItem;
-    ActEditPaste1: TMenuItem;
-    ActEditSelectAll1: TMenuItem;
+    ActPopupEditUndo: TMenuItem;
+    ActPopupEditRedo: TMenuItem;
+    ActPopupEditCut: TMenuItem;
+    ActPopupEditCopy: TMenuItem;
+    ActPopupEditPaste: TMenuItem;
+    ActPopupEditSelectAll: TMenuItem;
     N1: TMenuItem;
     N2: TMenuItem;
     ActionToolBar1: TActionToolBar;
@@ -88,7 +86,6 @@ type
     ActMngCommand: TActionManager;
     ActTextSubFont: TAction;
     ActTextSubAlign: TAction;
-    ActionToolBar2: TActionToolBar;
     ActInsertSubList: TAction;
     ActListItemize: TAction;
     ActListEnumerate: TAction;
@@ -104,6 +101,16 @@ type
     ActHelp: TAction;
     ActInsertSubTables: TAction;
     ActListCases: TAction;
+    ActInsertSubLink: TAction;
+    ActLinkUrl: TAction;
+    ActLinkHref: TAction;
+    ActLinkHyperLink: TAction;
+    ActLinkHyperTarget: TAction;
+    ActColorMap: TStandardColorMap;
+    il_16x16: TImageList;
+    il_16x16_d: TImageList;
+    ActHelpWikiBooks: TAction;
+    ActInsertNewPage: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -153,14 +160,22 @@ type
 
     { Insert }
     procedure ActInsertExecute(Sender: TObject);
+    procedure ActInsertNewPageExecute(Sender: TObject);
     procedure ActInsertImageExecute(Sender: TObject);
     procedure ActInsertSubListExecute(Sender: TObject);
+    procedure ActInsertSubLinkExecute(Sender: TObject);
 
-    { Insert-List }
+    { Insert.List }
     procedure ActListItemizeExecute(Sender: TObject);
     procedure ActListEnumerateExecute(Sender: TObject);
     procedure ActListDescriptionExecute(Sender: TObject);
     procedure ActListCasesExecute(Sender: TObject);
+
+    { Insert.Link }
+    procedure ActLinkUrlExecute(Sender: TObject);
+    procedure ActLinkHrefExecute(Sender: TObject);
+    procedure ActLinkHyperLinkExecute(Sender: TObject);
+    procedure ActLinkHyperTargetExecute(Sender: TObject);
 
     { View }
     procedure ActViewExecute(Sender: TObject);
@@ -189,6 +204,7 @@ type
     { Help }
     procedure ActHelpExecute(Sender: TObject);
     procedure ActHelpAboutExecute(Sender: TObject);
+    procedure ActHelpWikiBooksExecute(Sender: TObject);
 
     procedure memoLogKeyPress(Sender: TObject; var Key: Char);
 
@@ -199,12 +215,12 @@ type
 
     procedure TabEditorChange(Sender: TObject; NewTab: Integer; var AllowChange: Boolean);
     procedure TabEditorGetImageIndex(Sender: TObject; TabIndex: Integer; var ImageIndex: Integer);
+    procedure ApplicationEventsMessage(var Msg: tagMSG; var Handled: Boolean);
   private
     { Private declarations }
     FAllSetting: TAllSetting;
     FTabEditor: TCustomTabSet;
     FPageSymbols: TCustomPageControl;
-    // FLog: TLogForm;
     FPageLog: TCustomPageControl;
     FActiveEditor: TEditorForm;
     FCurDoc: Integer;
@@ -212,6 +228,9 @@ type
     FTexGuiSymbols: TTexGuiSymbols;
     FTexCompile: TThreadCompile;
     FSendString: string;
+    FProcessingEventHandler: Boolean;
+
+    procedure CreateActionMenu();
 
     procedure WMCopyData(var Msg: TWMCopyData); message WM_COPYDATA;
 
@@ -226,6 +245,7 @@ type
     procedure InsertTemplateBlock(const cmBegin: string; const cmEnd: string);
     procedure InsertTemplateList(cmBegin, cmItem, cmEnd: string);
 
+    function Processing: Boolean;
     procedure ProcessParam(Index: Integer; param: string);
   public
     { Public declarations }
@@ -346,6 +366,191 @@ begin
   FFolderProject := ExtractFilePath(Application.ExeName) + 'Project';
 end;
 
+procedure TMain.CreateActionMenu;
+var
+  LItem, LItemGlobal, LItemSub: TActionClientItem;
+  LActionBarIndex: Integer;
+begin
+  { ActionMainMenuBar }
+  with ActMngCommand.ActionBars[0] do
+  begin
+    { File }
+    { ------------------------------------------- }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Index := 0;
+    LItemGlobal.Action := ActFile;
+    LItemGlobal.Items.Add.Action := ActFileNew;
+    LItemGlobal.Items.Add.Action := ActFileOpen;
+    LItemGlobal.Items.Add.Action := ActFileSave;
+    LItemGlobal.Items.Add.Action := ActFileSaveAs;
+    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActFileSetting;
+    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActFileExit;
+
+    { Edit }
+    { ------------------------------------------- }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Index := 1;
+    LItemGlobal.Action := ActEdit;
+    LItemGlobal.Items.Add.Action := ActEditUndo;
+    LItemGlobal.Items.Add.Action := ActEditRedo;
+    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActEditCut;
+    LItemGlobal.Items.Add.Action := ActEditCopy;
+    LItemGlobal.Items.Add.Action := ActEditPaste;
+    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActEditSelectAll;
+    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActEditGoToLine;
+    LItemGlobal.Items.Add.Action := ActEditEncoding;
+
+    { Text }
+    { ------------------------------------------- }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Index := 2;
+    LItemGlobal.Action := ActText;
+
+    { Text.Size }
+    LItemSub := LItemGlobal.Items.Add;
+    LItemSub.Action := ActTextSubSize;
+
+    { Text.Font }
+    LItemSub := LItemGlobal.Items.Add;
+    LItemSub.Action := ActTextSubFont;
+    LItemSub.Items.Add.Action := ActFontBold;
+    LItemSub.Items.Add.Action := ActFontItalic;
+    LItemSub.Items.Add.Action := ActFontUnderline;
+    LItemSub.Items.Add.Caption := '-';
+    LItemSub.Items.Add.Action := ActFontColor;
+
+    { Text.Align }
+    LItemSub := LItemGlobal.Items.Add;
+    LItemSub.Action := ActTextSubAlign;
+    LItemSub.Items.Add.Action := ActAlignLeft;
+    LItemSub.Items.Add.Action := ActAlignCenter;
+    LItemSub.Items.Add.Action := ActAlignRight;
+    LItemSub.Items.Add.Action := ActAlignJustify;
+
+    { Text }
+    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActTextShowSpecialChars;
+
+    { Insert }
+    { ------------------------------------------- }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Index := 3;
+    LItemGlobal.Action := ActInsert;
+    LItemGlobal.Items.Add.Action := ActInsertNewPage;
+    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActInsertImage;
+
+    { Insert.Link }
+    LItemSub := LItemGlobal.Items.Add;
+    LItemSub.Action := ActInsertSubLink;
+    LItemSub.Items.Add.Action := ActLinkHyperTarget;
+    LItemSub.Items.Add.Action := ActLinkHyperLink;
+    LItemSub.Items.Add.Caption := '-';
+    LItemSub.Items.Add.Action := ActLinkUrl;
+    LItemSub.Items.Add.Action := ActLinkHref;
+
+    { Insert.List }
+    LItemSub := LItemGlobal.Items.Add;
+    LItemSub.Action := ActInsertSubList;
+    LItemSub.Items.Add.Action := ActListItemize;
+    LItemSub.Items.Add.Action := ActListEnumerate;
+    LItemSub.Items.Add.Action := ActListDescription;
+
+    { Insert.Array }
+    // LItemSub := LItemGlobal.Items.Add;
+    // LItemSub.Action := ActInsertSubTables;
+
+    { View }
+    { ------------------------------------------- }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Index := 4;
+    LItemGlobal.Action := ActView;
+    LItemGlobal.Items.Add.Action := ActViewLog;
+
+    { TeX }
+    { ------------------------------------------- }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Index := 5;
+    LItemGlobal.Action := ActTex;
+    LItemGlobal.Items.Add.Action := ActTexPdfLaTeX;
+    LItemGlobal.Items.Add.Action := ActTexStop;
+    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActTexSysCmd;
+
+    { MiKTeX }
+    { ------------------------------------------- }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Index := 6;
+    LItemGlobal.Action := ActMiKTeX;
+    LItemGlobal.Items.Add.Action := ActMiKTeXOption;
+    LItemGlobal.Items.Add.Action := ActMiKTeXPackageManager;
+    LItemGlobal.Items.Add.Action := ActMiKTeXUpdateWizard;
+    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActMiKTeXTeXworks;
+
+    { Window }
+    { ------------------------------------------- }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Index := 7;
+    LItemGlobal.Action := ActWindow;
+    LItemGlobal.Items.Add.Action := ActWindowCascade;
+    LItemGlobal.Items.Add.Action := ActWindowTileHorizontal;
+    LItemGlobal.Items.Add.Action := ActWindowTileVertical;
+    LItemGlobal.Items.Add.Action := ActWindowMaximize;
+
+    { Help }
+    { ------------------------------------------- }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Index := 8;
+    LItemGlobal.Action := ActHelp;
+    LItemGlobal.Items.Add.Action := ActHelpWikiBooks;
+    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActHelpAbout;
+  end;
+
+  { ActionToolBar1 }
+  with ActMngCommand.ActionBars[1] do
+  begin
+    LItem := Items.Add;
+    LItem.Action := ActFileNew;
+    LItem.ShowCaption := False;
+
+    Items.Add.Caption := '-';
+
+    LItem := Items.Add;
+    LItem.Action := ActFileOpen;
+    LItem.ShowCaption := False;
+
+    LItem := Items.Add;
+    LItem.Action := ActFileSave;
+    LItem.ShowCaption := False;
+
+    Items.Add.Caption := '-';
+
+    // LItem := Items.Add;
+    // LItem.Action := ActFileSetting;
+    // LItem.ShowCaption := False;
+    // Items.Add.Caption := '-';
+
+    LItem := Items.Add;
+    LItem.Action := ActTexPdfLaTeX;
+    LItem.ShowCaption := False;
+
+    LItem := Items.Add;
+    LItem.Action := ActTexStop;
+    LItem.ShowCaption := False;
+
+    LItem := Items.Add;
+    LItem.Caption := '-';
+    LItem.CommandStyle := csSeparator;
+  end;
+end;
+
 procedure TMain.FormCreate(Sender: TObject);
 
   function CreateTab(aPage: TCustomPageControl; aCaption: string): TTabSheet;
@@ -358,6 +563,7 @@ procedure TMain.FormCreate(Sender: TObject);
 
 var
   i: Integer;
+
 begin
   for i := 0 to ComponentCount - 1 do
     if Components[i] is TPanel then
@@ -370,12 +576,16 @@ begin
   sDockBottom.Height := 0;
   sDockBottom.Enabled := False;
 
-  pAction.Height := 103;
+  pAction.Height := 103 + 21;
 
   Bevel1.Width := 3;
 
   ActTexPdfLaTeX.Enabled := True;
   ActTexStop.Enabled := False;
+
+  CreateActionMenu;
+
+  Main.Color := clGray;
 
   FTabEditor := TCustomTabSet.Create(self);
   with FTabEditor do
@@ -384,10 +594,15 @@ begin
     Top := ActionMainMenuBar.Height + pAction.Height;
     Width := 50;
     Height := ActionToolBar1.Height;
-    parent := Main;
-    align := alTop;
+    // parent := Main;
+    // align := alTop;
+    parent := pAction;
+    align := alBottom;
     TabPosition := tpTop;
-    style := tsModernTabs;
+    SelectedColor := clWhite;
+    UnselectedColor := clBtnFace;
+    ParentBackground := True;
+    style := tsSoftTabs;
 
     OnChange := TabEditorChange;
     OnGetImageIndex := TabEditorGetImageIndex;
@@ -524,7 +739,7 @@ begin
   ActTexStopExecute(ActTexStop);
 
   if FActiveEditor = nil then
-    exit;
+    Exit;
 
   LSaveDialogTex := TSaveDialog.Create(self);
   try
@@ -539,7 +754,7 @@ begin
     if LSaveDialogTex.Execute then
       LFileName := LSaveDialogTex.FileName
     else
-      exit;
+      Exit;
   finally
     LSaveDialogTex.Free;
   end;
@@ -743,12 +958,22 @@ begin
   //
 end;
 
+procedure TMain.ActInsertNewPageExecute(Sender: TObject);
+begin
+  InsertTemplate('\newpage', 0);
+end;
+
 procedure TMain.ActInsertImageExecute(Sender: TObject);
 begin
   //
 end;
 
 procedure TMain.ActInsertSubListExecute(Sender: TObject);
+begin
+  //
+end;
+
+procedure TMain.ActInsertSubLinkExecute(Sender: TObject);
 begin
   //
 end;
@@ -803,6 +1028,28 @@ begin
   // '  \end{array}' + #13#10 + '\right.');
 end;
 
+{ Link }
+
+procedure TMain.ActLinkUrlExecute(Sender: TObject);
+begin
+  InsertTemplate('\url{<ссылка>}', -1);
+end;
+
+procedure TMain.ActLinkHrefExecute(Sender: TObject);
+begin
+  InsertTemplate('\href{<ссылка>}{<описание>}', -13);
+end;
+
+procedure TMain.ActLinkHyperLinkExecute(Sender: TObject);
+begin
+  InsertTemplate('\hyperlink{<имя>}{<описание>}', -13);
+end;
+
+procedure TMain.ActLinkHyperTargetExecute(Sender: TObject);
+begin
+  InsertTemplate('\hypertarget{<имя>}{<описание>}', -13);
+end;
+
 { View }
 
 procedure TMain.ActViewExecute(Sender: TObject);
@@ -852,7 +1099,7 @@ begin
   begin
     if not FLog.Showing then
       MessageBox(Handle, PChar(FLog.GetParsingLine), PChar(Main.Caption), MB_ICONWARNING + MB_OK);
-    exit;
+    Exit;
   end;
 
   pdfFile := StringReplace(ExtractFileName(FActiveEditor.FileName),
@@ -897,7 +1144,7 @@ var
   cmd: string;
 begin
   if FActiveEditor = nil then
-    exit;
+    Exit;
 
   ActFileSaveExecute(ActFileSave);
 
@@ -933,7 +1180,7 @@ begin
     on E: Exception do
     begin
       ShowMessage(E.Message);
-      exit;
+      Exit;
     end;
   end;
 
@@ -955,7 +1202,7 @@ procedure TMain.ActTexStopExecute(Sender: TObject);
 begin
   try
     if not Assigned(FTexCompile) then
-      exit;
+      Exit;
 
     FTexCompile.Terminate;
     Sleep(50);
@@ -1055,6 +1302,11 @@ begin
   //
 end;
 
+procedure TMain.ActHelpWikiBooksExecute(Sender: TObject);
+begin
+  RunUrl('https://en.wikibooks.org/wiki/LaTeX');
+end;
+
 procedure TMain.TabEditorChange(Sender: TObject; NewTab: Integer; var AllowChange: Boolean);
 begin
   try
@@ -1144,6 +1396,68 @@ begin
   FTabEditor.TabIndex := FTabEditor.Tabs.Count - 1;
 end;
 
+function TMain.Processing: Boolean;
+begin
+  Result := True;
+  if FProcessingEventHandler then
+    Exit;
+  Result := False;
+end;
+
+procedure TMain.ApplicationEventsMessage(var Msg: tagMSG; var Handled: Boolean);
+var
+  LActiveDocumentFound: Boolean;
+  LSelectionAvailable: Boolean;
+  LActiveDocumentModified: Boolean;
+begin
+  if Processing then
+    Exit;
+
+  // FProcessingEventHandler := True;
+  // try
+  // LSelectionAvailable := False;
+  // LActiveDocumentFound := False;
+  // LActiveDocumentModified := False;
+  //
+  // if (FActiveEditor <> nil) and (FTabEditor.Tabs.Count > 0) then
+  // begin
+  // LActiveDocumentFound := True;
+  // LSelectionAvailable := FActiveEditor.Editor.SelectionAvailable;
+  // LActiveDocumentModified := FActiveEditor.Editor.Modified;
+  // end;
+  //
+  // { File }
+  // ActFileSave.Enabled := LActiveDocumentFound and LActiveDocumentModified;
+  // ActFileSaveAs.Enabled := LActiveDocumentFound;
+  //
+  // { Edit }
+  // ActEditUndo.Enabled := LActiveDocumentFound and FActiveEditor.Editor.CanUndo;
+  // ActEditRedo.Enabled := LActiveDocumentFound and FActiveEditor.Editor.CanRedo;
+  // ActEditCut.Enabled := LActiveDocumentFound and LSelectionAvailable;
+  // ActEditCopy.Enabled := LActiveDocumentFound and LSelectionAvailable;
+  // ActEditPaste.Enabled := LActiveDocumentFound and FActiveEditor.Editor.CanPaste;
+  // ActEditSelectAll.Enabled := LActiveDocumentFound;
+  // ActEditGoToLine.Enabled := LActiveDocumentFound;
+  // ActEditEncoding.Enabled := LActiveDocumentFound;
+  //
+  // { Text }
+  // ActTextSubSize.Enabled := LActiveDocumentFound;
+  // ActTextSubFont.Enabled := LActiveDocumentFound;
+  // ActTextSubAlign.Enabled := LActiveDocumentFound;
+  // ActTextShowSpecialChars.Enabled := LActiveDocumentFound;
+  //
+  // { Insert }
+  // ActInsertImage.Enabled := LActiveDocumentFound;
+  // ActInsertSubLink.Enabled := LActiveDocumentFound;
+  // ActInsertSubList.Enabled := LActiveDocumentFound;
+  //
+  // FProcessingEventHandler := False;
+  // except
+  // FProcessingEventHandler := False;
+  // { intentionally silent }
+  // end;
+end;
+
 procedure TMain.SetStatusBarCaption();
 begin
   StatusBar.Panels[STATUS_BAR_ENCODING].Text := EncodingToText(FActiveEditor.Editor.Encoding);
@@ -1165,7 +1479,7 @@ var
       if SendMessage(StatusBar.Handle, SB_GETRECT, i, LPARAM(@LRect)) <> 0 then
       begin
         if PtInRect(LRect, LClickPos) then
-          exit(i);
+          Exit(i);
       end;
     end;
 
@@ -1263,7 +1577,7 @@ begin
     if TEditorForm(FTabEditor.Tabs.Objects[i]).FileName = AFileName then
     begin
       FTabEditor.TabIndex := i;
-      exit;
+      Exit;
     end;
 
   AddPageCode(StringReplace(ExtractFileName(AFileName), ExtractFileExt(AFileName), '', []),
@@ -1286,7 +1600,7 @@ var
 begin
   Result := False;
   if (FActiveEditor = nil) or (FActiveEditor.State = stSave) then
-    exit;
+    Exit;
 
   if (FActiveEditor.State = stNew) or not FileExists(FActiveEditor.FileName) then
   begin
@@ -1300,7 +1614,7 @@ begin
       if LSaveDialogTex.Execute then
         LFileName := LSaveDialogTex.FileName
       else
-        exit;
+        Exit;
     finally
       LSaveDialogTex.Free;
     end;

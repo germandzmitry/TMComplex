@@ -7,8 +7,14 @@ uses
 
 procedure RunProcess(Command: string);
 procedure RunProcessDefault(FileName: string);
+procedure RunUrl(Url: string);
 
 implementation
+
+procedure RunUrl(Url: string);
+begin
+  ShellExecute(0, 'Open', PWideChar(Url), nil, nil, SW_SHOW);
+end;
 
 function FindDefaultApplication(const aFileName: string): string;
 var
