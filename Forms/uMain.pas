@@ -114,6 +114,10 @@ type
     ActPopupTexOpenPdfSynctex: TMenuItem;
     ActPopupEditGoToLine: TMenuItem;
     ActTexOpenPdf: TAction;
+    ActPopupTexOpenPdf: TMenuItem;
+    PopupActionTab: TPopupActionBar;
+    ActTabClose: TAction;
+    ActPopupTabClose: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -211,9 +215,13 @@ type
     procedure ActHelpAboutExecute(Sender: TObject);
     procedure ActHelpWikiBooksExecute(Sender: TObject);
 
+    { Tab }
+    procedure ActTabCloseExecute(Sender: TObject);
+
     procedure memoLogKeyPress(Sender: TObject; var Key: Char);
 
-    procedure pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
+    procedure pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl;
+      var Allow: Boolean);
     procedure pDockBottomDockDrop(Sender: TObject; Source: TDragDockObject; X, Y: Integer);
     procedure StatusBarDblClick(Sender: TObject);
 
@@ -623,6 +631,7 @@ begin
     UnselectedColor := clBtnFace;
     ParentBackground := True;
     style := tsSoftTabs;
+    PopupMenu := PopupActionTab;
 
     OnChange := TabEditorChange;
     OnGetImageIndex := TabEditorGetImageIndex;
@@ -943,7 +952,8 @@ begin
       R := ColorRGB;
       g := ColorRGB shr 8;
       b := ColorRGB shr 16;
-      InsertTemplate(cmTextColor + '[RGB]{' + IntToStr(R) + ',' + IntToStr(g) + ',' + IntToStr(b) + '}{}', -1);
+      InsertTemplate(cmTextColor + '[RGB]{' + IntToStr(R) + ',' + IntToStr(g) + ',' + IntToStr(b) +
+        '}{}', -1);
     end;
   finally
     cd.Free;
@@ -1092,6 +1102,13 @@ begin
   end;
 end;
 
+{ Tab }
+
+procedure TMain.ActTabCloseExecute(Sender: TObject);
+begin
+  //
+end;
+
 { TeX }
 
 procedure TMain.ActTexExecute(Sender: TObject);
@@ -1101,6 +1118,9 @@ end;
 
 procedure TMain.ActTexOpenPdfExecute(Sender: TObject);
 begin
+  if FActiveEditor = nil then
+    Exit;
+
   OpenPDF;
 end;
 
@@ -1262,7 +1282,8 @@ end;
 
 procedure TMain.ActMiKTeXTeXworksExecute(Sender: TObject);
 begin
-  if (FActiveEditor <> nil) and (FActiveEditor.State <> stNew) and (FileExists(FActiveEditor.FileNameFull)) then
+  if (FActiveEditor <> nil) and (FActiveEditor.State <> stNew) and
+    (FileExists(FActiveEditor.FileNameFull)) then
   begin
     ActFileSaveExecute(ActFileSave);
     RunProcess('texworks "' + FActiveEditor.FileNameFull + '"');
@@ -1333,7 +1354,8 @@ begin
     FActiveEditor.Show;
   finally
     SendMessage(ClientHandle, WM_SETREDRAW, ord(True), 0);
-    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_NOINTERNALPAINT);
+    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or
+      RDW_NOINTERNALPAINT);
   end;
 
   SetStatusBarCaption;
@@ -1367,7 +1389,8 @@ begin
   end;
 end;
 
-procedure TMain.pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
+procedure TMain.pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl;
+  var Allow: Boolean);
 var
   IniFile: TIniFile;
 begin
@@ -1399,7 +1422,8 @@ begin
       new.WindowState := wsMaximized;
   finally
     SendMessage(ClientHandle, WM_SETREDRAW, ord(True), 0);
-    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_NOINTERNALPAINT);
+    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or
+      RDW_NOINTERNALPAINT);
   end;
 
   new.Caption := PageCaption;
@@ -1595,7 +1619,8 @@ begin
       Exit;
     end;
 
-  AddPageCode(StringReplace(ExtractFileName(AFileName), ExtractFileExt(AFileName), '', []), AFileName);
+  AddPageCode(StringReplace(ExtractFileName(AFileName), ExtractFileExt(AFileName), '', []),
+    AFileName);
 
   FActiveEditor.Editor.BeginUpdate;
   FActiveEditor.Editor.Lines.Clear;
