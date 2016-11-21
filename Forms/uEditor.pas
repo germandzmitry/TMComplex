@@ -17,19 +17,24 @@ type
     procedure EditorChange(Sender: TObject);
     procedure EditorCaretChanged(ASender: TObject; X, Y: Integer);
     procedure EditorKeyPress(ASender: TObject; var AKey: Char);
-    procedure EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton; X, Y, ALine: Integer;
-      AMark: TBCEditorMark);
+    procedure EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton; X, Y, ALine: Integer; AMark: TBCEditorMark);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
+    FPath: string;
     FFileName: string;
+    FFullFileName: string;
+    FOnlyFileName: string;
     FState: Integer;
     procedure SetFileName(const Value: string);
     procedure SetState(const Value: Integer);
   public
     { Public declarations }
-    property FileName: string read FFileName write SetFileName;
+    property FilePath: string read FPath;
+    property FileNameFull: string read FFullFileName write SetFileName;
+    property FileName: string read FFileName;
+    property FileNameOnly: string read FOnlyFileName;
     property State: Integer read FState write SetState;
   end;
 
@@ -52,13 +57,16 @@ begin
   Editor.BorderStyle := bsNone;
   Editor.Scroll.Shadow.Visible := true;
   Editor.CompletionProposal.Enabled := false;
+  Editor.LeftMargin.Bookmarks.Visible := false;
+  Editor.LeftMargin.Bookmarks.ShortCuts := false;
+  Editor.LeftMargin.Border.Style := mbsMiddle;
   Editor.RightMargin.Options := [];
   Editor.RightMargin.Position := 100;
   Editor.ActiveLine.Indicator.Visible := true;
   Editor.Undo.Options := [];
   // Editor.SpecialChars.Visible := true;
   // Editor.SpecialChars.EndOfLine.Visible := true;
-  Editor.SpecialChars.EndOfLine.style := eolPilcrow;
+  Editor.SpecialChars.EndOfLine.Style := eolPilcrow;
   Editor.PopupMenu := Main.PopupActionEditor;
 
   Editor.OnChange := EditorChange;
@@ -131,8 +139,7 @@ end;
 
 procedure TEditorForm.EditorCaretChanged(ASender: TObject; X, Y: Integer);
 begin
-  Main.StatusBar.Panels[STATUS_BAR_CARET].text := IntToStr(Editor.DisplayCaretY) + ':' +
-    IntToStr(Editor.DisplayCaretX);
+  Main.StatusBar.Panels[STATUS_BAR_CARET].text := IntToStr(Editor.DisplayCaretY) + ':' + IntToStr(Editor.DisplayCaretX);
 end;
 
 procedure TEditorForm.EditorChange(Sender: TObject);
@@ -149,16 +156,19 @@ begin
   //
 end;
 
-procedure TEditorForm.EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton;
-  X, Y, ALine: Integer; AMark: TBCEditorMark);
+procedure TEditorForm.EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton; X, Y, ALine: Integer;
+  AMark: TBCEditorMark);
 begin
   //
 end;
 
 procedure TEditorForm.SetFileName(const Value: string);
 begin
-  FFileName := Value;
-  Caption := StringReplace(ExtractFileName(FFileName), ExtractFileExt(FFileName), '', []);
+  FFullFileName := Value;
+  FPath := ExtractFilePath(FFullFileName);
+  FFileName := ExtractFileName(FFullFileName);
+  FOnlyFileName := StringReplace(ExtractFileName(FFullFileName), ExtractFileExt(FFullFileName), '', []);
+  Caption := FOnlyFileName;
 end;
 
 procedure TEditorForm.SetState(const Value: Integer);

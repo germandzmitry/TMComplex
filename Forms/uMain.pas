@@ -73,7 +73,6 @@ type
     ActPopupEditCut: TMenuItem;
     ActPopupEditCopy: TMenuItem;
     ActPopupEditPaste: TMenuItem;
-    ActPopupEditSelectAll: TMenuItem;
     N1: TMenuItem;
     N2: TMenuItem;
     ActionToolBar1: TActionToolBar;
@@ -111,6 +110,10 @@ type
     il_16x16_d: TImageList;
     ActHelpWikiBooks: TAction;
     ActInsertNewPage: TAction;
+    ActTexOpenPdfSynctex: TAction;
+    ActPopupTexOpenPdfSynctex: TMenuItem;
+    ActPopupEditGoToLine: TMenuItem;
+    ActTexOpenPdf: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -186,6 +189,8 @@ type
     procedure ActTexPdfLaTeXExecute(Sender: TObject);
     procedure ActTexStopExecute(Sender: TObject);
     procedure ActTexSysCmdExecute(Sender: TObject);
+    procedure ActTexOpenPdfExecute(Sender: TObject);
+    procedure ActTexOpenPdfSynctexExecute(Sender: TObject);
 
     { MiKTeX }
     procedure ActMiKTeXExecute(Sender: TObject);
@@ -208,8 +213,7 @@ type
 
     procedure memoLogKeyPress(Sender: TObject; var Key: Char);
 
-    procedure pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl;
-      var Allow: Boolean);
+    procedure pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
     procedure pDockBottomDockDrop(Sender: TObject; Source: TDragDockObject; X, Y: Integer);
     procedure StatusBarDblClick(Sender: TObject);
 
@@ -244,6 +248,8 @@ type
     procedure InsertTemplate(const cmName: string; moveX: Integer);
     procedure InsertTemplateBlock(const cmBegin: string; const cmEnd: string);
     procedure InsertTemplateList(cmBegin, cmItem, cmEnd: string);
+
+    procedure OpenPDF();
 
     function Processing: Boolean;
     procedure ProcessParam(Index: Integer; param: string);
@@ -481,6 +487,9 @@ begin
     LItemGlobal.Items.Add.Action := ActTexStop;
     LItemGlobal.Items.Add.Caption := '-';
     LItemGlobal.Items.Add.Action := ActTexSysCmd;
+    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActTexOpenPdf;
+    LItemGlobal.Items.Add.Action := ActTexOpenPdfSynctex;
 
     { MiKTeX }
     { ------------------------------------------- }
@@ -545,6 +554,17 @@ begin
     LItem.Action := ActTexStop;
     LItem.ShowCaption := False;
 
+    Items.Add.Caption := '-';
+
+    LItem := Items.Add;
+    LItem.Action := ActTexOpenPdf;
+    LItem.ShowCaption := False;
+
+    LItem := Items.Add;
+    LItem.Action := ActTexOpenPdfSynctex;
+    LItem.ShowCaption := False;
+
+    // Так должна быть обявлена именно последяя черта
     LItem := Items.Add;
     LItem.Caption := '-';
     LItem.CommandStyle := csSeparator;
@@ -593,7 +613,7 @@ begin
     Left := 0;
     Top := ActionMainMenuBar.Height + pAction.Height;
     Width := 50;
-    Height := ActionToolBar1.Height;
+    // Height := ActionToolBar1.Height;
     // parent := Main;
     // align := alTop;
     parent := pAction;
@@ -746,11 +766,11 @@ begin
     LSaveDialogTex.Filter := 'Tex documents (*.tex)|*.tex';
     LSaveDialogTex.FilterIndex := 1;
     LSaveDialogTex.DefaultExt := 'tex';
-    if FileExists(FActiveEditor.FileName) then
-      LSaveDialogTex.InitialDir := ExtractFilePath(FActiveEditor.FileName)
+    if FileExists(FActiveEditor.FileNameFull) then
+      LSaveDialogTex.InitialDir := FActiveEditor.FilePath
     else
       LSaveDialogTex.InitialDir := FFolderProject;
-    LSaveDialogTex.FileName := ExtractFileName(FActiveEditor.FileName);
+    LSaveDialogTex.FileName := FActiveEditor.FileName;
     if LSaveDialogTex.Execute then
       LFileName := LSaveDialogTex.FileName
     else
@@ -923,8 +943,7 @@ begin
       R := ColorRGB;
       g := ColorRGB shr 8;
       b := ColorRGB shr 16;
-      InsertTemplate(cmTextColor + '[RGB]{' + IntToStr(R) + ',' + IntToStr(g) + ',' + IntToStr(b) +
-        '}{}', -1);
+      InsertTemplate(cmTextColor + '[RGB]{' + IntToStr(R) + ',' + IntToStr(g) + ',' + IntToStr(b) + '}{}', -1);
     end;
   finally
     cd.Free;
@@ -1080,10 +1099,43 @@ begin
   //
 end;
 
+procedure TMain.ActTexOpenPdfExecute(Sender: TObject);
+begin
+  OpenPDF;
+end;
+
+procedure TMain.ActTexOpenPdfSynctexExecute(Sender: TObject);
+var
+  pdfFile, OpenPDF, forwardsearch: string;
+begin
+  if FActiveEditor = nil then
+    Exit;
+
+  ActTexStopExecute(ActTexStop);
+
+  pdfFile := FActiveEditor.FilePath + FActiveEditor.FileNameOnly + '.pdf';
+
+  if not FileExists(pdfFile) then
+    Exit;
+
+  if not FAllSetting.PDFViewer.Sumatra then
+  begin
+    MessageBox(Handle, PChar('Данная функция работает только в SumatraPDF.'), PChar(Main.Caption),
+      MB_ICONWARNING + MB_OK);
+    Exit;
+  end;
+
+  forwardsearch := FActiveEditor.FileNameFull + '" ' + IntToStr(FActiveEditor.Editor.DisplayCaretY);
+
+  OpenPDF := '"' + FAllSetting.PDFViewer.SumatraPath + // путь к Sumatra
+    '" -reuse-instance "' + pdfFile + // Найти открытое приложение и открыть в нем файл
+    '" -forward-search "' + forwardsearch; // настройка команды для поиска
+  RunProcess(OpenPDF);
+end;
+
 procedure TMain.ThreadEndGenerate(Sender: TObject);
 var
-  pdfFile, inversesearch, OpenPDF: string;
-  resParse: Boolean;
+  LErrorExists: Boolean;
 begin
   ActTexStop.Enabled := False;
   ActTexPdfLaTeX.Enabled := True;
@@ -1091,50 +1143,17 @@ begin
   FLog.Caption := 'Parsing log compiling...';
   Application.ProcessMessages;
 
-  resParse := TTexLogParser.Parse(FLog.mLog.Text, FLog.MsgLines, FLog.MsgCount);
+  LErrorExists := TTexLogParser.Parse(FLog.mLog.Text, FLog.MsgLines, FLog.MsgCount);
   FLog.ShowMsg;
 
   // Если есть ошибки, документ не открываем
-  if resParse then
+  if LErrorExists then
   begin
     if not FLog.Showing then
       MessageBox(Handle, PChar(FLog.GetParsingLine), PChar(Main.Caption), MB_ICONWARNING + MB_OK);
-    Exit;
-  end;
-
-  pdfFile := StringReplace(ExtractFileName(FActiveEditor.FileName),
-    ExtractFileExt(FActiveEditor.FileName), '', []);
-
-  pdfFile := ExtractFilePath(FActiveEditor.FileName) + pdfFile + '.pdf';
-
-  if FileExists(pdfFile) then
-  begin
-    // Просмоторщик в системе по умолчанию, либо если установлен другой
-    // но такого exe больше нету
-    if (FAllSetting.PDFViewer.Default) // просмоторщик по умолчанию
-      or ((FAllSetting.PDFViewer.Sumatra) and not FileExists(FAllSetting.PDFViewer.SumatraPath)) //
-      or ((FAllSetting.PDFViewer.Other) and not FileExists(FAllSetting.PDFViewer.OtherPath)) then
-      RunProcessDefault(pdfFile);
-
-    // Если Sumatra настраиваем работу с synctex
-    if (FAllSetting.PDFViewer.Sumatra) and (FileExists(FAllSetting.PDFViewer.SumatraPath)) then
-    begin
-      inversesearch := '\"' + Application.ExeName + '\" \"%f\" \"%l\"';
-      OpenPDF := '"' + FAllSetting.PDFViewer.SumatraPath + // путь к Sumatra
-        '" -reuse-instance "' + pdfFile + // Найти открытое приложение и открыть в нем файл
-        '" -inverse-search "' + inversesearch + '"'; // настройка команды для моего приложения
-      RunProcess(OpenPDF);
-    end;
-
-    // Если другой просмоторщик
-    if (FAllSetting.PDFViewer.Other) and (FileExists(FAllSetting.PDFViewer.OtherPath)) then
-    begin
-      OpenPDF := '"' + FAllSetting.PDFViewer.OtherPath + '" "' + pdfFile + '"';
-      RunProcess(OpenPDF);
-    end;
-
-  end;
-
+  end
+  else
+    OpenPDF;
 end;
 
 procedure TMain.ActTexPdfLaTeXExecute(Sender: TObject);
@@ -1148,7 +1167,7 @@ begin
 
   ActFileSaveExecute(ActFileSave);
 
-  path := ExtractFilePath(FActiveEditor.FileName);
+  path := FActiveEditor.FilePath;
 
   // Если последний символ слеш, удаляем его
   if IsPathDelimiter(path, Length(path)) then
@@ -1159,7 +1178,7 @@ begin
   // '--interaction=errorstopmode ' + // Тип обработки ошибок
     '--interaction=nonstopmode ' + // Тип обработки ошибок
     '--synctex=-1 ' + // Файл синхронизации (для sumatra)
-    '"' + FActiveEditor.FileName + '"'; // сам файл
+    '"' + FActiveEditor.FileNameFull + '"'; // сам файл
 
   try
     if FLog = nil then
@@ -1243,11 +1262,10 @@ end;
 
 procedure TMain.ActMiKTeXTeXworksExecute(Sender: TObject);
 begin
-  if (FActiveEditor <> nil) and (FActiveEditor.State <> stNew) and
-    (FileExists(FActiveEditor.FileName)) then
+  if (FActiveEditor <> nil) and (FActiveEditor.State <> stNew) and (FileExists(FActiveEditor.FileNameFull)) then
   begin
     ActFileSaveExecute(ActFileSave);
-    RunProcess('texworks "' + FActiveEditor.FileName + '"');
+    RunProcess('texworks "' + FActiveEditor.FileNameFull + '"');
   end
   else
     RunProcess('texworks ');
@@ -1315,8 +1333,7 @@ begin
     FActiveEditor.Show;
   finally
     SendMessage(ClientHandle, WM_SETREDRAW, ord(True), 0);
-    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or
-      RDW_NOINTERNALPAINT);
+    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_NOINTERNALPAINT);
   end;
 
   SetStatusBarCaption;
@@ -1350,8 +1367,7 @@ begin
   end;
 end;
 
-procedure TMain.pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl;
-  var Allow: Boolean);
+procedure TMain.pDockBottomUnDock(Sender: TObject; Client: TControl; NewTarget: TWinControl; var Allow: Boolean);
 var
   IniFile: TIniFile;
 begin
@@ -1383,13 +1399,12 @@ begin
       new.WindowState := wsMaximized;
   finally
     SendMessage(ClientHandle, WM_SETREDRAW, ord(True), 0);
-    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or
-      RDW_NOINTERNALPAINT);
+    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_NOINTERNALPAINT);
   end;
 
   new.Caption := PageCaption;
-  new.FileName := PageFileName;
-  FTabEditor.Tabs.AddObject(ExtractFileName(new.FileName), new);
+  new.FileNameFull := PageFileName;
+  FTabEditor.Tabs.AddObject(new.FileNameOnly, new);
   if FTabEditor.Tabs.Count = 1 then
     SetFocus;
 
@@ -1461,7 +1476,7 @@ end;
 procedure TMain.SetStatusBarCaption();
 begin
   StatusBar.Panels[STATUS_BAR_ENCODING].Text := EncodingToText(FActiveEditor.Editor.Encoding);
-  StatusBar.Panels[STATUS_BAR_PATH].Text := ExtractFilePath(FActiveEditor.FileName);
+  StatusBar.Panels[STATUS_BAR_PATH].Text := FActiveEditor.FilePath;
 end;
 
 procedure TMain.StatusBarDblClick(Sender: TObject);
@@ -1574,14 +1589,13 @@ var
   i: Integer;
 begin
   for i := 0 to FTabEditor.Tabs.Count - 1 do
-    if TEditorForm(FTabEditor.Tabs.Objects[i]).FileName = AFileName then
+    if TEditorForm(FTabEditor.Tabs.Objects[i]).FileNameFull = AFileName then
     begin
       FTabEditor.TabIndex := i;
       Exit;
     end;
 
-  AddPageCode(StringReplace(ExtractFileName(AFileName), ExtractFileExt(AFileName), '', []),
-    AFileName);
+  AddPageCode(StringReplace(ExtractFileName(AFileName), ExtractFileExt(AFileName), '', []), AFileName);
 
   FActiveEditor.Editor.BeginUpdate;
   FActiveEditor.Editor.Lines.Clear;
@@ -1602,7 +1616,7 @@ begin
   if (FActiveEditor = nil) or (FActiveEditor.State = stSave) then
     Exit;
 
-  if (FActiveEditor.State = stNew) or not FileExists(FActiveEditor.FileName) then
+  if (FActiveEditor.State = stNew) or not FileExists(FActiveEditor.FileNameFull) then
   begin
     LSaveDialogTex := TSaveDialog.Create(self);
     try
@@ -1610,7 +1624,7 @@ begin
       LSaveDialogTex.FilterIndex := 1;
       LSaveDialogTex.DefaultExt := 'tex';
       LSaveDialogTex.InitialDir := FFolderProject;
-      LSaveDialogTex.FileName := ExtractFileName(FActiveEditor.FileName);
+      LSaveDialogTex.FileName := FActiveEditor.FileName;
       if LSaveDialogTex.Execute then
         LFileName := LSaveDialogTex.FileName
       else
@@ -1620,7 +1634,7 @@ begin
     end;
   end
   else
-    LFileName := FActiveEditor.FileName;
+    LFileName := FActiveEditor.FileNameFull;
 
   Result := SaveDocument(LFileName);
 end;
@@ -1641,10 +1655,45 @@ begin
 
   if Result then
   begin
-    FActiveEditor.FileName := AFileName;
+    FActiveEditor.FileNameFull := AFileName;
     FActiveEditor.State := stSave;
-    FTabEditor.Tabs[FTabEditor.TabIndex] := ExtractFileName(FActiveEditor.FileName);
+    FTabEditor.Tabs[FTabEditor.TabIndex] := FActiveEditor.FileNameOnly;
     SetStatusBarCaption;
+  end;
+end;
+
+procedure TMain.OpenPDF();
+var
+  pdfFile, inversesearch, OpenPDF: string;
+begin
+  pdfFile := FActiveEditor.FilePath + FActiveEditor.FileNameOnly + '.pdf';
+
+  if FileExists(pdfFile) then
+  begin
+    // Просмоторщик в системе по умолчанию, либо если установлен другой
+    // но такого exe больше нету
+    if (FAllSetting.PDFViewer.Default) // просмоторщик по умолчанию
+      or ((FAllSetting.PDFViewer.Sumatra) and not FileExists(FAllSetting.PDFViewer.SumatraPath)) //
+      or ((FAllSetting.PDFViewer.Other) and not FileExists(FAllSetting.PDFViewer.OtherPath)) then
+      RunProcessDefault(pdfFile);
+
+    // Если Sumatra настраиваем работу с synctex
+    if (FAllSetting.PDFViewer.Sumatra) and (FileExists(FAllSetting.PDFViewer.SumatraPath)) then
+    begin
+      inversesearch := '\"' + Application.ExeName + '\" \"%f\" \"%l\"';
+      OpenPDF := '"' + FAllSetting.PDFViewer.SumatraPath + // путь к Sumatra
+        '" -reuse-instance "' + pdfFile + // Найти открытое приложение и открыть в нем файл
+        '" -inverse-search "' + inversesearch + '"'; // настройка команды для моего приложения
+      RunProcess(OpenPDF);
+    end;
+
+    // Если другой просмоторщик
+    if (FAllSetting.PDFViewer.Other) and (FileExists(FAllSetting.PDFViewer.OtherPath)) then
+    begin
+      OpenPDF := '"' + FAllSetting.PDFViewer.OtherPath + '" "' + pdfFile + '"';
+      RunProcess(OpenPDF);
+    end;
+
   end;
 end;
 

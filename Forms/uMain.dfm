@@ -495,8 +495,19 @@ object Main: TMain
       ImageIndex = 42
       OnExecute = ActInsertNewPageExecute
     end
+    object ActTexOpenPdf: TAction
+      Category = 'Tex'
+      Caption = 'ActTexOpenPdf'
+      OnExecute = ActTexOpenPdfExecute
+    end
+    object ActTexOpenPdfSynctex: TAction
+      Category = 'Tex'
+      Caption = 'ActTexOpenPdfSynctex'
+      OnExecute = ActTexOpenPdfSynctexExecute
+    end
   end
   object PopupActionEditor: TPopupActionBar
+    Images = il_16x16
     Left = 232
     Top = 176
     object ActPopupEditUndo: TMenuItem
@@ -520,8 +531,11 @@ object Main: TMain
     object N2: TMenuItem
       Caption = '-'
     end
-    object ActPopupEditSelectAll: TMenuItem
-      Action = ActEditSelectAll
+    object ActPopupEditGoToLine: TMenuItem
+      Action = ActEditGoToLine
+    end
+    object ActPopupTexOpenPdfSynctex: TMenuItem
+      Action = ActTexOpenPdfSynctex
     end
   end
   object ApplicationEvents: TApplicationEvents
@@ -591,7 +605,7 @@ object Main: TMain
     Left = 424
     Top = 176
     Bitmap = {
-      494C01012D003000000110001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01012D003000040110001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000040000000C0000000010020000000000000C0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -2187,7 +2201,7 @@ object Main: TMain
     Left = 504
     Top = 176
     Bitmap = {
-      494C01012D003000CC0010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01012D003000D00010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000040000000C0000000010020000000000000C0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
