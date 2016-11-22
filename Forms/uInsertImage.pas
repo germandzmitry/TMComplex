@@ -106,7 +106,7 @@ const
   cTrim: string = 'trim = %smm %smm %smm %smm, clip';
 
   cFileNotExists: string = 'Файл "%s" не найден!';
-  cFileCopyError: string = 'Ошибка копирования файла "%s"!';
+  cFileCopyError: string = 'Ошибка копирования: %s.';
 var
   LParam, LFileName: string;
 begin
@@ -117,18 +117,24 @@ begin
     exit;
   end;
 
-  if cbCopyToProjectFolder.Checked then
-  begin
-    LFileName := ExtractFileName(eInsertImageFileName.Text);
-    if not CopyFile(pwidechar(eImageFileName.Text), pwidechar(eInsertImageFileName.Text), true) then
-    begin
-      MessageBox(Handle, PChar(Format(cFileCopyError, [eImageFileName.Text])), PChar(Self.Caption),
-        MB_ICONWARNING + MB_OK);
-      exit;
-    end;
-  end
+  if ExtractFilePath(eImageFileName.Text) = FFolderProject then
+    LFileName := ExtractFileName(eImageFileName.Text)
   else
-    LFileName := StringReplace(eImageFileName.Text, '\', '/', [rfReplaceAll]);
+  begin
+    if cbCopyToProjectFolder.Checked then
+    begin
+      LFileName := ExtractFileName(eInsertImageFileName.Text);
+      if not CopyFile(pwidechar(eImageFileName.Text), pwidechar(eInsertImageFileName.Text), true)
+      then
+      begin
+        MessageBox(Handle, PChar(Format(cFileCopyError, [SysErrorMessage(GetLastError)])),
+          PChar(Self.Caption), MB_ICONERROR + MB_OK);
+        exit;
+      end;
+    end
+    else
+      LFileName := StringReplace(eImageFileName.Text, '\', '/', [rfReplaceAll]);
+  end;
 
   if rbScale.Checked then
   begin
@@ -185,7 +191,6 @@ begin
 
       eInsertImageFileName.Text := FolderProject +
         StringReplace(ExtractFileName(eImageFileName.Text), ' ', '_', [rfReplaceAll]);
-
     end;
   finally
     LOpenDialogImage.Free;

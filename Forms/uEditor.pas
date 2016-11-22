@@ -143,7 +143,9 @@ begin
     else
       LNewTab := i + 1;
     Main.TabEditorChange(Main.TabEditor, LNewTab, LAllowChange);
-  end;
+  end
+  else
+    Main.TabEditorChange(Main.TabEditor, -1, LAllowChange);
 
   Action := caFree;
 end;

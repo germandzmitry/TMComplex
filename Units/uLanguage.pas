@@ -81,6 +81,20 @@ begin
         if s <> '' then
           TLinkLabel(AForm.Components[i]).Caption := s
       end
+      { Panel }
+      else if AForm.Components[i] is TPanel then
+      begin
+        s := lng.ReadString(AForm.Name, AForm.Components[i].Name, '');
+        if s <> '' then
+          (AForm.Components[i] as TPanel).Caption := s
+      end
+      { GroupBox }
+      else if AForm.Components[i] is TGroupBox then
+      begin
+        s := lng.ReadString(AForm.Name, AForm.Components[i].Name, '');
+        if s <> '' then
+          (AForm.Components[i] as TGroupBox).Caption := s
+      end
       { TTabSheet }
       else if AForm.Components[i] is TTabSheet then
       begin

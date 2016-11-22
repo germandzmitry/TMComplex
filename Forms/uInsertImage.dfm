@@ -46,8 +46,6 @@ object InsertImageForm: TInsertImageForm
     Caption = 'BtnCancel'
     TabOrder = 0
     OnClick = BtnCancelClick
-    ExplicitLeft = 734
-    ExplicitTop = 387
   end
   object BtnOk: TButton
     Left = 643
@@ -59,8 +57,6 @@ object InsertImageForm: TInsertImageForm
     Default = True
     TabOrder = 1
     OnClick = BtnOkClick
-    ExplicitLeft = 653
-    ExplicitTop = 387
   end
   object eImageFileName: TEdit
     Left = 8
@@ -145,18 +141,18 @@ object InsertImageForm: TInsertImageForm
         OnClick = rbSize
       end
       object eWidth: TEdit
-        Left = 208
+        Left = 280
         Top = 45
-        Width = 121
+        Width = 49
         Height = 21
         NumbersOnly = True
         TabOrder = 4
         Text = 'eWidth'
       end
       object eHeight: TEdit
-        Left = 208
+        Left = 280
         Top = 72
-        Width = 121
+        Width = 49
         Height = 21
         NumbersOnly = True
         TabOrder = 5

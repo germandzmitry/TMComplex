@@ -118,6 +118,7 @@ type
     PopupActionTab: TPopupActionBar;
     ActTabClose: TAction;
     ActPopupTabClose: TMenuItem;
+    ActInsertTable: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -169,6 +170,7 @@ type
     procedure ActInsertExecute(Sender: TObject);
     procedure ActInsertNewPageExecute(Sender: TObject);
     procedure ActInsertImageExecute(Sender: TObject);
+    procedure ActInsertTableExecute(Sender: TObject);
     procedure ActInsertSubListExecute(Sender: TObject);
     procedure ActInsertSubLinkExecute(Sender: TObject);
 
@@ -459,6 +461,7 @@ begin
     LItemGlobal.Items.Add.Action := ActInsertNewPage;
     LItemGlobal.Items.Add.Caption := '-';
     LItemGlobal.Items.Add.Action := ActInsertImage;
+    LItemGlobal.Items.Add.Action := ActInsertTable;
 
     { Insert.Link }
     LItemSub := LItemGlobal.Items.Add;
@@ -1009,6 +1012,11 @@ begin
   end;
 end;
 
+procedure TMain.ActInsertTableExecute(Sender: TObject);
+begin
+  //
+end;
+
 procedure TMain.ActInsertSubListExecute(Sender: TObject);
 begin
   //
@@ -1360,15 +1368,18 @@ end;
 
 procedure TMain.TabEditorChange(Sender: TObject; NewTab: Integer; var AllowChange: Boolean);
 begin
-  try
-    SendMessage(ClientHandle, WM_SETREDRAW, ord(False), 0);
-    FActiveEditor := TEditorForm(FTabEditor.Tabs.Objects[NewTab]);
-    FActiveEditor.Show;
-  finally
-    SendMessage(ClientHandle, WM_SETREDRAW, ord(True), 0);
-    RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or
-      RDW_NOINTERNALPAINT);
-  end;
+  if NewTab = -1 then
+    FActiveEditor := nil
+  else
+    try
+      SendMessage(ClientHandle, WM_SETREDRAW, ord(False), 0);
+      FActiveEditor := TEditorForm(FTabEditor.Tabs.Objects[NewTab]);
+      FActiveEditor.Show;
+    finally
+      SendMessage(ClientHandle, WM_SETREDRAW, ord(True), 0);
+      RedrawWindow(ClientHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or
+        RDW_NOINTERNALPAINT);
+    end;
 
   SetStatusBarCaption;
 end;
@@ -1511,8 +1522,16 @@ end;
 
 procedure TMain.SetStatusBarCaption();
 begin
-  StatusBar.Panels[STATUS_BAR_ENCODING].Text := EncodingToText(FActiveEditor.Editor.Encoding);
-  StatusBar.Panels[STATUS_BAR_PATH].Text := FActiveEditor.FilePath;
+  if FActiveEditor = nil then
+  begin
+    StatusBar.Panels[STATUS_BAR_ENCODING].Text := '';
+    StatusBar.Panels[STATUS_BAR_PATH].Text := '';
+  end
+  else
+  begin
+    StatusBar.Panels[STATUS_BAR_ENCODING].Text := EncodingToText(FActiveEditor.Editor.Encoding);
+    StatusBar.Panels[STATUS_BAR_PATH].Text := FActiveEditor.FilePath;
+  end;
 end;
 
 procedure TMain.StatusBarDblClick(Sender: TObject);
@@ -1650,7 +1669,7 @@ var
   LSaveDialogTex: TSaveDialog;
 begin
   Result := False;
-  if (FActiveEditor = nil) or (FActiveEditor.State = stSave) then
+  if FActiveEditor = nil then
     Exit;
 
   if (FActiveEditor.State = stNew) or not FileExists(FActiveEditor.FileNameFull) then
