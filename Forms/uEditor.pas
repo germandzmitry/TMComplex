@@ -17,7 +17,8 @@ type
     procedure EditorChange(Sender: TObject);
     procedure EditorCaretChanged(ASender: TObject; X, Y: Integer);
     procedure EditorKeyPress(ASender: TObject; var AKey: Char);
-    procedure EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton; X, Y, ALine: Integer; AMark: TBCEditorMark);
+    procedure EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton; X, Y, ALine: Integer;
+      AMark: TBCEditorMark);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormActivate(Sender: TObject);
   private
@@ -62,7 +63,7 @@ begin
   Editor.LeftMargin.Border.Style := mbsMiddle;
   Editor.RightMargin.Options := [];
   Editor.RightMargin.Position := 100;
-  Editor.ActiveLine.Indicator.Visible := true;
+  // Editor.ActiveLine.Indicator.Visible := true;
   Editor.Undo.Options := [];
   // Editor.SpecialChars.Visible := true;
   // Editor.SpecialChars.EndOfLine.Visible := true;
@@ -125,7 +126,8 @@ end;
 
 procedure TEditorForm.FormClose(Sender: TObject; var Action: TCloseAction);
 var
-  i: Integer;
+  LNewTab, i: Integer;
+  LAllowChange: Boolean;
 begin
   for i := 0 to Main.TabEditor.Tabs.Count - 1 do
     if TEditorForm(Main.TabEditor.Tabs.Objects[i]) = Self then
@@ -134,12 +136,22 @@ begin
       Break;
     end;
 
+  if Main.TabEditor.Tabs.Count > 0 then
+  begin
+    if i = Main.TabEditor.Tabs.Count - 1 then
+      LNewTab := 0
+    else
+      LNewTab := i + 1;
+    Main.TabEditorChange(Main.TabEditor, LNewTab, LAllowChange);
+  end;
+
   Action := caFree;
 end;
 
 procedure TEditorForm.EditorCaretChanged(ASender: TObject; X, Y: Integer);
 begin
-  Main.StatusBar.Panels[STATUS_BAR_CARET].text := IntToStr(Editor.DisplayCaretY) + ':' + IntToStr(Editor.DisplayCaretX);
+  Main.StatusBar.Panels[STATUS_BAR_CARET].text := IntToStr(Editor.DisplayCaretY) + ':' +
+    IntToStr(Editor.DisplayCaretX);
 end;
 
 procedure TEditorForm.EditorChange(Sender: TObject);
@@ -156,8 +168,8 @@ begin
   //
 end;
 
-procedure TEditorForm.EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton; X, Y, ALine: Integer;
-  AMark: TBCEditorMark);
+procedure TEditorForm.EditorLeftMaginClick(ASender: TObject; AButton: TMouseButton;
+  X, Y, ALine: Integer; AMark: TBCEditorMark);
 begin
   //
 end;
@@ -167,7 +179,8 @@ begin
   FFullFileName := Value;
   FPath := ExtractFilePath(FFullFileName);
   FFileName := ExtractFileName(FFullFileName);
-  FOnlyFileName := StringReplace(ExtractFileName(FFullFileName), ExtractFileExt(FFullFileName), '', []);
+  FOnlyFileName := StringReplace(ExtractFileName(FFullFileName),
+    ExtractFileExt(FFullFileName), '', []);
   Caption := FOnlyFileName;
 end;
 

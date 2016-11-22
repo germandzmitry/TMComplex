@@ -28,7 +28,7 @@ object SettingsForm: TSettingsForm
     Margins.Top = 10
     Margins.Right = 10
     Margins.Bottom = 10
-    ActivePage = TabApplication
+    ActivePage = TabPDFViewer
     Style = tsButtons
     TabOrder = 0
     object TabPDFViewer: TTabSheet

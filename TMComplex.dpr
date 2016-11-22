@@ -23,7 +23,8 @@ uses
   uEditorEncoding in 'Forms\uEditorEncoding.pas' {EditorEncodingForm},
   uCustomTabSet in 'Customs\uCustomTabSet.pas',
   uLanguage in 'Units\uLanguage.pas',
-  uInsertList in 'Forms\uInsertList.pas' {InsertListForm};
+  uInsertList in 'Forms\uInsertList.pas' {InsertListForm},
+  uInsertImage in 'Forms\uInsertImage.pas' {InsertImageForm};
 
 {$R *.res}
 

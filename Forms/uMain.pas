@@ -288,7 +288,8 @@ implementation
 {$R 'Image\TexGuiSymbols\12.res'}
 {$R 'Image\TexGuiSymbols\13.res'}
 
-uses uAbout, uProcess, uEditorGoToLine, uEncoding, uLanguage, uInsertList;
+uses uAbout, uProcess, uEditorGoToLine, uEncoding, uLanguage, uInsertList,
+  uInsertImage;
 
 procedure TMain.ProcessParam(Index: Integer; param: string);
 begin
@@ -591,7 +592,6 @@ procedure TMain.FormCreate(Sender: TObject);
 
 var
   i: Integer;
-
 begin
   for i := 0 to ComponentCount - 1 do
     if Components[i] is TPanel then
@@ -993,8 +993,20 @@ begin
 end;
 
 procedure TMain.ActInsertImageExecute(Sender: TObject);
+var
+  LInsertImage: TInsertImageForm;
 begin
-  //
+  if FActiveEditor <> nil then
+  begin
+    LInsertImage := TInsertImageForm.Create(Main);
+    LInsertImage.FolderProject := FActiveEditor.FilePath;
+    try
+      if LInsertImage.ShowModal = mrOk then
+        InsertTemplate(LInsertImage.IncludeGraphics, 0);
+    finally
+      LInsertImage.Free;
+    end;
+  end;
 end;
 
 procedure TMain.ActInsertSubListExecute(Sender: TObject);
@@ -1653,7 +1665,7 @@ begin
       if LSaveDialogTex.Execute then
         LFileName := LSaveDialogTex.FileName
       else
-        Exit;
+        abort;
     finally
       LSaveDialogTex.Free;
     end;

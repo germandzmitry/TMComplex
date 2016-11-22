@@ -60,6 +60,13 @@ begin
         if s <> '' then
           TRadioButton(AForm.Components[i]).Caption := ' ' + s;
       end
+      { CheckBox }
+      else if AForm.Components[i] is TCheckBox then
+      begin
+        s := lng.ReadString(AForm.Name, TRadioButton(AForm.Components[i]).Name, '');
+        if s <> '' then
+          (AForm.Components[i] as TCheckBox).Caption := ' ' + s;
+      end
       { Label }
       else if AForm.Components[i] is TLabel then
       begin

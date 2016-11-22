@@ -132,8 +132,15 @@ begin
   tvSettings.Items.EndUpdate;
 
   for i := 0 to self.ComponentCount - 1 do
+  begin
     if self.Components[i] is TEdit then
       (self.Components[i] as TEdit).Text := '';
+    if Components[i] is TPanel then
+    begin
+      (Components[i] as TPanel).BevelOuter := bvNone;
+      (Components[i] as TPanel).Caption := '';
+    end;
+  end;
 
   for i := 0 to pcSettings.PageCount - 1 do
     pcSettings.Pages[i].TabVisible := false;
