@@ -41,6 +41,7 @@ type
     procedure Clear;
     procedure ShowMsg;
     function GetParsingLine(): string;
+    procedure lvLogDblClick(Sender: TObject);
   private
     procedure ShowMsgLines;
   public
@@ -58,7 +59,7 @@ implementation
 
 {$R *.dfm}
 
-uses uLanguage;
+uses uLanguage, uMain;
 
 procedure TLogForm.FormCreate(Sender: TObject);
 begin
@@ -126,7 +127,7 @@ end;
 procedure TLogForm.ShowMsgLines;
 var
   i: integer;
-  item: TListItem;
+  Item: TListItem;
 begin
   lvLog.Items.BeginUpdate;
   lvLog.Items.Clear;
@@ -141,23 +142,24 @@ begin
     if (MsgLines[i].Severity = lsBadBox) and (not ActlogMsgBadBox.Checked) then
       Continue;
 
-    item := lvLog.Items.Add;
+    Item := lvLog.Items.Add;
     case MsgLines[i].Severity of
       lsBadBox:
-        item.Caption := 'BodBox';
+        Item.Caption := 'BodBox';
       lsWarning:
-        item.Caption := 'Warning';
+        Item.Caption := 'Warning';
       lsError:
-        item.Caption := 'Error';
+        Item.Caption := 'Error';
       lsDebug:
-        item.Caption := 'Debug';
+        Item.Caption := 'Debug';
     end;
-    item.SubItems.Add(ExtractFileName(MsgLines[i].FileName));
+    Item.SubItems.Add(ExtractFileName(MsgLines[i].FileName));
     if MsgLines[i].Row > 0 then
-      item.SubItems.Add(IntToStr(MsgLines[i].Row))
+      Item.SubItems.Add(IntToStr(MsgLines[i].Row))
     else
-      item.SubItems.Add('');
-    item.SubItems.Add(MsgLines[i].Description);
+      Item.SubItems.Add('');
+    Item.SubItems.Add(MsgLines[i].Description);
+    Item.Data := PChar(MsgLines[i].FileName);
   end;
   lvLog.Items.EndUpdate;
 end;
@@ -179,6 +181,32 @@ begin
   ActlogMsgBadBox.Checked := IniFile.ReadBool('Log', 'ShowMsgBadBox', true);
 
   IniFile.Free;
+end;
+
+procedure TLogForm.lvLogDblClick(Sender: TObject);
+var
+  LFileName, LRow, ll: string;
+begin
+  // LFileName := lvLog.Items[lvLog.ItemIndex].SubItems[0];
+  LFileName := String(lvLog.Items[lvLog.ItemIndex].Data);
+  LRow := lvLog.Items[lvLog.ItemIndex].SubItems[1];
+
+  if not FileExists(LFileName) then
+    exit;
+
+  // открываем только файлы .tex предупреждения могут быть в файлах TeX
+  if AnsiCompareStr(ExtractFileExt(LFileName), '.tex') <> 0 then
+    exit;
+
+  // Если активный файл не тот, на который хотим перейти, переходим
+  if AnsiCompareStr(LFileName, main.ActiveEditor.FileNameFull) <> 0 then
+    main.ProcessParam(1, LFileName);
+
+  try
+    main.ActiveEditor.GoToLine(strtoint(LRow));
+  except
+    on E: Exception do
+  end;
 end;
 
 procedure TLogForm.ActLogClearExecute(Sender: TObject);

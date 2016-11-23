@@ -397,10 +397,15 @@ object Main: TMain
       Hint = 'View log'
       OnExecute = ActViewLogExecute
     end
-    object ActEditGoToLine: TAction
-      Category = 'Edit'
-      Caption = 'ActEditGoToLine'
-      OnExecute = ActEditGoToLineExecute
+    object ActSearch: TAction
+      Category = 'Search'
+      Caption = 'ActSearch'
+      OnExecute = ActSearchExecute
+    end
+    object ActSearchGoToLine: TAction
+      Category = 'Search'
+      Caption = 'ActSearchGoToLine'
+      OnExecute = ActSearchGoToLineExecute
     end
     object ActWindowCascade: TAction
       Category = 'Window'
@@ -518,6 +523,66 @@ object Main: TMain
       ImageIndex = 47
       OnExecute = ActInsertTableExecute
     end
+    object ActSizeTiny: TAction
+      Category = 'Text.Size'
+      Caption = 'ActSizeTiny'
+      OnExecute = ActSizeTinyExecute
+    end
+    object ActSizeScriptsize: TAction
+      Category = 'Text.Size'
+      Caption = 'ActSizeScriptsize'
+      OnExecute = ActSizeScriptsizeExecute
+    end
+    object ActSizeFootnotesize: TAction
+      Category = 'Text.Size'
+      Caption = 'ActSizeFootnotesize'
+      OnExecute = ActSizeFootnotesizeExecute
+    end
+    object ActSizeSmall: TAction
+      Category = 'Text.Size'
+      Caption = 'ActSizeSmall'
+      OnExecute = ActSizeSmallExecute
+    end
+    object ActSizeNormalsize: TAction
+      Category = 'Text.Size'
+      Caption = 'ActSizeNormalsize'
+      OnExecute = ActSizeNormalsizeExecute
+    end
+    object ActSizeLarge: TAction
+      Category = 'Text.Size'
+      Caption = 'ActSizeLarge'
+      OnExecute = ActSizeLargeExecute
+    end
+    object ActSizeLLarge: TAction
+      Category = 'Text.Size'
+      Caption = 'ActSizeLLarge'
+      OnExecute = ActSizeLLargeExecute
+    end
+    object ActSizeLLLarge: TAction
+      Category = 'Text.Size'
+      Caption = 'ActSizeLLLarge'
+      OnExecute = ActSizeLLLargeExecute
+    end
+    object ActSizeHuge: TAction
+      Category = 'Text.Size'
+      Caption = 'ActSizeHuge'
+      OnExecute = ActSizeHugeExecute
+    end
+    object ActSizeHHuge: TAction
+      Category = 'Text.Size'
+      Caption = 'ActSizeHHuge'
+      OnExecute = ActSizeHHugeExecute
+    end
+    object ActSizeCustom: TAction
+      Category = 'Text.Size'
+      Caption = 'ActSizeCustom'
+      OnExecute = ActSizeCustomExecute
+    end
+    object ActHelpCtan: TAction
+      Category = 'Help'
+      Caption = 'ActHelpCtan'
+      OnExecute = ActHelpCtanExecute
+    end
   end
   object PopupActionEditor: TPopupActionBar
     Images = il_16x16
@@ -545,7 +610,7 @@ object Main: TMain
       Caption = '-'
     end
     object ActPopupEditGoToLine: TMenuItem
-      Action = ActEditGoToLine
+      Action = ActSearchGoToLine
     end
     object ActPopupTexOpenPdf: TMenuItem
       Action = ActTexOpenPdf
@@ -621,7 +686,7 @@ object Main: TMain
     Left = 424
     Top = 176
     Bitmap = {
-      494C010130003002380110001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C0101300030023C0110001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000040000000D0000000010020000000000000D0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -2349,7 +2414,7 @@ object Main: TMain
     Left = 504
     Top = 176
     Bitmap = {
-      494C01013000C801040110001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013000C801080110001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000040000000D0000000010020000000000000D0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

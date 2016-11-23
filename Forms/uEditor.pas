@@ -21,6 +21,7 @@ type
       AMark: TBCEditorMark);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormActivate(Sender: TObject);
+    procedure GoToLine(ALine: Integer);
   private
     { Private declarations }
     FPath: string;
@@ -138,10 +139,13 @@ begin
 
   if Main.TabEditor.Tabs.Count > 0 then
   begin
-    if i = Main.TabEditor.Tabs.Count - 1 then
+    // Если закрыли последнюю вкладку
+    if i = Main.TabEditor.Tabs.Count then
+      // Переходим на первую вкладку
       LNewTab := 0
     else
-      LNewTab := i + 1;
+      // иначе  выбираем следующую
+      LNewTab := i;
     Main.TabEditorChange(Main.TabEditor, LNewTab, LAllowChange);
   end
   else
@@ -191,6 +195,12 @@ begin
   FState := Value;
   // if Main.PageEditor.PageCount > 0 then
   // Main.PageEditor.ActivePage.ImageIndex := FState;
+end;
+
+procedure TEditorForm.GoToLine(ALine: Integer);
+begin
+  Self.Editor.DisplayCaretX := 1;
+  Self.Editor.DisplayCaretY := ALine;
 end;
 
 end.

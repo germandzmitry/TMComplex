@@ -48,9 +48,10 @@ const
 
   // Команды
   cmTextColor: string = '\textcolor';
-  cmFontStyleBold: string = '\bf';
-  cmFontStyleItalic: string = '\it';
-  cmFontStyleUnderline: string = '\un';
+  cmFontStyleBold: string = '\textbf';
+  cmFontStyleItalic: string = '\textit';
+  cmFontStyleUnderline: string = '\uline';
+//  cmFontStyleUnderline: string = '\un';
 
 implementation
 

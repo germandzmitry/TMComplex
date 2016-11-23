@@ -67,7 +67,7 @@ type
     pDockBottom: TPanel;
     ActViewLog: TAction;
     PopupActionEditor: TPopupActionBar;
-    ActEditGoToLine: TAction;
+    ActSearchGoToLine: TAction;
     ActPopupEditUndo: TMenuItem;
     ActPopupEditRedo: TMenuItem;
     ActPopupEditCut: TMenuItem;
@@ -119,6 +119,19 @@ type
     ActTabClose: TAction;
     ActPopupTabClose: TMenuItem;
     ActInsertTable: TAction;
+    ActSizeTiny: TAction;
+    ActSizeScriptsize: TAction;
+    ActSizeFootnotesize: TAction;
+    ActSizeSmall: TAction;
+    ActSizeNormalsize: TAction;
+    ActSizeLarge: TAction;
+    ActSizeLLarge: TAction;
+    ActSizeLLLarge: TAction;
+    ActSizeHuge: TAction;
+    ActSizeHHuge: TAction;
+    ActSizeCustom: TAction;
+    ActHelpCtan: TAction;
+    ActSearch: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -144,8 +157,11 @@ type
     procedure ActEditCopyExecute(Sender: TObject);
     procedure ActEditPasteExecute(Sender: TObject);
     procedure ActEditSelectAllExecute(Sender: TObject);
-    procedure ActEditGoToLineExecute(Sender: TObject);
     procedure ActEditEncodingExecute(Sender: TObject);
+
+    { Search }
+    procedure ActSearchExecute(Sender: TObject);
+    procedure ActSearchGoToLineExecute(Sender: TObject);
 
     { Text }
     procedure ActTextExecute(Sender: TObject);
@@ -153,6 +169,19 @@ type
     procedure ActTextSubFontExecute(Sender: TObject);
     procedure ActTextSubAlignExecute(Sender: TObject);
     procedure ActTextShowSpecialCharsExecute(Sender: TObject);
+
+    { Text-Size }
+    procedure ActSizeTinyExecute(Sender: TObject);
+    procedure ActSizeScriptsizeExecute(Sender: TObject);
+    procedure ActSizeFootnotesizeExecute(Sender: TObject);
+    procedure ActSizeSmallExecute(Sender: TObject);
+    procedure ActSizeNormalsizeExecute(Sender: TObject);
+    procedure ActSizeLargeExecute(Sender: TObject);
+    procedure ActSizeLLargeExecute(Sender: TObject);
+    procedure ActSizeLLLargeExecute(Sender: TObject);
+    procedure ActSizeHugeExecute(Sender: TObject);
+    procedure ActSizeHHugeExecute(Sender: TObject);
+    procedure ActSizeCustomExecute(Sender: TObject);
 
     { Text-Font }
     procedure ActFontBoldExecute(Sender: TObject);
@@ -216,6 +245,7 @@ type
     procedure ActHelpExecute(Sender: TObject);
     procedure ActHelpAboutExecute(Sender: TObject);
     procedure ActHelpWikiBooksExecute(Sender: TObject);
+    procedure ActHelpCtanExecute(Sender: TObject);
 
     { Tab }
     procedure ActTabCloseExecute(Sender: TObject);
@@ -230,6 +260,8 @@ type
     procedure TabEditorChange(Sender: TObject; NewTab: Integer; var AllowChange: Boolean);
     procedure TabEditorGetImageIndex(Sender: TObject; TabIndex: Integer; var ImageIndex: Integer);
     procedure ApplicationEventsMessage(var Msg: tagMSG; var Handled: Boolean);
+
+    procedure ProcessParam(Index: Integer; param: string);
   private
     { Private declarations }
     FAllSetting: TAllSetting;
@@ -262,7 +294,6 @@ type
     procedure OpenPDF();
 
     function Processing: Boolean;
-    procedure ProcessParam(Index: Integer; param: string);
   public
     { Public declarations }
     function SaveDocument(): Boolean; overload;
@@ -302,13 +333,8 @@ begin
           OpenDocument(param);
       end;
     2:
-      begin
-        if (Main.FActiveEditor <> nil) and (param <> '') then
-        begin
-          FActiveEditor.Editor.DisplayCaretX := 1;
-          FActiveEditor.Editor.DisplayCaretY := StrToInt(param) - 1;
-        end;
-      end;
+      if (Main.FActiveEditor <> nil) and (param <> '') then
+        FActiveEditor.GoToLine(StrToInt(param) - 1);
   end;
 end;
 
@@ -419,18 +445,36 @@ begin
     LItemGlobal.Items.Add.Caption := '-';
     LItemGlobal.Items.Add.Action := ActEditSelectAll;
     LItemGlobal.Items.Add.Caption := '-';
-    LItemGlobal.Items.Add.Action := ActEditGoToLine;
+    // LItemGlobal.Items.Add.Action := ActEditGoToLine;
     LItemGlobal.Items.Add.Action := ActEditEncoding;
+
+    { Search }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Index := 2;
+    LItemGlobal.Action := ActSearch;
+    LItemGlobal.Items.Add.Action := ActSearchGoToLine;
 
     { Text }
     { ------------------------------------------- }
     LItemGlobal := Items.Add;
-    LItemGlobal.Index := 2;
+    LItemGlobal.Index := 3;
     LItemGlobal.Action := ActText;
 
     { Text.Size }
     LItemSub := LItemGlobal.Items.Add;
     LItemSub.Action := ActTextSubSize;
+    LItemSub.Items.Add.Action := ActSizeTiny;
+    LItemSub.Items.Add.Action := ActSizeScriptsize;
+    LItemSub.Items.Add.Action := ActSizeFootnotesize;
+    LItemSub.Items.Add.Action := ActSizeSmall;
+    LItemSub.Items.Add.Action := ActSizeNormalsize;
+    LItemSub.Items.Add.Action := ActSizeLarge;
+    LItemSub.Items.Add.Action := ActSizeLLarge;
+    LItemSub.Items.Add.Action := ActSizeLLLarge;
+    LItemSub.Items.Add.Action := ActSizeHuge;
+    LItemSub.Items.Add.Action := ActSizeHHuge;
+    LItemSub.Items.Add.Caption := '-';
+    LItemSub.Items.Add.Action := ActSizeCustom;
 
     { Text.Font }
     LItemSub := LItemGlobal.Items.Add;
@@ -456,7 +500,7 @@ begin
     { Insert }
     { ------------------------------------------- }
     LItemGlobal := Items.Add;
-    LItemGlobal.Index := 3;
+    LItemGlobal.Index := 4;
     LItemGlobal.Action := ActInsert;
     LItemGlobal.Items.Add.Action := ActInsertNewPage;
     LItemGlobal.Items.Add.Caption := '-';
@@ -486,14 +530,14 @@ begin
     { View }
     { ------------------------------------------- }
     LItemGlobal := Items.Add;
-    LItemGlobal.Index := 4;
+    LItemGlobal.Index := 5;
     LItemGlobal.Action := ActView;
     LItemGlobal.Items.Add.Action := ActViewLog;
 
     { TeX }
     { ------------------------------------------- }
     LItemGlobal := Items.Add;
-    LItemGlobal.Index := 5;
+    LItemGlobal.Index := 6;
     LItemGlobal.Action := ActTex;
     LItemGlobal.Items.Add.Action := ActTexPdfLaTeX;
     LItemGlobal.Items.Add.Action := ActTexStop;
@@ -506,7 +550,7 @@ begin
     { MiKTeX }
     { ------------------------------------------- }
     LItemGlobal := Items.Add;
-    LItemGlobal.Index := 6;
+    LItemGlobal.Index := 7;
     LItemGlobal.Action := ActMiKTeX;
     LItemGlobal.Items.Add.Action := ActMiKTeXOption;
     LItemGlobal.Items.Add.Action := ActMiKTeXPackageManager;
@@ -517,7 +561,7 @@ begin
     { Window }
     { ------------------------------------------- }
     LItemGlobal := Items.Add;
-    LItemGlobal.Index := 7;
+    LItemGlobal.Index := 8;
     LItemGlobal.Action := ActWindow;
     LItemGlobal.Items.Add.Action := ActWindowCascade;
     LItemGlobal.Items.Add.Action := ActWindowTileHorizontal;
@@ -527,8 +571,9 @@ begin
     { Help }
     { ------------------------------------------- }
     LItemGlobal := Items.Add;
-    LItemGlobal.Index := 8;
+    LItemGlobal.Index := 9;
     LItemGlobal.Action := ActHelp;
+    LItemGlobal.Items.Add.Action := ActHelpCtan;
     LItemGlobal.Items.Add.Action := ActHelpWikiBooks;
     LItemGlobal.Items.Add.Caption := '-';
     LItemGlobal.Items.Add.Action := ActHelpAbout;
@@ -814,6 +859,8 @@ begin
   Main.Close;
 end;
 
+{ Edit }
+
 procedure TMain.ActEditExecute(Sender: TObject);
 begin
   //
@@ -855,26 +902,6 @@ begin
     FActiveEditor.Editor.SelectAll;
 end;
 
-procedure TMain.ActEditGoToLineExecute(Sender: TObject);
-var
-  LGoToLine: TEditorGoToLineForm;
-begin
-  if FActiveEditor <> nil then
-  begin
-    LGoToLine := TEditorGoToLineForm.Create(Main);
-    try
-      LGoToLine.eLine.Text := IntToStr(FActiveEditor.Editor.DisplayCaretY);
-      if LGoToLine.ShowModal = mrOk then
-      begin
-        FActiveEditor.Editor.DisplayCaretX := 1;
-        FActiveEditor.Editor.DisplayCaretY := StrToInt(LGoToLine.eLine.Text);
-      end;
-    finally
-      LGoToLine.Free;
-    end;
-  end;
-end;
-
 procedure TMain.ActEditEncodingExecute(Sender: TObject);
 var
   LEncoding: TEditorEncodingForm;
@@ -892,6 +919,30 @@ begin
       end;
     finally
       LEncoding.Free;
+    end;
+  end;
+end;
+
+{ Search }
+
+procedure TMain.ActSearchExecute(Sender: TObject);
+begin
+  //
+end;
+
+procedure TMain.ActSearchGoToLineExecute(Sender: TObject);
+var
+  LGoToLine: TEditorGoToLineForm;
+begin
+  if FActiveEditor <> nil then
+  begin
+    LGoToLine := TEditorGoToLineForm.Create(Main);
+    try
+      LGoToLine.eLine.Text := IntToStr(FActiveEditor.Editor.DisplayCaretY);
+      if LGoToLine.ShowModal = mrOk then
+        FActiveEditor.GoToLine(StrToInt(LGoToLine.eLine.Text));
+    finally
+      LGoToLine.Free;
     end;
   end;
 end;
@@ -924,6 +975,65 @@ begin
   FActiveEditor.Editor.SpecialChars.Visible := ActTextShowSpecialChars.Checked;
   FActiveEditor.Editor.SpecialChars.EndOfLine.Visible := ActTextShowSpecialChars.Checked;
 end;
+
+{ Text-Size }
+
+procedure TMain.ActSizeTinyExecute(Sender: TObject);
+begin
+  InsertTemplate('\tiny' + cmTextFormatBegin + cmTextFormatEnd, -1);
+end;
+
+procedure TMain.ActSizeScriptsizeExecute(Sender: TObject);
+begin
+  InsertTemplate('\scriptsize' + cmTextFormatBegin + cmTextFormatEnd, -1);
+end;
+
+procedure TMain.ActSizeFootnotesizeExecute(Sender: TObject);
+begin
+  InsertTemplate('\footnotesize' + cmTextFormatBegin + cmTextFormatEnd, -1);
+end;
+
+procedure TMain.ActSizeSmallExecute(Sender: TObject);
+begin
+  InsertTemplate('\small' + cmTextFormatBegin + cmTextFormatEnd, -1);
+end;
+
+procedure TMain.ActSizeNormalsizeExecute(Sender: TObject);
+begin
+  InsertTemplate('\normalsize' + cmTextFormatBegin + cmTextFormatEnd, -1);
+end;
+
+procedure TMain.ActSizeLargeExecute(Sender: TObject);
+begin
+  InsertTemplate('\large' + cmTextFormatBegin + cmTextFormatEnd, -1);
+end;
+
+procedure TMain.ActSizeLLargeExecute(Sender: TObject);
+begin
+  InsertTemplate('\Large' + cmTextFormatBegin + cmTextFormatEnd, -1);
+end;
+
+procedure TMain.ActSizeLLLargeExecute(Sender: TObject);
+begin
+  InsertTemplate('\LARGE' + cmTextFormatBegin + cmTextFormatEnd, -1);
+end;
+
+procedure TMain.ActSizeHugeExecute(Sender: TObject);
+begin
+  InsertTemplate('\huge' + cmTextFormatBegin + cmTextFormatEnd, -1);
+end;
+
+procedure TMain.ActSizeHHugeExecute(Sender: TObject);
+begin
+  InsertTemplate('\Huge' + cmTextFormatBegin + cmTextFormatEnd, -1);
+end;
+
+procedure TMain.ActSizeCustomExecute(Sender: TObject);
+begin
+  InsertTemplate('\fontsize{<размер>}{<между строк>}' + cmTextFormatBegin + cmTextFormatEnd, -1);
+end;
+
+{ Text-Font }
 
 procedure TMain.ActFontBoldExecute(Sender: TObject);
 begin
@@ -962,6 +1072,8 @@ begin
     cd.Free;
   end;
 end;
+
+{ Text-Align }
 
 procedure TMain.ActAlignLeftExecute(Sender: TObject);
 begin
@@ -1366,6 +1478,11 @@ begin
   RunUrl('https://en.wikibooks.org/wiki/LaTeX');
 end;
 
+procedure TMain.ActHelpCtanExecute(Sender: TObject);
+begin
+  RunUrl('https://www.ctan.org');
+end;
+
 procedure TMain.TabEditorChange(Sender: TObject; NewTab: Integer; var AllowChange: Boolean);
 begin
   if NewTab = -1 then
@@ -1563,7 +1680,7 @@ begin
 
   case GetPanelIndex of
     STATUS_BAR_CARET:
-      ActEditGoToLineExecute(ActEditGoToLine);
+      ActSearchGoToLineExecute(ActSearchGoToLine);
     STATUS_BAR_ENCODING:
       ActEditEncodingExecute(ActEditEncoding);
     STATUS_BAR_PATH:
