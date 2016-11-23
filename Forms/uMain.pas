@@ -99,7 +99,6 @@ type
     ActWindow: TAction;
     ActHelp: TAction;
     ActInsertSubTables: TAction;
-    ActListCases: TAction;
     ActInsertSubLink: TAction;
     ActLinkUrl: TAction;
     ActLinkHref: TAction;
@@ -132,6 +131,10 @@ type
     ActSizeCustom: TAction;
     ActHelpCtan: TAction;
     ActSearch: TAction;
+    ActInsertSubArray: TAction;
+    ActArray: TAction;
+    ActArrayCases: TAction;
+    ActArrayMatrix: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -202,18 +205,23 @@ type
     procedure ActInsertTableExecute(Sender: TObject);
     procedure ActInsertSubListExecute(Sender: TObject);
     procedure ActInsertSubLinkExecute(Sender: TObject);
+    procedure ActInsertSubArrayExecute(Sender: TObject);
 
     { Insert.List }
     procedure ActListItemizeExecute(Sender: TObject);
     procedure ActListEnumerateExecute(Sender: TObject);
     procedure ActListDescriptionExecute(Sender: TObject);
-    procedure ActListCasesExecute(Sender: TObject);
 
     { Insert.Link }
     procedure ActLinkUrlExecute(Sender: TObject);
     procedure ActLinkHrefExecute(Sender: TObject);
     procedure ActLinkHyperLinkExecute(Sender: TObject);
     procedure ActLinkHyperTargetExecute(Sender: TObject);
+
+    { Insert.Array }
+    procedure ActArrayExecute(Sender: TObject);
+    procedure ActArrayCasesExecute(Sender: TObject);
+    procedure ActArrayMatrixExecute(Sender: TObject);
 
     { View }
     procedure ActViewExecute(Sender: TObject);
@@ -306,6 +314,7 @@ var
 
 implementation
 
+{$D+}
 {$R *.dfm}
 {$R 'Image\TexGuiSymbols\1. Math.res'}
 {$R 'Image\TexGuiSymbols\2. Greek.res'}
@@ -334,7 +343,7 @@ begin
       end;
     2:
       if (Main.FActiveEditor <> nil) and (param <> '') then
-        FActiveEditor.GoToLine(StrToInt(param) - 1);
+        FActiveEditor.GoToLine(StrToInt(param));
   end;
 end;
 
@@ -524,8 +533,11 @@ begin
     LItemSub.Items.Add.Action := ActListDescription;
 
     { Insert.Array }
-    // LItemSub := LItemGlobal.Items.Add;
-    // LItemSub.Action := ActInsertSubTables;
+    LItemSub := LItemGlobal.Items.Add;
+    LItemSub.Action := ActInsertSubArray;
+    LItemSub.Items.Add.Action := ActArray;
+    LItemSub.Items.Add.Action := ActArrayMatrix;
+    LItemSub.Items.Add.Action := ActArrayCases;
 
     { View }
     { ------------------------------------------- }
@@ -1030,7 +1042,7 @@ end;
 
 procedure TMain.ActSizeCustomExecute(Sender: TObject);
 begin
-  InsertTemplate('\fontsize{<размер>}{<между строк>}' + cmTextFormatBegin + cmTextFormatEnd, -1);
+  InsertTemplate('\fontsize{<размер>}{<межстрочное расстояние>}{}', -1);
 end;
 
 { Text-Font }
@@ -1134,10 +1146,17 @@ begin
   //
 end;
 
+procedure TMain.ActInsertSubArrayExecute(Sender: TObject);
+begin
+  //
+end;
+
 procedure TMain.ActInsertSubLinkExecute(Sender: TObject);
 begin
   //
 end;
+
+{ Insert-List }
 
 procedure TMain.ActListItemizeExecute(Sender: TObject);
 begin
@@ -1154,7 +1173,14 @@ begin
   InsertTemplateList(cmListDescriptionBegin, cmListDescriptionItem, cmListDescriptionEnd);
 end;
 
-procedure TMain.ActListCasesExecute(Sender: TObject);
+{ Insert-Array }
+
+procedure TMain.ActArrayExecute(Sender: TObject);
+begin
+  //
+end;
+
+procedure TMain.ActArrayCasesExecute(Sender: TObject);
 var
   i, LCutY: Integer;
   LInsert: string;
@@ -1187,6 +1213,11 @@ begin
   end;
   // InsertTemplateList('\left\{' + #13#10 + '  \begin{array}{ll}', ' , & \hbox{ ;} \\',
   // '  \end{array}' + #13#10 + '\right.');
+end;
+
+procedure TMain.ActArrayMatrixExecute(Sender: TObject);
+begin
+  //
 end;
 
 { Link }

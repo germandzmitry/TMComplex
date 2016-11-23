@@ -199,8 +199,9 @@ end;
 
 procedure TEditorForm.GoToLine(ALine: Integer);
 begin
-  Self.Editor.DisplayCaretX := 1;
-  Self.Editor.DisplayCaretY := ALine;
+  // Self.Editor.DisplayCaretX := 1;
+  // Self.Editor.DisplayCaretY := ALine;
+  Self.Editor.GotoLineAndCenter(ALine - 1);
 end;
 
 end.

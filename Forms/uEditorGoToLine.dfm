@@ -4,7 +4,7 @@ object EditorGoToLineForm: TEditorGoToLineForm
   BorderStyle = bsDialog
   Caption = 'EditorGoToLineForm'
   ClientHeight = 73
-  ClientWidth = 264
+  ClientWidth = 214
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,21 +16,22 @@ object EditorGoToLineForm: TEditorGoToLineForm
   OnCreate = FormCreate
   OnShow = FormShow
   DesignSize = (
-    264
+    214
     73)
   PixelsPerInch = 96
   TextHeight = 13
   object lLineNum: TLabel
     Left = 8
     Top = 11
-    Width = 42
+    Width = 126
     Height = 13
+    Alignment = taRightJustify
     Caption = 'lLineNum'
   end
   object eLine: TEdit
-    Left = 86
+    Left = 140
     Top = 8
-    Width = 170
+    Width = 66
     Height = 21
     Anchors = [akLeft, akTop, akRight]
     NumbersOnly = True
@@ -38,7 +39,7 @@ object EditorGoToLineForm: TEditorGoToLineForm
     Text = 'eLine'
   end
   object BtnOk: TButton
-    Left = 100
+    Left = 50
     Top = 40
     Width = 75
     Height = 25
@@ -47,10 +48,10 @@ object EditorGoToLineForm: TEditorGoToLineForm
     Default = True
     TabOrder = 1
     OnClick = BtnOkClick
-    ExplicitLeft = 105
+    ExplicitLeft = 100
   end
   object BtnCancel: TButton
-    Left = 181
+    Left = 131
     Top = 40
     Width = 75
     Height = 25
@@ -58,6 +59,6 @@ object EditorGoToLineForm: TEditorGoToLineForm
     Caption = 'BtnCancel'
     TabOrder = 2
     OnClick = BtnCancelClick
-    ExplicitLeft = 89
+    ExplicitLeft = 181
   end
 end

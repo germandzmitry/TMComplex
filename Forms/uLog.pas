@@ -204,6 +204,7 @@ begin
 
   try
     main.ActiveEditor.GoToLine(strtoint(LRow));
+    main.ActiveEditor.Editor.SetFocus;
   except
     on E: Exception do
   end;
