@@ -98,7 +98,7 @@ type
     ActMiKTeX: TAction;
     ActWindow: TAction;
     ActHelp: TAction;
-    ActInsertSubTables: TAction;
+    ActInsertSubObject: TAction;
     ActInsertSubLink: TAction;
     ActLinkUrl: TAction;
     ActLinkHref: TAction;
@@ -117,7 +117,7 @@ type
     PopupActionTab: TPopupActionBar;
     ActTabClose: TAction;
     ActPopupTabClose: TMenuItem;
-    ActInsertTable: TAction;
+    ActObjectTable: TAction;
     ActSizeTiny: TAction;
     ActSizeScriptsize: TAction;
     ActSizeFootnotesize: TAction;
@@ -135,6 +135,7 @@ type
     ActArray: TAction;
     ActArrayCases: TAction;
     ActArrayMatrix: TAction;
+    ActObjectFigure: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -202,10 +203,14 @@ type
     procedure ActInsertExecute(Sender: TObject);
     procedure ActInsertNewPageExecute(Sender: TObject);
     procedure ActInsertImageExecute(Sender: TObject);
-    procedure ActInsertTableExecute(Sender: TObject);
     procedure ActInsertSubListExecute(Sender: TObject);
     procedure ActInsertSubLinkExecute(Sender: TObject);
     procedure ActInsertSubArrayExecute(Sender: TObject);
+    procedure ActInsertSubObjectExecute(Sender: TObject);
+
+    { Insert.Object }
+    procedure ActObjectFigureExecute(Sender: TObject);
+    procedure ActObjectTableExecute(Sender: TObject);
 
     { Insert.List }
     procedure ActListItemizeExecute(Sender: TObject);
@@ -331,7 +336,7 @@ implementation
 {$R 'Image\TexGuiSymbols\13.res'}
 
 uses uAbout, uProcess, uEditorGoToLine, uEncoding, uLanguage, uInsertList,
-  uInsertImage;
+  uInsertImage, uInsertTable;
 
 procedure TMain.ProcessParam(Index: Integer; param: string);
 begin
@@ -514,7 +519,14 @@ begin
     LItemGlobal.Items.Add.Action := ActInsertNewPage;
     LItemGlobal.Items.Add.Caption := '-';
     LItemGlobal.Items.Add.Action := ActInsertImage;
-    LItemGlobal.Items.Add.Action := ActInsertTable;
+
+    LItemGlobal.Items.Add.Caption := '-';
+
+    { Insert.Object }
+    LItemSub := LItemGlobal.Items.Add;
+    LItemSub.Action := ActInsertSubObject;
+    LItemSub.Items.Add.Action := ActObjectTable;
+    LItemSub.Items.Add.Action := ActObjectFigure;
 
     { Insert.Link }
     LItemSub := LItemGlobal.Items.Add;
@@ -524,6 +536,8 @@ begin
     LItemSub.Items.Add.Caption := '-';
     LItemSub.Items.Add.Action := ActLinkUrl;
     LItemSub.Items.Add.Action := ActLinkHref;
+
+    LItemGlobal.Items.Add.Caption := '-';
 
     { Insert.List }
     LItemSub := LItemGlobal.Items.Add;
@@ -1136,12 +1150,12 @@ begin
   end;
 end;
 
-procedure TMain.ActInsertTableExecute(Sender: TObject);
+procedure TMain.ActInsertSubListExecute(Sender: TObject);
 begin
   //
 end;
 
-procedure TMain.ActInsertSubListExecute(Sender: TObject);
+procedure TMain.ActInsertSubObjectExecute(Sender: TObject);
 begin
   //
 end;
@@ -1154,6 +1168,26 @@ end;
 procedure TMain.ActInsertSubLinkExecute(Sender: TObject);
 begin
   //
+end;
+
+{ Insert-Object }
+
+procedure TMain.ActObjectFigureExecute(Sender: TObject);
+begin
+  InsertTemplate('\begin{figure}' + #13#10 + //
+    '  \centering' + #13#10 + //
+    '  <изображение>' + #13#10 + //
+    '  \caption{<подпись>}\label{<ссылка>}' + #13#10 + //
+    '\end{figure}', 0);
+end;
+
+procedure TMain.ActObjectTableExecute(Sender: TObject);
+begin
+  InsertTemplate('\begin{table}' + #13#10 + //
+    '  \centering' + #13#10 + //
+    '  <таблица>' + #13#10 + //
+    '  \caption{<подпись>}\label{<ссылка>}' + #13#10 + //
+    '\end{table}', 0);
 end;
 
 { Insert-List }
@@ -1176,48 +1210,54 @@ end;
 { Insert-Array }
 
 procedure TMain.ActArrayExecute(Sender: TObject);
+var
+  LInsertTable: TInsertTableForm;
 begin
-  //
+  if FActiveEditor <> nil then
+  begin
+    LInsertTable := TInsertTableForm.Create(Main);
+    try
+      LInsertTable.TableType := ttArray;
+      if LInsertTable.ShowModal = mrOk then
+        InsertTemplate(LInsertTable.Table, 0);
+    finally
+      LInsertTable.Free;
+    end;
+  end;
 end;
 
 procedure TMain.ActArrayCasesExecute(Sender: TObject);
 var
-  i, LCutY: Integer;
-  LInsert: string;
-  LInsertList: TInsertListForm;
+  LInsertTable: TInsertTableForm;
 begin
   if FActiveEditor <> nil then
   begin
-    LInsertList := TInsertListForm.Create(Main);
+    LInsertTable := TInsertTableForm.Create(Main);
     try
-      if LInsertList.ShowModal = mrOk then
-      begin
-        LCutY := FActiveEditor.Editor.DisplayCaretY;
-        for i := 1 to StrToInt(LInsertList.eItemCount.Text) do
-          if i = StrToInt(LInsertList.eItemCount.Text) then
-            LInsert := LInsert + '    _, & \hbox{_.}' + #13#10
-          else
-            LInsert := LInsert + '    _, & \hbox{_;} \\' + #13#10;
-
-        LInsert := '\left\{' + #13#10 + '  \begin{array}{ll}' + #13#10 // начало
-          + LInsert //
-          + '  \end{array}' + #13#10 + '\right.'; // конец
-
-        FActiveEditor.Editor.InsertText(LInsert);
-        FActiveEditor.Editor.DisplayCaretY := LCutY + 2;
-        FActiveEditor.Editor.DisplayCaretX := 6;
-      end;
+      LInsertTable.TableType := ttCases;
+      if LInsertTable.ShowModal = mrOk then
+        InsertTemplate(LInsertTable.Table, 0);
     finally
-      LInsertList.Free;
+      LInsertTable.Free;
     end;
   end;
-  // InsertTemplateList('\left\{' + #13#10 + '  \begin{array}{ll}', ' , & \hbox{ ;} \\',
-  // '  \end{array}' + #13#10 + '\right.');
 end;
 
 procedure TMain.ActArrayMatrixExecute(Sender: TObject);
+var
+  LInsertTable: TInsertTableForm;
 begin
-  //
+  if FActiveEditor <> nil then
+  begin
+    LInsertTable := TInsertTableForm.Create(Main);
+    try
+      LInsertTable.TableType := ttMatrix;
+      if LInsertTable.ShowModal = mrOk then
+        InsertTemplate(LInsertTable.Table, 0);
+    finally
+      LInsertTable.Free;
+    end;
+  end;
 end;
 
 { Link }

@@ -24,7 +24,9 @@ uses
   uCustomTabSet in 'Customs\uCustomTabSet.pas',
   uLanguage in 'Units\uLanguage.pas',
   uInsertList in 'Forms\uInsertList.pas' {InsertListForm},
-  uInsertImage in 'Forms\uInsertImage.pas' {InsertImageForm};
+  uInsertImage in 'Forms\uInsertImage.pas' {InsertImageForm},
+  uLogLine in 'Frames\uLogLine.pas' {LogLineFrame: TFrame},
+  uInsertTable in 'Forms\uInsertTable.pas' {InsertTableForm};
 
 {$R *.res}
 

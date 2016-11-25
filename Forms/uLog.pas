@@ -8,7 +8,7 @@ uses
   Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls,
   System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList,
   Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnColorMaps, System.IniFiles, uTypes,
-  uTexLogParser;
+  uTexLogParser, Vcl.ExtCtrls;
 
 type
   TLogForm = class(TForm)
@@ -59,7 +59,7 @@ implementation
 
 {$R *.dfm}
 
-uses uLanguage, uMain;
+uses uLanguage, uMain, uLogLine, System.RegularExpressions;
 
 procedure TLogForm.FormCreate(Sender: TObject);
 begin
@@ -128,9 +128,11 @@ procedure TLogForm.ShowMsgLines;
 var
   i: integer;
   Item: TListItem;
+  LTop: integer;
 begin
   lvLog.Items.BeginUpdate;
   lvLog.Items.Clear;
+  LTop := 0;
   for i := low(MsgLines) to High(MsgLines) do
   begin
     if (MsgLines[i].Severity = lsError) and (not ActLogMsgError.Checked) then
@@ -160,6 +162,16 @@ begin
       Item.SubItems.Add('');
     Item.SubItems.Add(MsgLines[i].Description);
     Item.Data := PChar(MsgLines[i].FileName);
+
+    // with TLogLineFrame.Create(ScrollBox1) do
+    // begin
+    // parent := ScrollBox1;
+    // Align := alTop;
+    // Top := LTop;
+    // name := 'Frame' + IntToStr(i);
+    // msg := MsgLines[i];
+    // LTop := LTop + Height;
+    // end;
   end;
   lvLog.Items.EndUpdate;
 end;
@@ -254,9 +266,16 @@ begin
 end;
 
 procedure TLogForm.Clear;
+var
+  i: integer;
 begin
   mLog.Lines.Clear;
   lvLog.Items.Clear;
+
+  // while ScrollBox1.ComponentCount > 0 do
+  // if ScrollBox1.Components[ScrollBox1.ComponentCount - 1] is TLogLineFrame then
+  // (ScrollBox1.Components[ScrollBox1.ComponentCount - 1] as TLogLineFrame).Free;
+
   MsgCount.Clear;
   MsgLines := nil;
   ShowMsg;

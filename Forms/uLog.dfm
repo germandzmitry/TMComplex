@@ -3,7 +3,7 @@ object LogForm: TLogForm
   Top = 0
   Caption = 'LogForm'
   ClientHeight = 315
-  ClientWidth = 609
+  ClientWidth = 794
   Color = clBtnFace
   DragKind = dkDock
   Font.Charset = DEFAULT_CHARSET
@@ -18,7 +18,7 @@ object LogForm: TLogForm
   PixelsPerInch = 96
   TextHeight = 13
   object lvLog: TListView
-    Left = 280
+    Left = 240
     Top = 32
     Width = 305
     Height = 128
@@ -48,7 +48,7 @@ object LogForm: TLogForm
     OnDblClick = lvLogDblClick
   end
   object mLog: TMemo
-    Left = 56
+    Left = 8
     Top = 32
     Width = 218
     Height = 124
@@ -70,7 +70,7 @@ object LogForm: TLogForm
   object ActionToolBar1: TActionToolBar
     Left = 0
     Top = 0
-    Width = 609
+    Width = 794
     Height = 26
     ActionManager = ActMngLog
     Caption = 'ActionToolBar1'
@@ -137,7 +137,7 @@ object LogForm: TLogForm
     Left = 160
     Top = 264
     Bitmap = {
-      494C0101060008005C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101060008006C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
