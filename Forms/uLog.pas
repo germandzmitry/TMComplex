@@ -24,6 +24,9 @@ type
     ActLogMsgError: TAction;
     ActLogMsgWarning: TAction;
     ActlogMsgBadBox: TAction;
+    eSend: TEdit;
+    pConsole: TPanel;
+    PMessage: TPanel;
 
     procedure SaveSettings;
     procedure LoadSettings;
@@ -63,9 +66,17 @@ uses uLanguage, uMain, uLogLine, System.RegularExpressions;
 
 procedure TLogForm.FormCreate(Sender: TObject);
 begin
+  eSend.Visible := false;
+
+  pConsole.Align := alClient;
+  pConsole.Visible := true;
+  pConsole.BevelOuter := bvNone;
   mLog.Align := alClient;
   mLog.ReadOnly := true;
 
+  PMessage.Align := alClient;
+  PMessage.Visible := false;
+  PMessage.BevelOuter := bvNone;
   lvLog.Align := alClient;
 
   Clear;
@@ -231,8 +242,10 @@ procedure TLogForm.ActLogConsoleExecute(Sender: TObject);
 begin
   if not ActLogConsole.Checked then
   begin
-    lvLog.Visible := false;
-    mLog.Visible := true;
+    PMessage.Visible := false;
+    pConsole.Visible := true;
+    // lvLog.Visible := false;
+    // mLog.Visible := true;
     ActLogConsole.Checked := true;
   end;
   ActLogMsgError.Enabled := ActLogMessage.Checked;
@@ -244,8 +257,10 @@ procedure TLogForm.ActLogMessageExecute(Sender: TObject);
 begin
   if not ActLogMessage.Checked then
   begin
-    lvLog.Visible := true;
-    mLog.Visible := false;
+    PMessage.Visible := true;
+    pConsole.Visible := false;
+    // lvLog.Visible := true;
+    // mLog.Visible := false;
     ActLogMessage.Checked := true;
   end;
   ActLogMsgError.Enabled := ActLogMessage.Checked;

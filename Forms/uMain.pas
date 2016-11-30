@@ -136,6 +136,7 @@ type
     ActArrayCases: TAction;
     ActArrayMatrix: TAction;
     ActObjectFigure: TAction;
+    ActInsertTabular: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -203,6 +204,7 @@ type
     procedure ActInsertExecute(Sender: TObject);
     procedure ActInsertNewPageExecute(Sender: TObject);
     procedure ActInsertImageExecute(Sender: TObject);
+    procedure ActInsertTabularExecute(Sender: TObject);
     procedure ActInsertSubListExecute(Sender: TObject);
     procedure ActInsertSubLinkExecute(Sender: TObject);
     procedure ActInsertSubArrayExecute(Sender: TObject);
@@ -459,7 +461,6 @@ begin
     LItemGlobal.Items.Add.Caption := '-';
     LItemGlobal.Items.Add.Action := ActEditSelectAll;
     LItemGlobal.Items.Add.Caption := '-';
-    // LItemGlobal.Items.Add.Action := ActEditGoToLine;
     LItemGlobal.Items.Add.Action := ActEditEncoding;
 
     { Search }
@@ -647,6 +648,12 @@ begin
     LItem.Action := ActTexOpenPdfSynctex;
     LItem.ShowCaption := False;
 
+    Items.Add.Caption := '-';
+
+    LItem := Items.Add;
+    LItem.Action := ActFileSetting;
+    LItem.ShowCaption := False;
+
     // Так должна быть обявлена именно последяя черта
     LItem := Items.Add;
     LItem.Caption := '-';
@@ -815,7 +822,7 @@ begin
     LOpenDialogTex.Filter := 'Tex documents (*.tex)|*.tex';
     LOpenDialogTex.FilterIndex := 1;
     LOpenDialogTex.DefaultExt := 'tex';
-    LOpenDialogTex.InitialDir := FFolderProject;
+    // LOpenDialogTex.InitialDir := FFolderProject;
     LOpenDialogTex.Options := LOpenDialogTex.Options + [ofAllowMultiSelect];
     if LOpenDialogTex.Execute then
     begin
@@ -1160,6 +1167,11 @@ begin
   //
 end;
 
+procedure TMain.ActInsertTabularExecute(Sender: TObject);
+begin
+  //
+end;
+
 procedure TMain.ActInsertSubArrayExecute(Sender: TObject);
 begin
   //
@@ -1327,35 +1339,6 @@ begin
   OpenPDF;
 end;
 
-procedure TMain.ActTexOpenPdfSynctexExecute(Sender: TObject);
-var
-  pdfFile, OpenPDF, forwardsearch: string;
-begin
-  if FActiveEditor = nil then
-    Exit;
-
-  ActTexStopExecute(ActTexStop);
-
-  pdfFile := FActiveEditor.FilePath + FActiveEditor.FileNameOnly + '.pdf';
-
-  if not FileExists(pdfFile) then
-    Exit;
-
-  if not FAllSetting.PDFViewer.Sumatra then
-  begin
-    MessageBox(Handle, PChar('Данная функция работает только в SumatraPDF.'), PChar(Main.Caption),
-      MB_ICONWARNING + MB_OK);
-    Exit;
-  end;
-
-  forwardsearch := FActiveEditor.FileNameFull + '" ' + IntToStr(FActiveEditor.Editor.DisplayCaretY);
-
-  OpenPDF := '"' + FAllSetting.PDFViewer.SumatraPath + // путь к Sumatra
-    '" -reuse-instance "' + pdfFile + // Найти открытое приложение и открыть в нем файл
-    '" -forward-search "' + forwardsearch; // настройка команды для поиска
-  RunProcess(OpenPDF);
-end;
-
 procedure TMain.ThreadEndGenerate(Sender: TObject);
 var
   LErrorExists: Boolean;
@@ -1375,7 +1358,9 @@ begin
     if not FLog.Showing then
       MessageBox(Handle, PChar(FLog.GetParsingLine), PChar(Main.Caption), MB_ICONWARNING + MB_OK);
   end
-  else
+  // Если нету ошибок, и стоит птичка в настройках открывать документ после
+  // компиляции, открываем
+  else if FAllSetting.Tex.OpenDocAfterCompile then
     OpenPDF;
 end;
 
@@ -1908,42 +1893,80 @@ end;
 
 procedure TMain.OpenPDF();
 var
-  pdfFile, inversesearch, OpenPDF: string;
+  LPdfFile, LInverseSearch, LForwardSearch, LOpenPDF: string;
 begin
-  pdfFile := FActiveEditor.FilePath + FActiveEditor.FileNameOnly + '.pdf';
+  LPdfFile := FActiveEditor.FilePath + FActiveEditor.FileNameOnly + '.pdf';
 
-  if FileExists(pdfFile) then
+  if FileExists(LPdfFile) then
   begin
     // Просмоторщик в системе по умолчанию, либо если установлен другой
     // но такого exe больше нету
     if (FAllSetting.PDFViewer.Default) // просмоторщик по умолчанию
       or ((FAllSetting.PDFViewer.Sumatra) and not FileExists(FAllSetting.PDFViewer.SumatraPath)) //
       or ((FAllSetting.PDFViewer.Other) and not FileExists(FAllSetting.PDFViewer.OtherPath)) then
-      RunProcessDefault(pdfFile);
+      RunProcessDefault(LPdfFile);
 
     // Если Sumatra настраиваем работу с synctex
     if (FAllSetting.PDFViewer.Sumatra) and (FileExists(FAllSetting.PDFViewer.SumatraPath)) then
     begin
-      inversesearch := '\"' + Application.ExeName + '\" \"%f\" \"%l\"';
-      OpenPDF := '"' + FAllSetting.PDFViewer.SumatraPath + // путь к Sumatra
-        '" -reuse-instance "' + pdfFile + // Найти открытое приложение и открыть в нем файл
-        '" -inverse-search "' + inversesearch + '"'; // настройка команды для моего приложения
-      RunProcess(OpenPDF);
+      LInverseSearch := '\"' + Application.ExeName + '\" \"%f\" \"%l\"';
+      LForwardSearch := FActiveEditor.FileNameFull + '" ' +
+        IntToStr(FActiveEditor.Editor.DisplayCaretY);
+      LOpenPDF := '"' + FAllSetting.PDFViewer.SumatraPath + // путь к Sumatra
+        '" -reuse-instance "' + LPdfFile + // Найти открытое приложение и открыть в нем файл
+        '" -inverse-search "' + LInverseSearch + '"'; // настройка команды для моего приложения
+      if FAllSetting.PDFViewer.SumatraFirstPage then
+        LOpenPDF := LOpenPDF + ' -page 1'
+      else if FAllSetting.PDFViewer.SumatraSynctex then
+        // настройка команды для поиска
+        LOpenPDF := LOpenPDF + ' -forward-search "' + LForwardSearch;
+
+      RunProcess(LOpenPDF);
     end;
 
     // Если другой просмоторщик
     if (FAllSetting.PDFViewer.Other) and (FileExists(FAllSetting.PDFViewer.OtherPath)) then
     begin
-      OpenPDF := '"' + FAllSetting.PDFViewer.OtherPath + '" "' + pdfFile + '"';
-      RunProcess(OpenPDF);
+      LOpenPDF := '"' + FAllSetting.PDFViewer.OtherPath + '" "' + LPdfFile + '"';
+      RunProcess(LOpenPDF);
     end;
 
   end;
 end;
 
+procedure TMain.ActTexOpenPdfSynctexExecute(Sender: TObject);
+var
+  pdfFile, OpenPDF, forwardsearch: string;
+begin
+  if FActiveEditor = nil then
+    Exit;
+
+  ActTexStopExecute(ActTexStop);
+
+  pdfFile := FActiveEditor.FilePath + FActiveEditor.FileNameOnly + '.pdf';
+
+  if not FileExists(pdfFile) then
+    Exit;
+
+  if not FAllSetting.PDFViewer.Sumatra then
+  begin
+    MessageBox(Handle, PChar('Данная функция работает только в SumatraPDF.'), PChar(Main.Caption),
+      MB_ICONWARNING + MB_OK);
+    Exit;
+  end;
+
+  forwardsearch := FActiveEditor.FileNameFull + '" ' + IntToStr(FActiveEditor.Editor.DisplayCaretY);
+
+  OpenPDF := '"' + FAllSetting.PDFViewer.SumatraPath + // путь к Sumatra
+    '" -reuse-instance "' + pdfFile + // Найти открытое приложение и открыть в нем файл
+    '" -forward-search "' + forwardsearch; // настройка команды для поиска
+  RunProcess(OpenPDF);
+end;
+
 // https://forums.adobe.com/thread/2162441
 initialization
 
+// ReportMemoryLeaksOnShutdown := True;
 DefaultDockTreeClass := TCustomCaptionedDockTree;
 
 finalization

@@ -37,7 +37,6 @@
 						"Type": "Directive",
 						"Words": [
 							"\\documentclass",
-							"\\label",
 							"\\usepackage"
 						],
 						"Attributes": {
@@ -51,7 +50,14 @@
 						   "center",
 						   "left",
 						   "right",
-						   "justify"
+						   "justify",
+						   "array",
+						   "tabular",
+						   "table",
+						   "figure",
+						   "itemize",
+						   "enumerate",
+						   "description"
 						],
 						"Attributes": {
 							"Element": "String"

@@ -17,56 +17,6 @@ object LogForm: TLogForm
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object lvLog: TListView
-    Left = 240
-    Top = 32
-    Width = 305
-    Height = 128
-    BorderStyle = bsNone
-    Columns = <
-      item
-        Caption = 'Type'
-      end
-      item
-        Caption = 'File'
-        Width = 100
-      end
-      item
-        Caption = 'Row'
-      end
-      item
-        AutoSize = True
-        Caption = 'Description'
-      end>
-    ColumnClick = False
-    DoubleBuffered = True
-    ReadOnly = True
-    RowSelect = True
-    ParentDoubleBuffered = False
-    TabOrder = 0
-    ViewStyle = vsReport
-    OnDblClick = lvLogDblClick
-  end
-  object mLog: TMemo
-    Left = 8
-    Top = 32
-    Width = 218
-    Height = 124
-    BorderStyle = bsNone
-    Color = clBlack
-    DoubleBuffered = True
-    Font.Charset = RUSSIAN_CHARSET
-    Font.Color = clWhite
-    Font.Height = -13
-    Font.Name = 'Consolas'
-    Font.Style = []
-    Lines.Strings = (
-      'MemoLog')
-    ParentDoubleBuffered = False
-    ParentFont = False
-    ScrollBars = ssVertical
-    TabOrder = 1
-  end
   object ActionToolBar1: TActionToolBar
     Left = 0
     Top = 0
@@ -88,6 +38,84 @@ object LogForm: TLogForm
     ParentShowHint = False
     ShowHint = True
     Spacing = 0
+  end
+  object pConsole: TPanel
+    Left = 8
+    Top = 32
+    Width = 297
+    Height = 153
+    Caption = 'pConsole'
+    TabOrder = 1
+    object mLog: TMemo
+      Left = 16
+      Top = 12
+      Width = 265
+      Height = 93
+      BorderStyle = bsNone
+      Color = clBlack
+      DoubleBuffered = True
+      Font.Charset = RUSSIAN_CHARSET
+      Font.Color = clWhite
+      Font.Height = -13
+      Font.Name = 'Consolas'
+      Font.Style = []
+      Lines.Strings = (
+        'MemoLog')
+      ParentDoubleBuffered = False
+      ParentFont = False
+      ScrollBars = ssVertical
+      TabOrder = 0
+    end
+    object eSend: TEdit
+      Left = 1
+      Top = 131
+      Width = 295
+      Height = 21
+      Align = alBottom
+      TabOrder = 1
+      Text = 'eSend'
+      ExplicitLeft = 0
+      ExplicitTop = 294
+      ExplicitWidth = 794
+    end
+  end
+  object PMessage: TPanel
+    Left = 311
+    Top = 32
+    Width = 362
+    Height = 153
+    Caption = 'PMessage'
+    TabOrder = 2
+    object lvLog: TListView
+      Left = 16
+      Top = 12
+      Width = 329
+      Height = 124
+      BorderStyle = bsNone
+      Columns = <
+        item
+          Caption = 'Type'
+        end
+        item
+          Caption = 'File'
+          Width = 100
+        end
+        item
+          Caption = 'Row'
+        end
+        item
+          AutoSize = True
+          Caption = 'Description'
+        end>
+      ColumnClick = False
+      DoubleBuffered = True
+      ReadOnly = True
+      RowSelect = True
+      ParentDoubleBuffered = False
+      TabOrder = 0
+      ViewStyle = vsReport
+      OnDblClick = lvLogDblClick
+    end
   end
   object ActListLog: TActionList
     Images = ilLog
@@ -137,7 +165,7 @@ object LogForm: TLogForm
     Left = 160
     Top = 264
     Bitmap = {
-      494C0101060008006C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010106000800700010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
