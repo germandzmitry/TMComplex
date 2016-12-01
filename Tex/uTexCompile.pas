@@ -38,6 +38,8 @@ uses uMain;
 
 constructor TThreadCompile.Create(const Command: string; output: TMemo;
   ShowCommand: boolean = false; ShowConsole: boolean = false);
+const
+  cCreateProcessError = 'Ошибка создания процесса: %s';
 var
   CreationFlags: DWORD;
 begin
@@ -80,7 +82,7 @@ begin
 
   if not CreateProcess(nil, PChar(FCommandLine), nil, nil, true, CreationFlags, nil, nil,
     FStartupInfo, FProcInfo) then
-    raise Exception.Create('CreateProcess');
+    raise Exception.Create(Format(cCreateProcessError, [SysErrorMessage(GetLastError)]));
 
 end;
 

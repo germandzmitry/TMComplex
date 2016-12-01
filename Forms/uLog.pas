@@ -21,13 +21,13 @@ type
     ActLogMessage: TAction;
     ActLogClear: TAction;
     ActionToolBar1: TActionToolBar;
-    ActLogMsgError: TAction;
-    ActLogMsgWarning: TAction;
-    ActlogMsgBadBox: TAction;
+    ActMsgError: TAction;
+    ActMsgWarning: TAction;
+    ActMsgBadBox: TAction;
     eSend: TEdit;
     pConsole: TPanel;
     PMessage: TPanel;
-    ActLogMsgCopyError: TAction;
+    ActMsgCopyError: TAction;
 
     procedure SaveSettings;
     procedure LoadSettings;
@@ -38,9 +38,9 @@ type
     procedure ActLogMessageExecute(Sender: TObject);
     procedure ActLogClearExecute(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure ActLogMsgErrorExecute(Sender: TObject);
-    procedure ActLogMsgWarningExecute(Sender: TObject);
-    procedure ActlogMsgBadBoxExecute(Sender: TObject);
+    procedure ActMsgErrorExecute(Sender: TObject);
+    procedure ActMsgWarningExecute(Sender: TObject);
+    procedure ActMsgBadBoxExecute(Sender: TObject);
 
     procedure Clear;
     procedure ShowMsg;
@@ -48,7 +48,7 @@ type
     procedure lvLogDblClick(Sender: TObject);
     procedure lvLogMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure lvLogMouseLeave(Sender: TObject);
-    procedure ActLogMsgCopyErrorExecute(Sender: TObject);
+    procedure ActMsgCopyErrorExecute(Sender: TObject);
   private
     procedure ShowMsgLines;
     procedure CreateActionMenu;
@@ -118,25 +118,25 @@ begin
   IniFile.WriteBool('Log', 'ShowConsole', ActLogConsole.Checked);
 
   // ќтображение ошибок
-  IniFile.WriteBool('Log', 'ShowMsgError', ActLogMsgError.Checked);
-  IniFile.WriteBool('Log', 'ShowMsgWarning', ActLogMsgWarning.Checked);
-  IniFile.WriteBool('Log', 'ShowMsgBadBox', ActlogMsgBadBox.Checked);
+  IniFile.WriteBool('Log', 'ShowMsgError', ActMsgError.Checked);
+  IniFile.WriteBool('Log', 'ShowMsgWarning', ActMsgWarning.Checked);
+  IniFile.WriteBool('Log', 'ShowMsgBadBox', ActMsgBadBox.Checked);
 
   IniFile.Free;
 end;
 
 function TLogForm.GetParsingLine: string;
 begin
-  Result := 'Error: ' + IntToStr(MsgCount.Error) + // ошибок
-    ' Warning: ' + IntToStr(MsgCount.Warning) + // предупреждений
+  Result := 'Error: ' + IntToStr(MsgCount.Error) + ';' + // ошибок
+    ' Warning: ' + IntToStr(MsgCount.Warning) + ';' + // предупреждений
     ' BadBox: ' + IntToStr(MsgCount.BadBox);
 end;
 
 procedure TLogForm.ShowMsg;
 begin
-  ActLogMsgError.Caption := IntToStr(MsgCount.Error);
-  ActLogMsgWarning.Caption := IntToStr(MsgCount.Warning);
-  ActlogMsgBadBox.Caption := IntToStr(MsgCount.BadBox);
+  ActMsgError.Caption := IntToStr(MsgCount.Error);
+  ActMsgWarning.Caption := IntToStr(MsgCount.Warning);
+  ActMsgBadBox.Caption := IntToStr(MsgCount.BadBox);
 
   Self.Caption := GetParsingLine;
   ShowMsgLines;
@@ -153,13 +153,13 @@ begin
   LTop := 0;
   for i := low(MsgLines) to High(MsgLines) do
   begin
-    if (MsgLines[i].Severity = lsError) and (not ActLogMsgError.Checked) then
+    if (MsgLines[i].Severity = lsError) and (not ActMsgError.Checked) then
       Continue;
 
-    if (MsgLines[i].Severity = lsWarning) and (not ActLogMsgWarning.Checked) then
+    if (MsgLines[i].Severity = lsWarning) and (not ActMsgWarning.Checked) then
       Continue;
 
-    if (MsgLines[i].Severity = lsBadBox) and (not ActlogMsgBadBox.Checked) then
+    if (MsgLines[i].Severity = lsBadBox) and (not ActMsgBadBox.Checked) then
       Continue;
 
     Item := lvLog.Items.Add;
@@ -197,9 +197,9 @@ begin
     ActLogMessageExecute(ActLogMessage);
 
   // ќтображение ошибок
-  ActLogMsgError.Checked := IniFile.ReadBool('Log', 'ShowMsgError', true);
-  ActLogMsgWarning.Checked := IniFile.ReadBool('Log', 'ShowMsgWarning', true);
-  ActlogMsgBadBox.Checked := IniFile.ReadBool('Log', 'ShowMsgBadBox', true);
+  ActMsgError.Checked := IniFile.ReadBool('Log', 'ShowMsgError', true);
+  ActMsgWarning.Checked := IniFile.ReadBool('Log', 'ShowMsgWarning', true);
+  ActMsgBadBox.Checked := IniFile.ReadBool('Log', 'ShowMsgBadBox', true);
 
   IniFile.Free;
 end;
@@ -291,9 +291,9 @@ begin
     pConsole.Visible := true;
     ActLogConsole.Checked := true;
   end;
-  ActLogMsgError.Enabled := ActLogMessage.Checked;
-  ActLogMsgWarning.Enabled := ActLogMessage.Checked;
-  ActlogMsgBadBox.Enabled := ActLogMessage.Checked;
+  ActMsgError.Enabled := ActLogMessage.Checked;
+  ActMsgWarning.Enabled := ActLogMessage.Checked;
+  ActMsgBadBox.Enabled := ActLogMessage.Checked;
 end;
 
 procedure TLogForm.ActLogMessageExecute(Sender: TObject);
@@ -304,25 +304,25 @@ begin
     pConsole.Visible := false;
     ActLogMessage.Checked := true;
   end;
-  ActLogMsgError.Enabled := ActLogMessage.Checked;
-  ActLogMsgWarning.Enabled := ActLogMessage.Checked;
-  ActlogMsgBadBox.Enabled := ActLogMessage.Checked;
-  ActLogMsgCopyError.Enabled := ActLogMessage.Checked;
+  ActMsgError.Enabled := ActLogMessage.Checked;
+  ActMsgWarning.Enabled := ActLogMessage.Checked;
+  ActMsgBadBox.Enabled := ActLogMessage.Checked;
+  ActMsgCopyError.Enabled := ActLogMessage.Checked;
 end;
 
-procedure TLogForm.ActLogMsgErrorExecute(Sender: TObject);
+procedure TLogForm.ActMsgErrorExecute(Sender: TObject);
 begin
-  ActLogMsgError.Checked := not ActLogMsgError.Checked;
+  ActMsgError.Checked := not ActMsgError.Checked;
   ShowMsgLines;
 end;
 
-procedure TLogForm.ActLogMsgWarningExecute(Sender: TObject);
+procedure TLogForm.ActMsgWarningExecute(Sender: TObject);
 begin
-  ActLogMsgWarning.Checked := not ActLogMsgWarning.Checked;
+  ActMsgWarning.Checked := not ActMsgWarning.Checked;
   ShowMsgLines;
 end;
 
-procedure TLogForm.ActLogMsgCopyErrorExecute(Sender: TObject);
+procedure TLogForm.ActMsgCopyErrorExecute(Sender: TObject);
 begin
   if lvLog.Selected <> nil then
     Clipboard.AsText := lvLog.Selected.SubItems[2];
@@ -361,13 +361,13 @@ begin
     Items.Add.Caption := '-';
 
     LItem := Items.Add;
-    LItem.Action := ActLogMsgError;
+    LItem.Action := ActMsgError;
 
     LItem := Items.Add;
-    LItem.Action := ActLogMsgWarning;
+    LItem.Action := ActMsgWarning;
 
     LItem := Items.Add;
-    LItem.Action := ActlogMsgBadBox;
+    LItem.Action := ActMsgBadBox;
 
     Items.Add.Caption := '-';
 
@@ -376,7 +376,7 @@ begin
     LItem.ShowCaption := false;
 
     LItem := Items.Add;
-    LItem.Action := ActLogMsgCopyError;
+    LItem.Action := ActMsgCopyError;
     LItem.ShowCaption := false;
 
     // “ак должна быть об€влена именно послед€€ черта
@@ -386,9 +386,9 @@ begin
   end;
 end;
 
-procedure TLogForm.ActlogMsgBadBoxExecute(Sender: TObject);
+procedure TLogForm.ActMsgBadBoxExecute(Sender: TObject);
 begin
-  ActlogMsgBadBox.Checked := not ActlogMsgBadBox.Checked;
+  ActMsgBadBox.Checked := not ActMsgBadBox.Checked;
   ShowMsgLines;
 end;
 

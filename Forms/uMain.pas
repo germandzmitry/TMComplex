@@ -137,6 +137,8 @@ type
     ActArrayMatrix: TAction;
     ActObjectFigure: TAction;
     ActInsertTabular: TAction;
+    ActBeamer: TAction;
+    ActBeamerNewFrame: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -229,6 +231,10 @@ type
     procedure ActArrayExecute(Sender: TObject);
     procedure ActArrayCasesExecute(Sender: TObject);
     procedure ActArrayMatrixExecute(Sender: TObject);
+
+    { Beamer }
+    procedure ActBeamerExecute(Sender: TObject);
+    procedure ActBeamerNewFrameExecute(Sender: TObject);
 
     { View }
     procedure ActViewExecute(Sender: TObject);
@@ -396,7 +402,7 @@ begin
   end;
 
   // ÀÓ„
-  IniFile.WriteBool('Log', 'Show', (FLog <> nil));
+  IniFile.WriteBool('Log', 'Show', (FLog <> nil) and (FLog.Showing));
 
   IniFile.Free;
 end;
@@ -554,17 +560,24 @@ begin
     LItemSub.Items.Add.Action := ActArrayMatrix;
     LItemSub.Items.Add.Action := ActArrayCases;
 
-    { View }
+    { Beamer }
     { ------------------------------------------- }
     LItemGlobal := Items.Add;
     LItemGlobal.Index := 5;
+    LItemGlobal.Action := ActBeamer;
+    LItemGlobal.Items.Add.Action := ActBeamerNewFrame;
+
+    { View }
+    { ------------------------------------------- }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Index := 6;
     LItemGlobal.Action := ActView;
     LItemGlobal.Items.Add.Action := ActViewLog;
 
     { TeX }
     { ------------------------------------------- }
     LItemGlobal := Items.Add;
-    LItemGlobal.Index := 6;
+    LItemGlobal.Index := 7;
     LItemGlobal.Action := ActTex;
     LItemGlobal.Items.Add.Action := ActTexPdfLaTeX;
     LItemGlobal.Items.Add.Action := ActTexStop;
@@ -577,7 +590,7 @@ begin
     { MiKTeX }
     { ------------------------------------------- }
     LItemGlobal := Items.Add;
-    LItemGlobal.Index := 7;
+    LItemGlobal.Index := 8;
     LItemGlobal.Action := ActMiKTeX;
     LItemGlobal.Items.Add.Action := ActMiKTeXOption;
     LItemGlobal.Items.Add.Action := ActMiKTeXPackageManager;
@@ -588,7 +601,7 @@ begin
     { Window }
     { ------------------------------------------- }
     LItemGlobal := Items.Add;
-    LItemGlobal.Index := 8;
+    LItemGlobal.Index := 9;
     LItemGlobal.Action := ActWindow;
     LItemGlobal.Items.Add.Action := ActWindowCascade;
     LItemGlobal.Items.Add.Action := ActWindowTileHorizontal;
@@ -598,7 +611,7 @@ begin
     { Help }
     { ------------------------------------------- }
     LItemGlobal := Items.Add;
-    LItemGlobal.Index := 9;
+    LItemGlobal.Index := 10;
     LItemGlobal.Action := ActHelp;
     LItemGlobal.Items.Add.Action := ActHelpCtan;
     LItemGlobal.Items.Add.Action := ActHelpWikiBooks;
@@ -1272,6 +1285,18 @@ begin
   end;
 end;
 
+{ Beamer }
+
+procedure TMain.ActBeamerExecute(Sender: TObject);
+begin
+  //
+end;
+
+procedure TMain.ActBeamerNewFrameExecute(Sender: TObject);
+begin
+  //
+end;
+
 { Link }
 
 procedure TMain.ActLinkUrlExecute(Sender: TObject);
@@ -1407,6 +1432,7 @@ begin
     on E: Exception do
     begin
       ShowMessage(E.Message);
+      FLog.Caption := 'ÀÓ„';
       Exit;
     end;
   end;

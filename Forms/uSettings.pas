@@ -58,10 +58,12 @@ type
     cbTexOpenDocAfterCompile: TCheckBox;
     lTexPDFlatexInteraction: TLabel;
     ComboBox1: TComboBox;
-    Panel1: TPanel;
+    pPDFViewerSumatra: TPanel;
     rbPDFViewerSumatraFirstPage: TRadioButton;
     rbPDFViewerSumatraLastOpenPage: TRadioButton;
     rbPDFViewerSumatraSynctex: TRadioButton;
+    pClient: TPanel;
+    bClientBottom: TBevel;
     procedure FormCreate(Sender: TObject);
     procedure tvSettingsClick(Sender: TObject);
     procedure BtnCancelClick(Sender: TObject);
@@ -173,7 +175,7 @@ var
   i: integer;
   node: TTreeNode;
 begin
-  pBottom.Caption := '';
+  bClientBottom.Height := 2;
   pcSettings.Align := alClient;
 
   UpdateLanguage(self, lngRus);
