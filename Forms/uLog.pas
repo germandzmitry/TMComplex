@@ -6,9 +6,9 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls,
-  System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList,
+  System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, CommCtrl,
   Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnColorMaps, System.IniFiles, uTypes,
-  uTexLogParser, Vcl.ExtCtrls;
+  uTexLogParser, Vcl.ExtCtrls, Vcl.Menus, Vcl.ActnPopup, clipbrd;
 
 type
   TLogForm = class(TForm)
@@ -27,6 +27,7 @@ type
     eSend: TEdit;
     pConsole: TPanel;
     PMessage: TPanel;
+    ActLogMsgCopyError: TAction;
 
     procedure SaveSettings;
     procedure LoadSettings;
@@ -45,8 +46,12 @@ type
     procedure ShowMsg;
     function GetParsingLine(): string;
     procedure lvLogDblClick(Sender: TObject);
+    procedure lvLogMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure lvLogMouseLeave(Sender: TObject);
+    procedure ActLogMsgCopyErrorExecute(Sender: TObject);
   private
     procedure ShowMsgLines;
+    procedure CreateActionMenu;
   public
     MsgLines: TTexLogLines;
     MsgCount: TTexLogErrorCount;
@@ -62,10 +67,12 @@ implementation
 
 {$R *.dfm}
 
-uses uLanguage, uMain, uLogLine, System.RegularExpressions;
+uses uLanguage, uMain, System.RegularExpressions, uLogLineHint;
 
 procedure TLogForm.FormCreate(Sender: TObject);
 begin
+  CreateActionMenu;
+
   eSend.Visible := false;
 
   pConsole.Align := alClient;
@@ -93,6 +100,7 @@ end;
 
 procedure TLogForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  Clear;
   SaveSettings;
   Hide; // что бы не моргала форма в левом верхнем углу по ManualFloat
   ManualFloat(rect(0, 0, 0, 0)); // что бы вызвалось UnDock
@@ -108,7 +116,6 @@ begin
   IniFile := TIniFile.Create(ExtractFileDir(Application.ExeName) + '\' + FileSetting);
   // Лог
   IniFile.WriteBool('Log', 'ShowConsole', ActLogConsole.Checked);
-  // IniFile.WriteInteger('Log', 'Height', fLog.Height + 23);
 
   // Отображение ошибок
   IniFile.WriteBool('Log', 'ShowMsgError', ActLogMsgError.Checked);
@@ -137,9 +144,9 @@ end;
 
 procedure TLogForm.ShowMsgLines;
 var
-  i: integer;
+  i: Integer;
   Item: TListItem;
-  LTop: integer;
+  LTop: Integer;
 begin
   lvLog.Items.BeginUpdate;
   lvLog.Items.Clear;
@@ -172,17 +179,8 @@ begin
     else
       Item.SubItems.Add('');
     Item.SubItems.Add(MsgLines[i].Description);
-    Item.Data := PChar(MsgLines[i].FileName);
 
-    // with TLogLineFrame.Create(ScrollBox1) do
-    // begin
-    // parent := ScrollBox1;
-    // Align := alTop;
-    // Top := LTop;
-    // name := 'Frame' + IntToStr(i);
-    // msg := MsgLines[i];
-    // LTop := LTop + Height;
-    // end;
+    Item.Data := @MsgLines[i];
   end;
   lvLog.Items.EndUpdate;
 end;
@@ -208,29 +206,76 @@ end;
 
 procedure TLogForm.lvLogDblClick(Sender: TObject);
 var
-  LFileName, LRow, ll: string;
+  LLine: ^TTexLogLine;
 begin
-  // LFileName := lvLog.Items[lvLog.ItemIndex].SubItems[0];
-  LFileName := String(lvLog.Items[lvLog.ItemIndex].Data);
-  LRow := lvLog.Items[lvLog.ItemIndex].SubItems[1];
+  LLine := lvLog.Items[lvLog.ItemIndex].Data;
 
-  if not FileExists(LFileName) then
+  if not FileExists(LLine.FileName) then
     exit;
 
   // открываем только файлы .tex предупреждения могут быть в файлах TeX
-  if AnsiCompareStr(ExtractFileExt(LFileName), '.tex') <> 0 then
+  if AnsiCompareStr(ExtractFileExt(LLine.FileName), '.tex') <> 0 then
     exit;
 
   // Если активный файл не тот, на который хотим перейти, переходим
-  if AnsiCompareStr(LFileName, main.ActiveEditor.FileNameFull) <> 0 then
-    main.ProcessParam(1, LFileName);
+  if AnsiCompareStr(LLine.FileName, main.ActiveEditor.FileNameFull) <> 0 then
+    main.ProcessParam(1, LLine.FileName);
 
   try
-    main.ActiveEditor.GoToLine(strtoint(LRow));
+    main.ActiveEditor.GoToLine(LLine.Row);
     main.ActiveEditor.Editor.SetFocus;
   except
     on E: Exception do
   end;
+end;
+
+procedure TLogForm.lvLogMouseLeave(Sender: TObject);
+begin
+  LogLineHintForm.CustomHide;
+end;
+
+procedure TLogForm.lvLogMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+var
+  pt: TPoint;
+  LItem: TListItem;
+  LHitInfo: TLVHitTestInfo;
+  LColor: TColor;
+  LLine: ^TTexLogLine;
+begin
+  pt := lvLog.ScreenToClient(Mouse.CursorPos);
+  LItem := lvLog.GetItemAt(pt.X, pt.Y);
+  if LItem = nil then
+  begin
+    FillChar(LHitInfo, SizeOf(LHitInfo), 0);
+    LHitInfo.pt := pt;
+    if -1 <> lvLog.Perform(LVM_SUBITEMHITTEST, 0, LParam(@LHitInfo)) then
+      LItem := lvLog.Items[LHitInfo.iItem];
+  end;
+
+  try
+    if (main.ActiveEditor <> nil) and (main.ActiveEditor.Active) then
+      if LItem = nil then
+        LogLineHintForm.CustomHide
+      else
+      begin
+        LLine := LItem.Data;
+        case LLine.Severity of
+          lsBadBox:
+            LColor := clBlue;
+          lsWarning:
+            LColor := clYellow;
+          lsError:
+            LColor := clRed;
+          lsDebug:
+            LColor := clBlack;
+        end;
+        LogLineHintForm.CustomShow(LItem.Index, LItem.SubItems[2], LColor);
+      end;
+
+  except
+
+  end;
+
 end;
 
 procedure TLogForm.ActLogClearExecute(Sender: TObject);
@@ -244,8 +289,6 @@ begin
   begin
     PMessage.Visible := false;
     pConsole.Visible := true;
-    // lvLog.Visible := false;
-    // mLog.Visible := true;
     ActLogConsole.Checked := true;
   end;
   ActLogMsgError.Enabled := ActLogMessage.Checked;
@@ -259,13 +302,12 @@ begin
   begin
     PMessage.Visible := true;
     pConsole.Visible := false;
-    // lvLog.Visible := true;
-    // mLog.Visible := false;
     ActLogMessage.Checked := true;
   end;
   ActLogMsgError.Enabled := ActLogMessage.Checked;
   ActLogMsgWarning.Enabled := ActLogMessage.Checked;
   ActlogMsgBadBox.Enabled := ActLogMessage.Checked;
+  ActLogMsgCopyError.Enabled := ActLogMessage.Checked;
 end;
 
 procedure TLogForm.ActLogMsgErrorExecute(Sender: TObject);
@@ -280,21 +322,68 @@ begin
   ShowMsgLines;
 end;
 
+procedure TLogForm.ActLogMsgCopyErrorExecute(Sender: TObject);
+begin
+  if lvLog.Selected <> nil then
+    Clipboard.AsText := lvLog.Selected.SubItems[2];
+end;
+
 procedure TLogForm.Clear;
 var
-  i: integer;
+  i: Integer;
 begin
+  // for i := 0 to lvLog.Items.Count - 1 do
+  // Dispose(lvLog.Items[i].Data);
+
   mLog.Lines.Clear;
   lvLog.Items.Clear;
-
-  // while ScrollBox1.ComponentCount > 0 do
-  // if ScrollBox1.Components[ScrollBox1.ComponentCount - 1] is TLogLineFrame then
-  // (ScrollBox1.Components[ScrollBox1.ComponentCount - 1] as TLogLineFrame).Free;
 
   MsgCount.Clear;
   MsgLines := nil;
   ShowMsg;
   Self.Caption := rsLogCaption;
+end;
+
+procedure TLogForm.CreateActionMenu;
+var
+  LItem, LItemGlobal, LItemSub: TActionClientItem;
+  LActionBarIndex: Integer;
+begin
+  { ActionToolBar1 }
+  with ActMngLog.ActionBars[0] do
+  begin
+    LItem := Items.Add;
+    LItem.Action := ActLogConsole;
+
+    LItem := Items.Add;
+    LItem.Action := ActLogMessage;
+
+    Items.Add.Caption := '-';
+
+    LItem := Items.Add;
+    LItem.Action := ActLogMsgError;
+
+    LItem := Items.Add;
+    LItem.Action := ActLogMsgWarning;
+
+    LItem := Items.Add;
+    LItem.Action := ActlogMsgBadBox;
+
+    Items.Add.Caption := '-';
+
+    LItem := Items.Add;
+    LItem.Action := ActLogClear;
+    LItem.ShowCaption := false;
+
+    LItem := Items.Add;
+    LItem.Action := ActLogMsgCopyError;
+    LItem.ShowCaption := false;
+
+    // Так должна быть обявлена именно последяя черта
+    LItem := Items.Add;
+    LItem.Caption := '-';
+    LItem.CommandStyle := csSeparator;
+  end;
 end;
 
 procedure TLogForm.ActlogMsgBadBoxExecute(Sender: TObject);

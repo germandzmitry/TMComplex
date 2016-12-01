@@ -108,7 +108,9 @@ begin
   Res.Clear;
 
   // We remove "\n(<name>) " from description:
-  desc := TRegEx.Replace(aMatch.Value, '\\(' + aMatch.Groups.item[1].Value + '\\)\s(.+)\n', ' $1',
+  // desc := TRegEx.Replace(aMatch.Value, '\\(' + aMatch.Groups.item[1].Value + '\\)\s(.+)\n', ' $1',
+  // [roIgnoreCase]);
+  desc := TRegEx.Replace(aMatch.Value, '\(' + aMatch.Groups.item[1].Value + '\)\s(.+)\n', ' $1',
     [roIgnoreCase]);
   desc := TRegEx.Replace(desc, '\n', '', [roIgnoreCase]);
   desc := TRegEx.Replace(desc, '\s+', ' ', [roIgnoreCase]);

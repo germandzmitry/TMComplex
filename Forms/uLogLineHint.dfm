@@ -1,0 +1,66 @@
+object LogLineHintForm: TLogLineHintForm
+  Left = 0
+  Top = 0
+  BorderStyle = bsNone
+  Caption = 'LogLineHintForm'
+  ClientHeight = 100
+  ClientWidth = 511
+  Color = clInfoBk
+  DoubleBuffered = True
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnPaint = FormPaint
+  PixelsPerInch = 96
+  TextHeight = 13
+  object bFrame: TBevel
+    Left = 360
+    Top = 32
+    Width = 50
+    Height = 50
+    Shape = bsFrame
+  end
+  object pHint: TPanel
+    AlignWithMargins = True
+    Left = 64
+    Top = 16
+    Width = 185
+    Height = 76
+    BevelOuter = bvNone
+    Caption = 'pHint'
+    TabOrder = 0
+    object lHint: TLabel
+      Left = 8
+      Top = 8
+      Width = 21
+      Height = 13
+      Margins.Left = 5
+      Margins.Top = 5
+      Margins.Right = 5
+      Margins.Bottom = 5
+      Caption = 'lHint'
+      WordWrap = True
+    end
+    object pColor: TPanel
+      AlignWithMargins = True
+      Left = 37
+      Top = 17
+      Width = 57
+      Height = 41
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 5
+      Margins.Bottom = 0
+      BevelOuter = bvNone
+      Caption = 'pColor'
+      Color = clYellow
+      ParentBackground = False
+      TabOrder = 0
+    end
+  end
+end

@@ -25,8 +25,8 @@ uses
   uLanguage in 'Units\uLanguage.pas',
   uInsertList in 'Forms\uInsertList.pas' {InsertListForm},
   uInsertImage in 'Forms\uInsertImage.pas' {InsertImageForm},
-  uLogLine in 'Frames\uLogLine.pas' {LogLineFrame: TFrame},
-  uInsertTable in 'Forms\uInsertTable.pas' {InsertTableForm};
+  uInsertTable in 'Forms\uInsertTable.pas' {InsertTableForm},
+  uLogLineHint in 'Forms\uLogLineHint.pas' {LogLineHintForm};
 
 {$R *.res}
 
@@ -89,6 +89,7 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.Title := 'TM complex';
   Application.CreateForm(TMain, Main);
+  Application.CreateForm(TLogLineHintForm, LogLineHintForm);
   Application.Run;
 
   CloseHandle(MutexHandle); // ”ничтожаем Mutex

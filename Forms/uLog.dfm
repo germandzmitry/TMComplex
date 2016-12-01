@@ -74,9 +74,6 @@ object LogForm: TLogForm
       Align = alBottom
       TabOrder = 1
       Text = 'eSend'
-      ExplicitLeft = 0
-      ExplicitTop = 294
-      ExplicitWidth = 794
     end
   end
   object PMessage: TPanel
@@ -115,6 +112,8 @@ object LogForm: TLogForm
       TabOrder = 0
       ViewStyle = vsReport
       OnDblClick = lvLogDblClick
+      OnMouseLeave = lvLogMouseLeave
+      OnMouseMove = lvLogMouseMove
     end
   end
   object ActListLog: TActionList
@@ -160,12 +159,17 @@ object LogForm: TLogForm
       ImageIndex = 5
       OnExecute = ActlogMsgBadBoxExecute
     end
+    object ActLogMsgCopyError: TAction
+      Category = 'Log'
+      Caption = 'ActMsgCopyError'
+      OnExecute = ActLogMsgCopyErrorExecute
+    end
   end
   object ilLog: TImageList
     Left = 160
     Top = 264
     Bitmap = {
-      494C010106000800700010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101060008007C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -439,44 +443,6 @@ object LogForm: TLogForm
   object ActMngLog: TActionManager
     ActionBars = <
       item
-        Items = <
-          item
-            Action = ActLogConsole
-            Caption = '&ActLogConsole'
-            ImageIndex = 0
-          end
-          item
-            Action = ActLogMessage
-            Caption = 'A&ctLogMessage'
-            ImageIndex = 1
-          end
-          item
-            Caption = '-'
-          end
-          item
-            Action = ActLogClear
-            Caption = 'Ac&tLogClear'
-            ImageIndex = 2
-            ShowCaption = False
-          end
-          item
-            Caption = '-'
-          end
-          item
-            Action = ActLogMsgError
-            Caption = 'Act&LogMsgError'
-            ImageIndex = 3
-          end
-          item
-            Action = ActLogMsgWarning
-            Caption = 'ActL&ogMsgWarning'
-            ImageIndex = 4
-          end
-          item
-            Action = ActlogMsgBadBox
-            Caption = 'Actlo&gMsgBadBox'
-            ImageIndex = 5
-          end>
         ActionBar = ActionToolBar1
       end>
     LinkedActionLists = <
