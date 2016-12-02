@@ -13,7 +13,7 @@ type
     lVersion: TLabel;
     lHistory: TLinkLabel;
     BtnOK: TButton;
-    Image1: TImage;
+    ImageIcon: TImage;
     lCaption: TLabel;
     lName: TLabel;
     lVersionDate: TLabel;
@@ -22,6 +22,7 @@ type
     eEmail: TEdit;
     mMiKTeX: TMemo;
     lMiKTeX: TLabel;
+    lDebug: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure lHistoryClick(Sender: TObject);
     procedure BtnOKClick(Sender: TObject);
@@ -77,6 +78,10 @@ begin
   // lDeveloper.Font.Color := RGB(90, 140, 130);
   lHistory.Visible := FileExists(ExtractFilePath(Application.ExeName) + 'history.txt');
 
+  lDebug.Visible := false;
+{$IFDEF DEBUG}
+  lDebug.Visible := true;
+{$IFEND}
 end;
 
 procedure TAboutForm.FormShow(Sender: TObject);

@@ -11,8 +11,8 @@ type
   TSettingTex = record
     OpenDocAfterCompile: boolean;
   public
-    procedure Load;
-    procedure Save;
+    procedure Load(aIni: TIniFile);
+    procedure Save(aIni: TIniFile);
   end;
 
   TSettingPDFViewer = record
@@ -25,8 +25,8 @@ type
     Other: boolean;
     OtherPath: string;
   public
-    procedure Load;
-    procedure Save;
+    procedure Load(aIni: TIniFile);
+    procedure Save(aIni: TIniFile);
   end;
 
   TAllSetting = record
@@ -91,81 +91,67 @@ uses uTypes, uLanguage;
 { TSetting }
 
 procedure TAllSetting.Load;
+var
+  ini: TIniFile;
 begin
-  self.PDFViewer.Load;
-  self.Tex.Load;
+  ini := TIniFile.Create(ExtractFileDir(Application.ExeName) + '\' + FileSetting);
+  try
+    self.PDFViewer.Load(ini);
+    self.Tex.Load(ini);
+  finally
+    ini.Free;
+  end;
 end;
 
 procedure TAllSetting.Save;
+var
+  ini: TIniFile;
 begin
-  self.PDFViewer.Save;
-  self.Tex.Save;
+  ini := TIniFile.Create(ExtractFileDir(Application.ExeName) + '\' + FileSetting);
+  try
+    self.PDFViewer.Save(ini);
+    self.Tex.Save(ini);
+  finally
+    ini.Free;
+  end;
 end;
 
 { TSettingPDFViewer }
 
-procedure TSettingPDFViewer.Load;
-var
-  ini: tinifile;
+procedure TSettingPDFViewer.Load(aIni: TIniFile);
 begin
-  ini := tinifile.Create(ExtractFileDir(Application.ExeName) + '\' + FileSetting);
-  try
-    self.Default := ini.ReadBool('PDFViewer', 'Default', true);
-    self.Sumatra := ini.ReadBool('PDFViewer', 'Sumatra', false);
-    self.SumatraPath := ini.ReadString('PDFViewer', 'SumatraPath', '');
-    self.SumatraFirstPage := ini.ReadBool('PDFViewer', 'SumatraFirstPage', false);
-    self.SumatraLastOpenPage := ini.ReadBool('PDFViewer', 'SumatraLastOpenPage', true);
-    self.SumatraSynctex := ini.ReadBool('PDFViewer', 'SumatraSynctex', false);
-    self.Other := ini.ReadBool('PDFViewer', 'Other', false);
-    self.OtherPath := ini.ReadString('PDFViewer', 'OtherPath', '');
-  finally
-    ini.Free;
-  end;
+  self.Default := aIni.ReadBool('PDFViewer', 'Default', true);
+  self.Sumatra := aIni.ReadBool('PDFViewer', 'Sumatra', false);
+  self.SumatraPath := aIni.ReadString('PDFViewer', 'SumatraPath', '');
+  self.SumatraFirstPage := aIni.ReadBool('PDFViewer', 'SumatraFirstPage', false);
+  self.SumatraLastOpenPage := aIni.ReadBool('PDFViewer', 'SumatraLastOpenPage', true);
+  self.SumatraSynctex := aIni.ReadBool('PDFViewer', 'SumatraSynctex', false);
+  self.Other := aIni.ReadBool('PDFViewer', 'Other', false);
+  self.OtherPath := aIni.ReadString('PDFViewer', 'OtherPath', '');
 end;
 
-procedure TSettingPDFViewer.Save;
-var
-  ini: tinifile;
+procedure TSettingPDFViewer.Save(aIni: TIniFile);
 begin
-  ini := tinifile.Create(ExtractFileDir(Application.ExeName) + '\' + FileSetting);
-  try
-    ini.WriteBool('PDFViewer', 'Default', self.Default);
-    ini.WriteBool('PDFViewer', 'Sumatra', self.Sumatra);
-    ini.WriteString('PDFViewer', 'SumatraPath', self.SumatraPath);
-    ini.WriteBool('PDFViewer', 'SumatraFirstPage', self.SumatraFirstPage);
-    ini.WriteBool('PDFViewer', 'SumatraLastOpenPage', self.SumatraLastOpenPage);
-    ini.WriteBool('PDFViewer', 'SumatraSynctex', self.SumatraSynctex);
-    ini.WriteBool('PDFViewer', 'Other', self.Other);
-    ini.WriteString('PDFViewer', 'OtherPath', self.OtherPath);
-  finally
-    ini.Free;
-  end;
+  aIni.WriteBool('PDFViewer', 'Default', self.Default);
+  aIni.WriteBool('PDFViewer', 'Sumatra', self.Sumatra);
+  aIni.WriteString('PDFViewer', 'SumatraPath', self.SumatraPath);
+  aIni.WriteBool('PDFViewer', 'SumatraFirstPage', self.SumatraFirstPage);
+  aIni.WriteBool('PDFViewer', 'SumatraLastOpenPage', self.SumatraLastOpenPage);
+  aIni.WriteBool('PDFViewer', 'SumatraSynctex', self.SumatraSynctex);
+  aIni.WriteBool('PDFViewer', 'Other', self.Other);
+  aIni.WriteString('PDFViewer', 'OtherPath', self.OtherPath);
 end;
 
 { TSettingTex }
 
-procedure TSettingTex.Load;
-var
-  ini: tinifile;
+procedure TSettingTex.Load(aIni: TIniFile);
 begin
-  ini := tinifile.Create(ExtractFileDir(Application.ExeName) + '\' + FileSetting);
-  try
-    self.OpenDocAfterCompile := ini.ReadBool('Tex', 'OpenDocAfterCompile', true);
-  finally
-    ini.Free;
-  end;
+  self.OpenDocAfterCompile := aIni.ReadBool('Tex', 'OpenDocAfterCompile', true);
 end;
 
-procedure TSettingTex.Save;
-var
-  ini: tinifile;
+procedure TSettingTex.Save(aIni: TIniFile);
 begin
-  ini := tinifile.Create(ExtractFileDir(Application.ExeName) + '\' + FileSetting);
-  try
-    ini.WriteBool('Tex', 'OpenDocAfterCompile', self.OpenDocAfterCompile);
-  finally
-    ini.Free;
-  end;
+  aIni.WriteBool('Tex', 'OpenDocAfterCompile', self.OpenDocAfterCompile);
 end;
 
 { TSettingForm }

@@ -139,6 +139,7 @@ type
     ActInsertTabular: TAction;
     ActBeamer: TAction;
     ActBeamerNewFrame: TAction;
+    ActSearchOpenProjectFolder: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -169,6 +170,7 @@ type
     { Search }
     procedure ActSearchExecute(Sender: TObject);
     procedure ActSearchGoToLineExecute(Sender: TObject);
+    procedure ActSearchOpenProjectFolderExecute(Sender: TObject);
 
     { Text }
     procedure ActTextExecute(Sender: TObject);
@@ -470,10 +472,12 @@ begin
     LItemGlobal.Items.Add.Action := ActEditEncoding;
 
     { Search }
+    { ------------------------------------------- }
     LItemGlobal := Items.Add;
     LItemGlobal.Index := 2;
     LItemGlobal.Action := ActSearch;
     LItemGlobal.Items.Add.Action := ActSearchGoToLine;
+    LItemGlobal.Items.Add.Action := ActSearchOpenProjectFolder;
 
     { Text }
     { ------------------------------------------- }
@@ -778,6 +782,8 @@ begin
   LoadSettings;
   FAllSetting.Load;
 
+  // ProcessParam(1, '');
+
   ProcessParam(1, ParamStr(1));
   ProcessParam(2, ParamStr(2));
 end;
@@ -932,8 +938,11 @@ end;
 
 procedure TMain.ActEditCopyExecute(Sender: TObject);
 begin
-  if (FActiveEditor <> nil) and (FActiveEditor.Editor <> nil) then
-    FActiveEditor.Editor.CopyToClipboard;
+  if (FActiveEditor <> nil) and (FActiveEditor.Editor <> nil) and (FActiveEditor.Editor.Focused)
+  then
+    FActiveEditor.Editor.CopyToClipboard
+  else if (FLog <> nil) and (Length(FLog.mLog.SelText) > 0) then
+    FLog.mLog.CopyToClipboard;
 end;
 
 procedure TMain.ActEditPasteExecute(Sender: TObject);
@@ -952,20 +961,20 @@ procedure TMain.ActEditEncodingExecute(Sender: TObject);
 var
   LEncoding: TEditorEncodingForm;
 begin
-  if FActiveEditor <> nil then
-  begin
-    LEncoding := TEditorEncodingForm.Create(Main);
-    try
-      LEncoding.cbEncoding.ItemIndex := LEncoding.cbEncoding.Items.IndexOf
-        (EncodingToText(FActiveEditor.Editor.Encoding));
-      if LEncoding.ShowModal = mrOk then
-      begin
-        SetEncoding(FActiveEditor.Editor, LEncoding.cbEncoding.ItemIndex);
-        SetStatusBarCaption;
-      end;
-    finally
-      LEncoding.Free;
+  if FActiveEditor = nil then
+    Exit;
+
+  LEncoding := TEditorEncodingForm.Create(Main);
+  try
+    LEncoding.cbEncoding.ItemIndex := LEncoding.cbEncoding.Items.IndexOf
+      (EncodingToText(FActiveEditor.Editor.Encoding));
+    if LEncoding.ShowModal = mrOk then
+    begin
+      SetEncoding(FActiveEditor.Editor, LEncoding.cbEncoding.ItemIndex);
+      SetStatusBarCaption;
     end;
+  finally
+    LEncoding.Free;
   end;
 end;
 
@@ -980,17 +989,26 @@ procedure TMain.ActSearchGoToLineExecute(Sender: TObject);
 var
   LGoToLine: TEditorGoToLineForm;
 begin
-  if FActiveEditor <> nil then
-  begin
-    LGoToLine := TEditorGoToLineForm.Create(Main);
-    try
-      LGoToLine.eLine.Text := IntToStr(FActiveEditor.Editor.DisplayCaretY);
-      if LGoToLine.ShowModal = mrOk then
-        FActiveEditor.GoToLine(StrToInt(LGoToLine.eLine.Text));
-    finally
-      LGoToLine.Free;
-    end;
+  if FActiveEditor = nil then
+    Exit;
+
+  LGoToLine := TEditorGoToLineForm.Create(Main);
+  try
+    LGoToLine.eLine.Text := IntToStr(FActiveEditor.Editor.DisplayCaretY);
+    if LGoToLine.ShowModal = mrOk then
+      FActiveEditor.GoToLine(StrToInt(LGoToLine.eLine.Text));
+  finally
+    LGoToLine.Free;
   end;
+end;
+
+procedure TMain.ActSearchOpenProjectFolderExecute(Sender: TObject);
+begin
+  if FActiveEditor = nil then
+    Exit;
+
+  if FileExists(FActiveEditor.FileNameFull) then
+    RunProcess('explorer "' + FActiveEditor.FilePath + '"');
 end;
 
 { Text }
@@ -1431,7 +1449,7 @@ begin
     // Если не долши до запуска команды, то и поток нечего останавливать
     on E: Exception do
     begin
-      ShowMessage(E.Message);
+      MessageBox(Handle, PChar(E.Message), PChar(Main.Caption), MB_ICONERROR + MB_OK);
       FLog.Caption := 'Лог';
       Exit;
     end;
@@ -1446,7 +1464,7 @@ begin
     on E: Exception do
     begin
       ActTexStopExecute(ActTexStop);
-      ShowMessage(E.Message);
+      MessageBox(Handle, PChar(E.Message), PChar(Main.Caption), MB_ICONERROR + MB_OK);
     end;
   end;
 end;
@@ -1463,7 +1481,7 @@ begin
     Sleep(50);
   except
     on E: Exception do
-      ShowMessage(E.Message);
+      MessageBox(Handle, PChar(E.Message), PChar(Main.Caption), MB_ICONERROR + MB_OK);
   end;
 end;
 
@@ -1546,7 +1564,7 @@ begin
   try
     LAbout.ShowModal;
   finally
-    LAbout.FreeOnRelease;
+    LAbout.Free;
   end;
 end;
 
@@ -1766,7 +1784,7 @@ begin
     STATUS_BAR_ENCODING:
       ActEditEncodingExecute(ActEditEncoding);
     STATUS_BAR_PATH:
-      ;
+      ActSearchOpenProjectFolderExecute(ActSearchOpenProjectFolder);
   end;
 end;
 
@@ -1776,6 +1794,7 @@ begin
   begin
     FActiveEditor.Editor.InsertText(Pwidechar(cmName));
     FActiveEditor.Editor.DisplayCaretX := FActiveEditor.Editor.DisplayCaretX + moveX;
+    FActiveEditor.Editor.SetFocus;
   end;
 end;
 
@@ -1785,6 +1804,7 @@ begin
   begin
     FActiveEditor.Editor.InsertText(Pwidechar(cmBegin + #13#10 + #13#10 + cmEnd));
     FActiveEditor.Editor.DisplayCaretY := FActiveEditor.Editor.DisplayCaretY - 1;
+    FActiveEditor.Editor.SetFocus;
   end;
 end;
 
@@ -1808,6 +1828,7 @@ begin
         FActiveEditor.Editor.InsertText(LInsert);
         FActiveEditor.Editor.DisplayCaretY := LCutY + 1;
         FActiveEditor.Editor.DisplayCaretX := Length('  ' + cmItem) + 2;
+        FActiveEditor.Editor.SetFocus;
       end;
     finally
       LInsertList.Free;
@@ -1828,7 +1849,7 @@ begin
       on E: Exception do
       begin
         FTexCompile.Terminate;
-        ShowMessage(E.Message);
+        MessageBox(Handle, PChar(E.Message), PChar(Main.Caption), MB_ICONERROR + MB_OK);
       end;
     end;
 end;

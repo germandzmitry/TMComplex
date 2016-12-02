@@ -72,8 +72,11 @@ object Main: TMain
       Margins.Bottom = 0
       ActionManager = ActMngCommand
       Caption = 'ActionMainMenuBar'
-      Color = clMenu
-      ColorMap = ActColorMap
+      Color = clMenuBar
+      ColorMap.DisabledFontColor = 7171437
+      ColorMap.HighlightColor = clWhite
+      ColorMap.BtnSelectedFont = clBlack
+      ColorMap.UnusedColor = clWhite
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
@@ -103,10 +106,13 @@ object Main: TMain
         Margins.Bottom = 0
         ActionManager = ActMngCommand
         Caption = 'ActionToolBar1'
-        Color = clMenu
-        ColorMap = ActColorMap
+        Color = clMenuBar
+        ColorMap.DisabledFontColor = 7171437
+        ColorMap.HighlightColor = clWhite
+        ColorMap.BtnSelectedFont = clBlack
+        ColorMap.UnusedColor = clWhite
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
+        Font.Color = clBlack
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
@@ -631,6 +637,11 @@ object Main: TMain
       Caption = 'ActBeamerNewFrame'
       OnExecute = ActBeamerNewFrameExecute
     end
+    object ActSearchOpenProjectFolder: TAction
+      Category = 'Search'
+      Caption = 'ActSearchOpenProjectFolder'
+      OnExecute = ActSearchOpenProjectFolderExecute
+    end
   end
   object PopupActionEditor: TPopupActionBar
     Images = il_16x16
@@ -728,7 +739,7 @@ object Main: TMain
     Left = 424
     Top = 176
     Bitmap = {
-      494C010137003002C80110001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010137003002D00110001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000040000000E0000000010020000000000000E0
       0000000000000000000000000000000000000000000000000000000000000000
       0000707070FF707070FF707070FF000000000000000000000000000000000000
@@ -2588,7 +2599,7 @@ object Main: TMain
     Left = 504
     Top = 176
     Bitmap = {
-      494C01013700C801700110001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013700C801780110001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000040000000E0000000010020000000000000E0
       0000000000000000000000000000000000000000000000000000000000000000
       0000707070FF707070FF707070FF000000000000000000000000000000000000

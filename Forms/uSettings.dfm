@@ -40,7 +40,6 @@ object SettingsForm: TSettingsForm
       Caption = 'BtnOK'
       TabOrder = 0
       OnClick = BtnOKClick
-      ExplicitTop = 6
     end
     object BtnCancel: TButton
       Left = 519
@@ -51,7 +50,6 @@ object SettingsForm: TSettingsForm
       Caption = 'BtnCancel'
       TabOrder = 1
       OnClick = BtnCancelClick
-      ExplicitTop = 6
     end
   end
   object tvSettings: TTreeView
@@ -71,9 +69,6 @@ object SettingsForm: TSettingsForm
     ReadOnly = True
     TabOrder = 1
     OnClick = tvSettingsClick
-    ExplicitLeft = 10
-    ExplicitTop = 10
-    ExplicitHeight = 292
   end
   object pClient: TPanel
     AlignWithMargins = True
@@ -87,10 +82,6 @@ object SettingsForm: TSettingsForm
     Align = alClient
     Caption = 'pClient'
     TabOrder = 2
-    ExplicitLeft = 192
-    ExplicitTop = 33
-    ExplicitWidth = 185
-    ExplicitHeight = 41
     object bClientBottom: TBevel
       Left = 1
       Top = 296
@@ -114,14 +105,8 @@ object SettingsForm: TSettingsForm
       Align = alClient
       Style = tsButtons
       TabOrder = 0
-      ExplicitLeft = 192
-      ExplicitTop = 10
-      ExplicitWidth = 400
-      ExplicitHeight = 292
       object TabPDFViewer: TTabSheet
         Caption = 'TabPDFViewer'
-        ExplicitWidth = 392
-        ExplicitHeight = 261
         object btnPDFViewerOther: TSpeedButton
           Left = 359
           Top = 173
@@ -221,14 +206,10 @@ object SettingsForm: TSettingsForm
       object TabApplication: TTabSheet
         Caption = 'TabApplication'
         ImageIndex = 1
-        ExplicitWidth = 390
-        ExplicitHeight = 259
       end
       object TabTex: TTabSheet
         Caption = 'TabTex'
         ImageIndex = 2
-        ExplicitWidth = 390
-        ExplicitHeight = 259
         object cbTexOpenDocAfterCompile: TCheckBox
           Left = 3
           Top = 3
@@ -241,8 +222,6 @@ object SettingsForm: TSettingsForm
       object TabTexPdflatex: TTabSheet
         Caption = 'TabTexPdflatex'
         ImageIndex = 3
-        ExplicitWidth = 390
-        ExplicitHeight = 259
         DesignSize = (
           405
           264)
@@ -268,7 +247,6 @@ object SettingsForm: TSettingsForm
             'nonstopmode'
             'scrollmode'
             'errorstopmode')
-          ExplicitLeft = 242
         end
       end
     end

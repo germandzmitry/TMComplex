@@ -131,8 +131,9 @@ begin
     lCalcHeight := LRect.Bottom;
   end;
 
+  // ƒелаю +10, т.к. видимо DrawText не считаем знаки _
   self.Width := LCalcWidth + pHint.Margins.Left + pHint.Margins.Right + pColor.Width +
-    pColor.Margins.Left + pColor.Margins.Right;
+    pColor.Margins.Left + pColor.Margins.Right + 10;
   self.Height := lCalcHeight + pHint.Margins.Top + pHint.Margins.Bottom + 2;
 
 end;

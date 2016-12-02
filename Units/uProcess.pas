@@ -45,7 +45,8 @@ begin
     CloseHandle(ProcInfo.hProcess); // закрываем дескриптор потока
   end
   else
-    ShowMessage(SysErrorMessage(GetLastError));
+    MessageBox(0, PChar(SysErrorMessage(GetLastError)), PChar('Create process'),
+      MB_ICONERROR + MB_OK);
 end;
 
 procedure RunProcessDefault(FileName: string);

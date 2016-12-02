@@ -145,8 +145,9 @@ end;
 procedure TLogForm.ShowMsgLines;
 var
   i: Integer;
-  Item: TListItem;
+  LItem: TListItem;
   LTop: Integer;
+  LLine: string;
 begin
   lvLog.Items.BeginUpdate;
   lvLog.Items.Clear;
@@ -162,25 +163,48 @@ begin
     if (MsgLines[i].Severity = lsBadBox) and (not ActMsgBadBox.Checked) then
       Continue;
 
-    Item := lvLog.Items.Add;
+    LItem := lvLog.Items.Add;
+    LItem.ImageIndex := -1;
+
     case MsgLines[i].Severity of
       lsBadBox:
-        Item.Caption := 'BodBox';
+        LLine := '[BodBox]';
       lsWarning:
-        Item.Caption := 'Warning';
+        LLine := '[Warning]';
       lsError:
-        Item.Caption := 'Error';
+        LLine := '[Error]';
       lsDebug:
-        Item.Caption := 'Debug';
+        LLine := '[Debug]';
     end;
-    Item.SubItems.Add(ExtractFileName(MsgLines[i].FileName));
-    if MsgLines[i].Row > 0 then
-      Item.SubItems.Add(IntToStr(MsgLines[i].Row))
-    else
-      Item.SubItems.Add('');
-    Item.SubItems.Add(MsgLines[i].Description);
 
-    Item.Data := @MsgLines[i];
+    LLine := LLine + ' ' + ExtractFileName(MsgLines[i].FileName);
+    LLine := LLine + '(' + IntToStr(MsgLines[i].Row) + ')';
+    LLine := LLine + ': ' + MsgLines[i].Description;
+
+    LItem.Caption := LLine;
+    LItem.Data := @MsgLines[i];
+
+    { case MsgLines[i].Severity of
+      lsBadBox:
+      Item.Caption := 'BodBox';
+      // Item.ImageIndex := 6;
+      lsWarning:
+      Item.Caption := 'Warning';
+      // Item.ImageIndex := 5;
+      lsError:
+      Item.Caption := 'Error';
+      // Item.ImageIndex := 4;
+      lsDebug:
+      Item.Caption := 'Debug';
+      end;
+
+      Item.SubItems.Add(ExtractFileName(MsgLines[i].FileName));
+      if MsgLines[i].Row > 0 then
+      Item.SubItems.Add(IntToStr(MsgLines[i].Row))
+      else
+      Item.SubItems.Add('');
+      Item.SubItems.Add(MsgLines[i].Description); }
+
   end;
   lvLog.Items.EndUpdate;
 end;
@@ -269,7 +293,7 @@ begin
           lsDebug:
             LColor := clBlack;
         end;
-        LogLineHintForm.CustomShow(LItem.Index, LItem.SubItems[2], LColor);
+        LogLineHintForm.CustomShow(LItem.Index, LLine.Description, LColor);
       end;
 
   except

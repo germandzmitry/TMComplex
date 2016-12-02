@@ -91,24 +91,16 @@ object LogForm: TLogForm
       BorderStyle = bsNone
       Columns = <
         item
-          Caption = 'Type'
-        end
-        item
-          Caption = 'File'
-          Width = 100
-        end
-        item
-          Caption = 'Row'
-        end
-        item
           AutoSize = True
-          Caption = 'Description'
+          Caption = 'Type'
         end>
       ColumnClick = False
       DoubleBuffered = True
+      FlatScrollBars = True
       ReadOnly = True
       RowSelect = True
       ParentDoubleBuffered = False
+      ShowColumnHeaders = False
       TabOrder = 0
       ViewStyle = vsReport
       OnDblClick = lvLogDblClick
@@ -171,7 +163,7 @@ object LogForm: TLogForm
     Left = 160
     Top = 264
     Bitmap = {
-      494C010107007800440010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C0101070078004C0010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

@@ -36,8 +36,6 @@ type
   public
     class function Parse(output: string; out Res: TTexLogLines; out ResCount: TTexLogErrorCount)
       : Boolean; overload; static;
-    class function Parse(output: string; lv: TListView; out ResCount: TTexLogErrorCount): Boolean;
-      overload; static;
   end;
 
 implementation
@@ -169,6 +167,7 @@ var
   fileRegEx: TRegEx;
   Match: TMatch;
 begin
+  Result := false;
   // Работаем пока только с расчетом на то, что именная файлов взяты в ковычки
   // В Windows в большинстве случаев так и должно быть
   // потому что MikTex ставить по умолчанию в Program Files, а тут уже есть пробелы
@@ -187,41 +186,6 @@ begin
 end;
 
 { TTexLogParser }
-
-class function TTexLogParser.Parse(output: string; lv: TListView;
-  out ResCount: TTexLogErrorCount): Boolean;
-var
-  Res: TTexLogLines;
-  i: integer;
-  item: TListItem;
-begin
-  Result := Parse(output, Res, ResCount);
-
-  lv.Items.BeginUpdate;
-  lv.Items.Clear;
-  for i := low(Res) to High(Res) do
-  begin
-    item := lv.Items.Add;
-    case Res[i].Severity of
-      lsBadBox:
-        item.Caption := 'BodBox';
-      lsWarning:
-        item.Caption := 'Warning';
-      lsError:
-        item.Caption := 'Error';
-      lsDebug:
-        item.Caption := 'Debug';
-    end;
-    item.SubItems.Add(ExtractFileName(Res[i].FileName));
-    if Res[i].Row > 0 then
-      item.SubItems.Add(inttostr(Res[i].Row))
-    else
-      item.SubItems.Add('');
-    item.SubItems.Add(Res[i].Description);
-  end;
-  lv.Items.EndUpdate;
-
-end;
 
 class function TTexLogParser.Parse(output: string; out Res: TTexLogLines;
   out ResCount: TTexLogErrorCount): Boolean;
