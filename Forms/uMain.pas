@@ -139,7 +139,11 @@ type
     ActInsertTabular: TAction;
     ActBeamer: TAction;
     ActBeamerNewFrame: TAction;
-    ActSearchOpenProjectFolder: TAction;
+    ActTexOpenProjectFolder: TAction;
+    ActionToolBar2: TActionToolBar;
+    ActTextQuote: TAction;
+    ActTextVerbatim: TAction;
+    ActionToolBar3: TActionToolBar;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -170,7 +174,7 @@ type
     { Search }
     procedure ActSearchExecute(Sender: TObject);
     procedure ActSearchGoToLineExecute(Sender: TObject);
-    procedure ActSearchOpenProjectFolderExecute(Sender: TObject);
+    procedure ActTexOpenProjectFolderExecute(Sender: TObject);
 
     { Text }
     procedure ActTextExecute(Sender: TObject);
@@ -203,6 +207,7 @@ type
     procedure ActAlignCenterExecute(Sender: TObject);
     procedure ActAlignRightExecute(Sender: TObject);
     procedure ActAlignJustifyExecute(Sender: TObject);
+    procedure ActTextQuoteExecute(Sender: TObject);
 
     { Insert }
     procedure ActInsertExecute(Sender: TObject);
@@ -285,6 +290,7 @@ type
     procedure ApplicationEventsMessage(var Msg: tagMSG; var Handled: Boolean);
 
     procedure ProcessParam(Index: Integer; param: string);
+    procedure ActTextVerbatimExecute(Sender: TObject);
   private
     { Private declarations }
     FAllSetting: TAllSetting;
@@ -477,13 +483,16 @@ begin
     LItemGlobal.Index := 2;
     LItemGlobal.Action := ActSearch;
     LItemGlobal.Items.Add.Action := ActSearchGoToLine;
-    LItemGlobal.Items.Add.Action := ActSearchOpenProjectFolder;
 
     { Text }
     { ------------------------------------------- }
     LItemGlobal := Items.Add;
     LItemGlobal.Index := 3;
     LItemGlobal.Action := ActText;
+
+    LItemGlobal.Items.Add.Action := ActTextQuote;
+    LItemGlobal.Items.Add.Action := ActTextVerbatim;
+    LItemGlobal.Items.Add.Caption := '-';
 
     { Text.Size }
     LItemSub := LItemGlobal.Items.Add;
@@ -516,6 +525,7 @@ begin
     LItemSub.Items.Add.Action := ActAlignLeft;
     LItemSub.Items.Add.Action := ActAlignCenter;
     LItemSub.Items.Add.Action := ActAlignRight;
+    LItemSub.Items.Add.Caption := '-';
     LItemSub.Items.Add.Action := ActAlignJustify;
 
     { Text }
@@ -549,6 +559,8 @@ begin
     LItemSub.Items.Add.Action := ActLinkHref;
 
     LItemGlobal.Items.Add.Caption := '-';
+
+    LItemGlobal.Items.Add.Action := ActInsertTabular;
 
     { Insert.List }
     LItemSub := LItemGlobal.Items.Add;
@@ -590,6 +602,8 @@ begin
     LItemGlobal.Items.Add.Caption := '-';
     LItemGlobal.Items.Add.Action := ActTexOpenPdf;
     LItemGlobal.Items.Add.Action := ActTexOpenPdfSynctex;
+    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActTexOpenProjectFolder;
 
     { MiKTeX }
     { ------------------------------------------- }
@@ -642,10 +656,114 @@ begin
 
     Items.Add.Caption := '-';
 
-    // LItem := Items.Add;
-    // LItem.Action := ActFileSetting;
-    // LItem.ShowCaption := False;
-    // Items.Add.Caption := '-';
+    LItem := Items.Add;
+    LItem.Action := ActEditUndo;
+    LItem.ShowCaption := False;
+
+    LItem := Items.Add;
+    LItem.Action := ActEditRedo;
+    LItem.ShowCaption := False;
+
+    Items.Add.Caption := '-';
+
+    LItem := Items.Add;
+    LItem.Action := ActEditCut;
+    LItem.ShowCaption := False;
+
+    LItem := Items.Add;
+    LItem.Action := ActEditCopy;
+    LItem.ShowCaption := False;
+
+    LItem := Items.Add;
+    LItem.Action := ActEditPaste;
+    LItem.ShowCaption := False;
+
+    // “ак должна быть об€влена именно послед€€ черта в баре
+    LItem := Items.Add;
+    LItem.Caption := '-';
+    LItem.CommandStyle := csSeparator;
+
+    LItem := Items.Add;
+    LItem.Action := ActFileSetting;
+    LItem.ShowCaption := False;
+  end;
+
+  { ActionToolBar2 }
+  with ActMngCommand.ActionBars[2] do
+  begin
+    { Text }
+    { ------------------------------------------- }
+
+    { Text.Align }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Action := ActAlignCenter;
+    LItemGlobal.ShowCaption := False;
+    LItem := LItemGlobal.Items.Add;
+    LItem.Action := ActAlignCenter;
+    LItem.Default := True;
+    LItemGlobal.Items.Add.Action := ActAlignLeft;
+    LItemGlobal.Items.Add.Action := ActAlignRight;
+
+    { Text.Font }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Action := ActFontBold;
+    LItemGlobal.ShowCaption := False;
+    LItem := LItemGlobal.Items.Add;
+    LItem.Action := ActFontBold;
+    LItem.Default := True;
+    LItemGlobal.Items.Add.Action := ActFontItalic;
+    LItemGlobal.Items.Add.Action := ActFontUnderline;
+    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActFontColor;
+
+    { Insert }
+    { ------------------------------------------- }
+    Items.Add.Caption := '-';
+    LItem := Items.Add;
+    LItem.Action := ActInsertImage;
+    LItem.ShowCaption := False;
+
+    Items.Add.Caption := '-';
+
+    LItem := Items.Add;
+    LItem.Action := ActInsertTabular;
+    LItem.ShowCaption := False;
+
+    { Insert.Array }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Action := ActArray;
+    LItemGlobal.ShowCaption := False;
+    LItem := LItemGlobal.Items.Add;
+    LItem.Action := ActArray;
+    LItem.Default := True;
+    LItemGlobal.Items.Add.Action := ActArrayMatrix;
+    LItemGlobal.Items.Add.Action := ActArrayCases;
+
+    { Insert.List }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Action := ActListItemize;
+    LItemGlobal.ShowCaption := False;
+    LItem := LItemGlobal.Items.Add;
+    LItem.Action := ActListItemize;
+    LItem.Default := True;
+    LItemGlobal.Items.Add.Action := ActListEnumerate;
+    LItemGlobal.Items.Add.Action := ActListDescription;
+
+    // “ак должна быть об€влена именно послед€€ черта в баре
+    LItem := Items.Add;
+    LItem.Caption := '-';
+    LItem.CommandStyle := csSeparator;
+
+  end;
+
+  { ActionToolBar3 }
+  with ActMngCommand.ActionBars[3] do
+  begin
+    LItem := Items.Add;
+    LItem.Action := ActTexOpenProjectFolder;
+    LItem.ShowCaption := False;
+
+    Items.Add.Caption := '-';
 
     LItem := Items.Add;
     LItem.Action := ActTexPdfLaTeX;
@@ -665,13 +783,7 @@ begin
     LItem.Action := ActTexOpenPdfSynctex;
     LItem.ShowCaption := False;
 
-    Items.Add.Caption := '-';
-
-    LItem := Items.Add;
-    LItem.Action := ActFileSetting;
-    LItem.ShowCaption := False;
-
-    // “ак должна быть об€влена именно послед€€ черта
+    // “ак должна быть об€влена именно послед€€ черта в баре
     LItem := Items.Add;
     LItem.Caption := '-';
     LItem.CommandStyle := csSeparator;
@@ -781,8 +893,6 @@ procedure TMain.FormShow(Sender: TObject);
 begin
   LoadSettings;
   FAllSetting.Load;
-
-  // ProcessParam(1, '');
 
   ProcessParam(1, ParamStr(1));
   ProcessParam(2, ParamStr(2));
@@ -1002,7 +1112,7 @@ begin
   end;
 end;
 
-procedure TMain.ActSearchOpenProjectFolderExecute(Sender: TObject);
+procedure TMain.ActTexOpenProjectFolderExecute(Sender: TObject);
 begin
   if FActiveEditor = nil then
     Exit;
@@ -1031,6 +1141,16 @@ end;
 procedure TMain.ActTextSubFontExecute(Sender: TObject);
 begin
   //
+end;
+
+procedure TMain.ActTextQuoteExecute(Sender: TObject);
+begin
+  InsertTemplateBlock(cmAlignQuoteBegin, cmAlignQuoteEnd);
+end;
+
+procedure TMain.ActTextVerbatimExecute(Sender: TObject);
+begin
+  InsertTemplateBlock(cmAlignVerbatimBegin, cmAlignVerbatimEnd);
 end;
 
 procedure TMain.ActTextShowSpecialCharsExecute(Sender: TObject);
@@ -1619,6 +1739,17 @@ begin
     finally
       IniFile.Free;
     end;
+
+    { pDockBottom.align := alRight;
+      sDockBottom.align := alRight;
+
+      sDockBottom.Width := 3;
+      sDockBottom.Enabled := True;
+
+      StatusBar.Top := Main.Height - StatusBar.Height;
+      pDockBottom.Left := Main.Width - pDockBottom.Width;
+      sDockBottom.Left := pDockBottom.Left - sDockBottom.Width; }
+
     sDockBottom.Height := 3;
     sDockBottom.Enabled := True;
 
@@ -1692,49 +1823,64 @@ begin
   if Processing then
     Exit;
 
-  // FProcessingEventHandler := True;
-  // try
-  // LSelectionAvailable := False;
-  // LActiveDocumentFound := False;
-  // LActiveDocumentModified := False;
-  //
-  // if (FActiveEditor <> nil) and (FTabEditor.Tabs.Count > 0) then
-  // begin
-  // LActiveDocumentFound := True;
-  // LSelectionAvailable := FActiveEditor.Editor.SelectionAvailable;
-  // LActiveDocumentModified := FActiveEditor.Editor.Modified;
-  // end;
-  //
-  // { File }
-  // ActFileSave.Enabled := LActiveDocumentFound and LActiveDocumentModified;
-  // ActFileSaveAs.Enabled := LActiveDocumentFound;
-  //
-  // { Edit }
-  // ActEditUndo.Enabled := LActiveDocumentFound and FActiveEditor.Editor.CanUndo;
-  // ActEditRedo.Enabled := LActiveDocumentFound and FActiveEditor.Editor.CanRedo;
-  // ActEditCut.Enabled := LActiveDocumentFound and LSelectionAvailable;
-  // ActEditCopy.Enabled := LActiveDocumentFound and LSelectionAvailable;
-  // ActEditPaste.Enabled := LActiveDocumentFound and FActiveEditor.Editor.CanPaste;
-  // ActEditSelectAll.Enabled := LActiveDocumentFound;
-  // ActEditGoToLine.Enabled := LActiveDocumentFound;
-  // ActEditEncoding.Enabled := LActiveDocumentFound;
-  //
-  // { Text }
-  // ActTextSubSize.Enabled := LActiveDocumentFound;
-  // ActTextSubFont.Enabled := LActiveDocumentFound;
-  // ActTextSubAlign.Enabled := LActiveDocumentFound;
-  // ActTextShowSpecialChars.Enabled := LActiveDocumentFound;
-  //
-  // { Insert }
-  // ActInsertImage.Enabled := LActiveDocumentFound;
-  // ActInsertSubLink.Enabled := LActiveDocumentFound;
-  // ActInsertSubList.Enabled := LActiveDocumentFound;
-  //
-  // FProcessingEventHandler := False;
-  // except
-  // FProcessingEventHandler := False;
-  // { intentionally silent }
-  // end;
+  FProcessingEventHandler := True;
+  try
+    LSelectionAvailable := False;
+    LActiveDocumentFound := False;
+    LActiveDocumentModified := False;
+
+    if (FActiveEditor <> nil) and (FTabEditor.Tabs.Count > 0) then
+    begin
+      LActiveDocumentFound := True;
+      LSelectionAvailable := FActiveEditor.Editor.SelectionAvailable;
+      LActiveDocumentModified := FActiveEditor.Editor.Modified;
+    end;
+
+    { File }
+    ActFileSave.Enabled := LActiveDocumentFound and LActiveDocumentModified;
+    ActFileSaveAs.Enabled := LActiveDocumentFound;
+
+    { Edit }
+    ActEditUndo.Enabled := LActiveDocumentFound and FActiveEditor.Editor.CanUndo;
+    ActEditRedo.Enabled := LActiveDocumentFound and FActiveEditor.Editor.CanRedo;
+    ActEditCut.Enabled := LActiveDocumentFound and LSelectionAvailable;
+    ActEditCopy.Enabled := LActiveDocumentFound and LSelectionAvailable;
+    ActEditPaste.Enabled := LActiveDocumentFound and FActiveEditor.Editor.CanPaste;
+    ActEditSelectAll.Enabled := LActiveDocumentFound;
+    ActEditEncoding.Enabled := LActiveDocumentFound;
+
+    { Search }
+    ActSearchGoToLine.Enabled := LActiveDocumentFound;
+
+    { Text }
+    ActTextQuote.Enabled := LActiveDocumentFound;
+    ActTextVerbatim.Enabled := LActiveDocumentFound;
+    ActTextSubSize.Enabled := LActiveDocumentFound;
+    ActTextSubFont.Enabled := LActiveDocumentFound;
+    ActFontBold.Enabled := LActiveDocumentFound;
+    ActTextSubAlign.Enabled := LActiveDocumentFound;
+    ActAlignCenter.Enabled := LActiveDocumentFound;
+    ActTextShowSpecialChars.Enabled := LActiveDocumentFound;
+
+    { Insert }
+    ActInsertNewPage.Enabled := LActiveDocumentFound;
+    ActInsertImage.Enabled := LActiveDocumentFound;
+    ActInsertSubObject.Enabled := LActiveDocumentFound;
+    ActInsertSubLink.Enabled := LActiveDocumentFound;
+    ActInsertTabular.Enabled := LActiveDocumentFound;
+    ActInsertSubList.Enabled := LActiveDocumentFound;
+    ActListItemize.Enabled := LActiveDocumentFound;
+    ActInsertSubArray.Enabled := LActiveDocumentFound;
+    ActArray.Enabled := LActiveDocumentFound;
+
+    { Beamer }
+    ActBeamerNewFrame.Enabled := LActiveDocumentFound;
+
+    FProcessingEventHandler := False;
+  except
+    FProcessingEventHandler := False;
+    { intentionally silent }
+  end;
 end;
 
 procedure TMain.SetStatusBarCaption();
@@ -1784,7 +1930,7 @@ begin
     STATUS_BAR_ENCODING:
       ActEditEncodingExecute(ActEditEncoding);
     STATUS_BAR_PATH:
-      ActSearchOpenProjectFolderExecute(ActSearchOpenProjectFolder);
+      ActTexOpenProjectFolderExecute(ActTexOpenProjectFolder);
   end;
 end;
 

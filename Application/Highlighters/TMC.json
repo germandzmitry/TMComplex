@@ -51,6 +51,8 @@
 						   "left",
 						   "right",
 						   "justify",
+						   "quote",
+						   "verbatim",
 						   "array",
 						   "tabular",
 						   "table",

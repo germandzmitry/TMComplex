@@ -347,9 +347,14 @@ begin
 end;
 
 procedure TLogForm.ActMsgCopyErrorExecute(Sender: TObject);
+var
+  LLine: ^TTexLogLine;
 begin
-  if lvLog.Selected <> nil then
-    Clipboard.AsText := lvLog.Selected.SubItems[2];
+  if lvLog.Selected = nil then
+    exit;
+
+  LLine := lvLog.Selected.Data;
+  Clipboard.AsText := LLine.Description;
 end;
 
 procedure TLogForm.Clear;

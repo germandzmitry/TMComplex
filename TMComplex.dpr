@@ -1,5 +1,7 @@
 program TMComplex;
 
+
+
 uses
   Vcl.Forms,
   Windows,
@@ -26,7 +28,8 @@ uses
   uInsertList in 'Forms\uInsertList.pas' {InsertListForm},
   uInsertImage in 'Forms\uInsertImage.pas' {InsertImageForm},
   uInsertTable in 'Forms\uInsertTable.pas' {InsertTableForm},
-  uLogLineHint in 'Forms\uLogLineHint.pas' {LogLineHintForm};
+  uLogLineHint in 'Forms\uLogLineHint.pas' {LogLineHintForm},
+  uCustomActionDrawDisableImage in 'Customs\uCustomActionDrawDisableImage.pas';
 
 {$R *.res}
 

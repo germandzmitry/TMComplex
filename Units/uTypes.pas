@@ -34,6 +34,10 @@ const
   cmAlignCenterEnd: string = '\end{center}';
   cmAlignJustifyBegin: string = '\begin{justify}';
   cmAlignJustifyEnd: string = '\end{justify}';
+  cmAlignQuoteBegin: string = '\begin{quote}';
+  cmAlignQuoteEnd: string = '\end{quote}';
+  cmAlignVerbatimBegin: string = '\begin{verbatim}';
+  cmAlignVerbatimEnd: string = '\end{verbatim}';
 
   // List
   cmListItemizeBegin: string = '\begin{itemize}';
@@ -51,7 +55,7 @@ const
   cmFontStyleBold: string = '\textbf';
   cmFontStyleItalic: string = '\textit';
   cmFontStyleUnderline: string = '\uline';
-//  cmFontStyleUnderline: string = '\un';
+  // cmFontStyleUnderline: string = '\un';
 
 implementation
 
