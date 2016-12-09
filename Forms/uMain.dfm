@@ -706,6 +706,36 @@ object Main: TMain
       ImageIndex = 56
       OnExecute = ActTextVerbatimExecute
     end
+    object ActInsertSubEnvironment: TAction
+      Category = 'Insert'
+      Caption = 'ActInsertSubEnvironment'
+      OnExecute = ActInsertSubEnvironmentExecute
+    end
+    object ActInsertLabel: TAction
+      Category = 'Insert'
+      Caption = 'ActInsertLabel'
+      OnExecute = ActInsertLabelExecute
+    end
+    object ActEnvirEquation: TAction
+      Category = 'Insert.Envir'
+      Caption = 'ActEnvirEquation'
+      OnExecute = ActEnvirEquationExecute
+    end
+    object ActEnvirEquationStar: TAction
+      Category = 'Insert.Envir'
+      Caption = 'ActEnvirEquationStar'
+      OnExecute = ActEnvirEquationStarExecute
+    end
+    object ActEnvirEqnarray: TAction
+      Category = 'Insert.Envir'
+      Caption = 'ActEnvirEqnarray'
+      OnExecute = ActEnvirEqnarrayExecute
+    end
+    object ActEnvirEqnarrayStar: TAction
+      Category = 'Insert.Envir'
+      Caption = 'ActEnvirEqnarrayStar'
+      OnExecute = ActEnvirEqnarrayStarExecute
+    end
   end
   object PopupActionEditor: TPopupActionBar
     Images = il_16x16
@@ -808,7 +838,7 @@ object Main: TMain
     Left = 424
     Top = 176
     Bitmap = {
-      494C01013B003002740210001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013B003002780210001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000040000000F0000000010020000000000000F0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -2800,7 +2830,7 @@ object Main: TMain
     Left = 504
     Top = 176
     Bitmap = {
-      494C01013B00C801BC0110001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01013B00C801C00110001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000040000000F0000000010020000000000000F0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

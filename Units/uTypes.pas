@@ -57,6 +57,8 @@ const
   cmFontStyleUnderline: string = '\uline';
   // cmFontStyleUnderline: string = '\un';
 
+  cmLabel: string = '\label{<метка>}';
+
 implementation
 
 end.

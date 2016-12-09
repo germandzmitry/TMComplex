@@ -144,6 +144,12 @@ type
     ActTextQuote: TAction;
     ActTextVerbatim: TAction;
     ActionToolBar3: TActionToolBar;
+    ActInsertSubEnvironment: TAction;
+    ActInsertLabel: TAction;
+    ActEnvirEquation: TAction;
+    ActEnvirEquationStar: TAction;
+    ActEnvirEqnarray: TAction;
+    ActEnvirEqnarrayStar: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -182,6 +188,8 @@ type
     procedure ActTextSubFontExecute(Sender: TObject);
     procedure ActTextSubAlignExecute(Sender: TObject);
     procedure ActTextShowSpecialCharsExecute(Sender: TObject);
+    procedure ActTextQuoteExecute(Sender: TObject);
+    procedure ActTextVerbatimExecute(Sender: TObject);
 
     { Text-Size }
     procedure ActSizeTinyExecute(Sender: TObject);
@@ -207,7 +215,6 @@ type
     procedure ActAlignCenterExecute(Sender: TObject);
     procedure ActAlignRightExecute(Sender: TObject);
     procedure ActAlignJustifyExecute(Sender: TObject);
-    procedure ActTextQuoteExecute(Sender: TObject);
 
     { Insert }
     procedure ActInsertExecute(Sender: TObject);
@@ -218,6 +225,14 @@ type
     procedure ActInsertSubLinkExecute(Sender: TObject);
     procedure ActInsertSubArrayExecute(Sender: TObject);
     procedure ActInsertSubObjectExecute(Sender: TObject);
+    procedure ActInsertSubEnvironmentExecute(Sender: TObject);
+    procedure ActInsertLabelExecute(Sender: TObject);
+
+    { Insert.Environment }
+    procedure ActEnvirEquationExecute(Sender: TObject);
+    procedure ActEnvirEquationStarExecute(Sender: TObject);
+    procedure ActEnvirEqnarrayExecute(Sender: TObject);
+    procedure ActEnvirEqnarrayStarExecute(Sender: TObject);
 
     { Insert.Object }
     procedure ActObjectFigureExecute(Sender: TObject);
@@ -290,7 +305,6 @@ type
     procedure ApplicationEventsMessage(var Msg: tagMSG; var Handled: Boolean);
 
     procedure ProcessParam(Index: Integer; param: string);
-    procedure ActTextVerbatimExecute(Sender: TObject);
   private
     { Private declarations }
     FAllSetting: TAllSetting;
@@ -537,13 +551,22 @@ begin
     LItemGlobal := Items.Add;
     LItemGlobal.Index := 4;
     LItemGlobal.Action := ActInsert;
-    LItemGlobal.Items.Add.Action := ActInsertNewPage;
-    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActInsertLabel;
     LItemGlobal.Items.Add.Action := ActInsertImage;
+    LItemGlobal.Items.Add.Action := ActInsertNewPage;
 
+    { Insert.Enviroment }
     LItemGlobal.Items.Add.Caption := '-';
+    LItemSub := LItemGlobal.Items.Add;
+    LItemSub.Action := ActInsertSubEnvironment;
+    LItemSub.Items.Add.Action := ActEnvirEquation;
+    LItemSub.Items.Add.Action := ActEnvirEquationStar;
+    LItemSub.Items.Add.Caption := '-';
+    LItemSub.Items.Add.Action := ActEnvirEqnarray;
+    LItemSub.Items.Add.Action := ActEnvirEqnarrayStar;
 
     { Insert.Object }
+    LItemGlobal.Items.Add.Caption := '-';
     LItemSub := LItemGlobal.Items.Add;
     LItemSub.Action := ActInsertSubObject;
     LItemSub.Items.Add.Action := ActObjectTable;
@@ -719,6 +742,9 @@ begin
     { Insert }
     { ------------------------------------------- }
     Items.Add.Caption := '-';
+    LItem := Items.Add;
+    LItem.Action := ActInsertNewPage;
+    LItem.ShowCaption := False;
     LItem := Items.Add;
     LItem.Action := ActInsertImage;
     LItem.ShowCaption := False;
@@ -1118,7 +1144,9 @@ begin
     Exit;
 
   if FileExists(FActiveEditor.FileNameFull) then
-    RunProcess('explorer "' + FActiveEditor.FilePath + '"');
+    RunProcess('explorer /select, "' + FActiveEditor.FileNameFull + '"')
+  else if DirectoryExists(FActiveEditor.FilePath) then
+    RunProcess('explorer "' + FActiveEditor.FilePath + '"')
 end;
 
 { Text }
@@ -1308,6 +1336,11 @@ begin
   end;
 end;
 
+procedure TMain.ActInsertLabelExecute(Sender: TObject);
+begin
+  InsertTemplate(cmLabel, -8);
+end;
+
 procedure TMain.ActInsertSubListExecute(Sender: TObject);
 begin
   //
@@ -1328,9 +1361,36 @@ begin
   //
 end;
 
+procedure TMain.ActInsertSubEnvironmentExecute(Sender: TObject);
+begin
+  //
+end;
+
 procedure TMain.ActInsertSubLinkExecute(Sender: TObject);
 begin
   //
+end;
+
+{ Insert-Environment }
+
+procedure TMain.ActEnvirEqnarrayExecute(Sender: TObject);
+begin
+  //
+end;
+
+procedure TMain.ActEnvirEqnarrayStarExecute(Sender: TObject);
+begin
+  //
+end;
+
+procedure TMain.ActEnvirEquationExecute(Sender: TObject);
+begin
+  InsertTemplateBlock('\begin{equation}' + cmLabel, '\end{equation}');
+end;
+
+procedure TMain.ActEnvirEquationStarExecute(Sender: TObject);
+begin
+  InsertTemplateBlock('\begin{equation*}', '\end{equation*}');
 end;
 
 { Insert-Object }
@@ -1340,7 +1400,7 @@ begin
   InsertTemplate('\begin{figure}' + #13#10 + //
     '  \centering' + #13#10 + //
     '  <изображение>' + #13#10 + //
-    '  \caption{<подпись>}\label{<ссылка>}' + #13#10 + //
+    '  \caption{<подпись>}' + cmLabel + #13#10 + //
     '\end{figure}', 0);
 end;
 
@@ -1349,7 +1409,7 @@ begin
   InsertTemplate('\begin{table}' + #13#10 + //
     '  \centering' + #13#10 + //
     '  <таблица>' + #13#10 + //
-    '  \caption{<подпись>}\label{<ссылка>}' + #13#10 + //
+    '  \caption{<подпись>}' + cmLabel + #13#10 + //
     '\end{table}', 0);
 end;
 
@@ -1865,12 +1925,15 @@ begin
     { Insert }
     ActInsertNewPage.Enabled := LActiveDocumentFound;
     ActInsertImage.Enabled := LActiveDocumentFound;
+    ActInsertLabel.Enabled := LActiveDocumentFound;
     ActInsertSubObject.Enabled := LActiveDocumentFound;
     ActInsertSubLink.Enabled := LActiveDocumentFound;
     ActInsertTabular.Enabled := LActiveDocumentFound;
     ActInsertSubList.Enabled := LActiveDocumentFound;
-    ActListItemize.Enabled := LActiveDocumentFound;
     ActInsertSubArray.Enabled := LActiveDocumentFound;
+    ActInsertSubEnvironment.Enabled := LActiveDocumentFound;
+
+    ActListItemize.Enabled := LActiveDocumentFound;
     ActArray.Enabled := LActiveDocumentFound;
 
     { Beamer }
@@ -2069,7 +2132,8 @@ begin
 
   LFileStream := TFileStream.Create(AFileName, fmCreate);
   try
-    FActiveEditor.Editor.Lines.SaveToStream(LFileStream, FActiveEditor.Editor.Encoding);
+    // FActiveEditor.Editor.Lines.SaveToStream(LFileStream, FActiveEditor.Editor.Encoding);
+    FActiveEditor.Editor.SaveToStream(LFileStream, FActiveEditor.Editor.Encoding);
     Result := True;
   finally
     LFileStream.Free;
