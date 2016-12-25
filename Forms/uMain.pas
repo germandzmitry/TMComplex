@@ -48,8 +48,8 @@ type
     ActTexStop: TAction;
     sDockBottom: TSplitter;
     pAction: TPanel;
-    PanelActionLeft: TPanel;
-    PanelActionClient: TPanel;
+    pActionLeft: TPanel;
+    pActionClient: TPanel;
     Bevel1: TBevel;
     ActInsertImage: TAction;
     ActEditUndo: TAction;
@@ -775,6 +775,20 @@ begin
     LItemGlobal.Items.Add.Action := ActListEnumerate;
     LItemGlobal.Items.Add.Action := ActListDescription;
 
+    Items.Add.Caption := '-';
+
+    { Insert.Enviroment }
+    LItemGlobal := Items.Add;
+    LItemGlobal.Action := ActEnvirEquation;
+    LItemGlobal.ShowCaption := False;
+    LItem := LItemGlobal.Items.Add;
+    LItem.Action := ActEnvirEquation;
+    LItem.Default := True;
+    LItemGlobal.Items.Add.Action := ActEnvirEquationStar;
+    LItemGlobal.Items.Add.Caption := '-';
+    LItemGlobal.Items.Add.Action := ActEnvirEqnarray;
+    LItemGlobal.Items.Add.Action := ActEnvirEqnarrayStar;
+
     // “ак должна быть об€влена именно послед€€ черта в баре
     LItem := Items.Add;
     LItem.Caption := '-';
@@ -881,7 +895,7 @@ begin
     Top := 10;
     Width := 20;
     Height := 20;
-    parent := PanelActionClient;
+    parent := pActionClient;
 
     Visible := True;
     align := alClient;
@@ -1935,6 +1949,7 @@ begin
 
     ActListItemize.Enabled := LActiveDocumentFound;
     ActArray.Enabled := LActiveDocumentFound;
+    ActEnvirEquation.Enabled := LActiveDocumentFound;
 
     { Beamer }
     ActBeamerNewFrame.Enabled := LActiveDocumentFound;

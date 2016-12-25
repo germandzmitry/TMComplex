@@ -74,8 +74,9 @@ end;
 
 procedure TAboutForm.FormCreate(Sender: TObject);
 begin
-  lName.Font.Color := RGB(90, 140, 130);
-  // lDeveloper.Font.Color := RGB(90, 140, 130);
+  // lName.Font.Color := RGB(90, 140, 130);
+//  lName.Font.Color := RGB(44, 90, 158);
+    lName.Font.Color := RGB(255, 128, 64);
   lHistory.Visible := FileExists(ExtractFilePath(Application.ExeName) + 'history.txt');
 
   lDebug.Visible := false;
