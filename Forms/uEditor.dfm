@@ -1100,9 +1100,9 @@ object EditorForm: TEditorForm
   TextHeight = 13
   object Editor: TBCEditor
     Left = 8
-    Top = 47
-    Width = 425
-    Height = 295
+    Top = 8
+    Width = 433
+    Height = 334
     Cursor = crIBeam
     ActiveLine.Indicator.Visible = False
     Caret.MultiEdit.Enabled = True
@@ -1139,7 +1139,6 @@ object EditorForm: TEditorForm
     LeftMargin.Font.Height = -11
     LeftMargin.Font.Name = 'Courier New'
     LeftMargin.Font.Style = []
-    LeftMargin.Width = 55
     Lines.Strings = (
       'Editor')
     LineSpacing = 0
@@ -1150,10 +1149,8 @@ object EditorForm: TEditorForm
     Minimap.Font.Name = 'Courier New'
     Minimap.Font.Style = []
     Minimap.Width = 140
-    OnChange = EditorChange
     RightMargin.Position = 80
     RightMargin.Visible = True
-    Scroll.Options = [soShowVerticalScrollHint, soWheelClickMove]
     SpecialChars.Style = scsDot
     SyncEdit.ShortCut = 24650
     TabOrder = 0
