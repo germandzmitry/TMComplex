@@ -13,7 +13,6 @@ type
     lVersion: TLabel;
     lHistory: TLinkLabel;
     BtnOK: TButton;
-    ImageIcon: TImage;
     lCaption: TLabel;
     lName: TLabel;
     lVersionDate: TLabel;
@@ -23,6 +22,7 @@ type
     mMiKTeX: TMemo;
     lMiKTeX: TLabel;
     lDebug: TLabel;
+    Image1: TImage;
     procedure FormCreate(Sender: TObject);
     procedure lHistoryClick(Sender: TObject);
     procedure BtnOKClick(Sender: TObject);
@@ -74,9 +74,7 @@ end;
 
 procedure TAboutForm.FormCreate(Sender: TObject);
 begin
-  // lName.Font.Color := RGB(90, 140, 130);
-//  lName.Font.Color := RGB(44, 90, 158);
-    lName.Font.Color := RGB(255, 128, 64);
+  // lName.Font.Color := RGB(255, 128, 64);
   lHistory.Visible := FileExists(ExtractFilePath(Application.ExeName) + 'history.txt');
 
   lDebug.Visible := false;
@@ -105,7 +103,7 @@ begin
 
   mMiKTeX.Lines.Clear;
   mMiKTeX.ReadOnly := true;
-  mMiKTeX.BorderStyle := bsNone;
+  // mMiKTeX.BorderStyle := bsNone;
 
   try
     TexCompile := TThreadCompile.Create('tex -version', mMiKTeX, false);
