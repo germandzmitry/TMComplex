@@ -95,22 +95,24 @@ procedure TEditorForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 var
   answer: Word;
 begin
-  // if (FState = stEdit) or ((FState = stNew) and (Editor.Modified)) then
-  // begin
-  // answer := MessageBox(Handle, pchar(Format(rsEditorQueryClose, [Caption])), pchar('TM Complex'),
-  // MB_YESNOCANCEL + MB_ICONINFORMATION);
-  // case answer of
-  // ID_YES:
-  // if not Main.SaveDocument then
-  // CanClose := false;
-  // ID_NO:
-  // ;
-  // ID_CANCEL:
-  // begin
-  // CanClose := false;
-  // end;
-  // end;
-  // end;
+{$IFDEF DEBUG}
+  // что бы не надоедало при разработке
+  exit;
+{$IFEND}
+
+  if (FState = stEdit) or ((FState = stNew) and (Editor.Modified)) then
+  begin
+    answer := MessageBox(Handle, pchar(Format(rsEditorQueryClose, [Caption])), pchar('TM Complex'),
+      MB_YESNOCANCEL + MB_ICONINFORMATION);
+    case answer of
+      ID_YES:
+        CanClose := Main.SaveDocument;
+      ID_NO:
+        ;
+      ID_CANCEL:
+        CanClose := false;
+    end;
+  end;
 end;
 
 procedure TEditorForm.FormActivate(Sender: TObject);

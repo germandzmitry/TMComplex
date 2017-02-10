@@ -1139,6 +1139,7 @@ object EditorForm: TEditorForm
     LeftMargin.Font.Height = -11
     LeftMargin.Font.Name = 'Courier New'
     LeftMargin.Font.Style = []
+    LeftMargin.Width = 55
     Lines.Strings = (
       'Editor')
     LineSpacing = 0
